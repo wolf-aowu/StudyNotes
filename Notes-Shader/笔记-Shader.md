@@ -1,29 +1,91 @@
 ### 基础知识
 
+#### Unity 内置Shader
+
+- Standard Surface Shader：会产生一个包含了标准光照模型的表面着色器模板，提供了典型的表面着色器。
+
+- Unlit Shader：会产生一个不包含光照（但包含雾效）的基本的 顶点 / 片元着色器。
+
+- Image Effect Shader：实现各种屏幕后处理效果，提供了一个基本模板。
+
+- Compute Shader：会产生一种特殊的 Shader 文件，这类 Shader 旨在利用 GPU 的并行性来进行一些与常规渲染流水线无关的计算。
+
+  更多介绍：https://docs.unity3d.com/Manual/class-ComputeShader.html
+
+#### Inspector 面板
+
+Unity Shader 本质上就是一个文本文件，也有导入设置。
+
+<img src="D:\笔记\Notes-Shader\Unity Shader 的 Inspector 面板.jpg" style="zoom: 80%;" />
+
+##### Default Maps
+
+指定该 Unity Shader使用的默认纹理，当任何材质第一次使用该 Unity Shader 时，这些纹理就会自动被赋予到相应的属性上。
+
+##### Surface Shader
+
+是否是一个表面着色器。
+
+Show generated code：打开一个新的文件，在这个文件里将显示 Unity 在背后为该 <font color=skyblue>表面着色器</font> 生成的顶点/片元着色器。这可以方便我们对这些生成的代码进行修改和保存，但需要复制到一个新的 Unity Shader 中才可保存。
+
+##### Fixed function
+
+是否是一个固定函数着色器。
+
+Show generated code：打开一个新的文件，在这个文件里将显示 Unity 在背后为该 <font color=skyblue>固定函数着色器</font> 生成的顶点/片元着色器。这可以方便我们对这些生成的代码进行修改和保存，但需要复制到一个新的 Unity Shader 中才可保存。
+
+##### Compiled code
+
+可以检查 Unity Shader 针对不同图像编程接口（例如 OpenGL、D3D9、D3D11等）最终编译成的 Shader 代码。直接单击该按钮可以查看生成的底层的汇编指令。我们可以利用这些代码来分析和优化着色器。
+
+##### Render queue
+
+使用的渲染队列
+
+##### Disable batching
+
+是否关闭批处理
+
+##### Properties
+
+属性列表
+
 #### 结构
 
 ```
 // 与 Shader 的文件名无关，是对 Shader 的分类
 Shader "MyShader/LearningShader1"
 {
-    // 定义一些需要通过 Unity 赋值的变量
-    // 非必须的
+    // 定义了着色器所需的各种属性
+    // 非必须的，主要是属性在 Unity 材质的 Inspector 面板中可视化，暴露出来方便调整
     Properties{
-        // 变量名("Unity Inspector 面板中显示的变量名",变量类型) = 值
+        // 属性名("Unity Inspector 面板中显示的属性名",属性类型) = 值
         // 当 Unity Inspector 面板中的值改变过后，将以 Unity Inspector 面板中的值为准
-        // 变量与变量之间通过换行区分
+        // 属性与属性之间通过换行区分
         _Color("Color",Color) = (1,1,1,1)
     }
-    // 可以有多个 SubShader，用于适配不同的显卡
+    // 一个 Shader 文件中可以有多个 SubShader，但至少有一个。
+    // 多个 SubShader 用于适配不同的显卡，一些旧的显卡仅能支持一定数目的操作指令，当我们希望在旧的显卡上使用计算复杂度较低的着色器时，就可以再写一个 SubShader
     // 当显卡不适配第一个 SubShader 时，会自动选择第二个 SubShader，如果还不适配时，会继续选择下一个 SubShader，以此类推
     // 必须的
     SubShader{
+        // 用于告诉 Unity 渲染引擎：如何以及何时渲染当前对象
+        // 全局的，会用于所有 Pass 块
+        // 非必须的
+        Tags{
+        	// "标签类型" = "标签值"
+        }
+        // 渲染状态，设置显卡的各种状态
+        // 全局的，会用于所有 Pass 块
+        // 非必须的
+        
         // 一个 SubShader 中可以有许多的 Pass 块，但必须有一个 Pass 块
+        // 每个 Pass 块定义了一次完整的渲染流程，如果 Pass 的数目过多，会造成渲染性能下降，因此应尽量使用最小数目的 Pass 块
         // 一个 Pass 块相当于一个方法
         Pass{
             // 该块中可以使用 CG 语言编写 Shader 代码
-            // 当需要使用 Properties 中的变量时，需要重新定义一下，但 Properties 中的变量的值会传过来
-            // 新定义的变量名需与 Properties 的变量名一样
+            // 当需要使用 Properties 中的属性时，需要重新定义一下，但 Properties 中的属性的值会传过来
+            // 新定义的属性名需与 Properties 的属性名一样
             // 同时注意 Properties 中支持的类型，在 SubShader 中不一定支持，因此需要改变一下
             // 如 Color 要变成 float4
             CGPROGRAM
@@ -46,7 +108,43 @@ Shader "MyShader/LearningShader1"
 }
 ```
 
-#### 变量类型
+更多参考：https://docs.unity3d.com/2020.2/Documentation/Manual/SL-CustomShaderGUI.html
+
+##### SubShader
+
+###### 标签 Tags
+
+以下标签仅能用于 SubShader 中声明，不可用于 Pass 块中声明。
+
+| 标签类型             | 说明                                                         | 例子                                   |
+| -------------------- | ------------------------------------------------------------ | -------------------------------------- |
+| Queue                | 控制渲染顺序，指定该物体属于哪一个渲染队列，通过这种方式可以保证所有的透明物体可以在所有不透明物体后面被渲染，也可以自定义使用的渲染队列来控制物体的渲染顺序 | Tags {"Queue" = "Transparent"}         |
+| RenderType           | 对着色器进行分类，例如这是一个不透明的着色器，或是一个透明的着色器等。这可以被用于着色器替换（Shader Replacement）功能 | Tags {"RenderType" = "Opaque"}         |
+| DisableBatching      | 一些 SubShader 在使用 Unity 的批处理功能时会出现问题，例如使用了模型空间下的坐标进行顶点动画。这时可以通过标签来直接指明是否对该 SubShader 使用处理 | Tags {"DisableBatching" = "True"}      |
+| ForceNoShadowCasting | 控制使用该 SubShader 的物体受否会投射阴影                    | Tags {"ForceNoShadowCasting" = "True"} |
+| IgnoreProjector      | 如果该标签值为 "Ture"，那么使用该 SubShader 的物体将不会受到 Projector 的影响。通常用于半透明物体 | Tags {"IgnoreProjector" = "True"}      |
+| CanUseSpriteAtlas    | 当该 SubShader 是用于精灵（Sprite）时，将该标签设置为 "False" | Tags {"CanUseSpriteAtlas" = "False"}   |
+| PreviewType          | 指明材质面板将如何预览该材质。默认情况下，材质将显示为一个球形，通过把该标签的值设为 "Plane" "SkyBox" 来改变预览类型 | Tags {"PreviewType" = "Plane"}         |
+
+以下标签用于 Pass 块
+
+| 标签类型       | 说明                                                         | 例子                                       |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------ |
+| LightMode      | 定义该 Pass 在 Unity 的渲染流水线中的角色                    | Tags {"LightMode" = "ForwardBase"}         |
+| RequireOptions | 用于指定当满足某些条件时才渲染该 Pass，它的值是一个有空格分隔的字符串。Unity 支持的选项有：SoftVegetation。<font color = grass>（待去官网上查看是否已更新）</font> | Tags {"RequireOptions" = "SoftVegetation"} |
+
+###### 渲染状态 RenderSetup
+
+以下渲染状态既可用于 SubShader 中，也可用于 Pass 块中。
+
+| 状态名称 | 设置指令                                                     | 解释                                     |
+| -------- | ------------------------------------------------------------ | ---------------------------------------- |
+| Cull     | Cull Back \| Front \| Off                                    | 设置剔除模式：提出背面 / 正面 / 关闭剔除 |
+| ZTest    | ZTest Less Greater \| Lequal \| GEqual \| Equal \| NotEqual \| Always | 设置深度测试时使用的函数                 |
+| ZWrite   | ZWrite On \| Off                                             | 开启 / 关闭深度写入                      |
+| Blend    | Blend SrcFactor DetFactor                                    | 开启并设置混合模式                       |
+
+#### 属性类型
 
 ##### Color
 
@@ -121,7 +219,9 @@ float _Range;
 
 ##### 2D
 
-2D 纹理，white 代表当 Unity Inspector 面板中未指定任何纹理时，默认使用白色的贴图
+2D 纹理。`""` 中要么是空的，要么是内置的纹理名称，如 `"white"`、`"black"`、`"gray"`、`"bump"`。white 代表当 Unity Inspector 面板中未指定任何纹理时，默认使用白色的贴图。花括号的作用在 Unity 5.0 以后的版本中被 <font color = skyblue>移除</font> 了，如果我们需要类似的功能，需要自己在顶点着色器中编写计算相应纹理坐标的代码。在 Unity 5.0 以前的版本中，花括号的用处是用于指定一些纹理属性的，我们可以通过 TexGen CubeReflect、TexGen CubeNormal 等选项来控制固定管线的纹理坐标的生成。
+
+3D、Cube 同理。
 
 ```
 // Properties 中
