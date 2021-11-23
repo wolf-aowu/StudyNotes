@@ -1,3 +1,34 @@
+### 数学基础知识
+
+#### 笛卡尔坐标系
+
+笛卡尔坐标系就是生活中常说的坐标系。
+
+##### 二维笛卡尔坐标系
+
+必须满足以下两个条件
+
+- 有一个原点
+- 有两条过原点互相垂直的矢量，x 轴和 y 轴
+
+因此，笛卡尔坐标系并不是唯一的，如 OpenGL 进行屏幕映射时使用的笛卡尔坐标系 与 DirectX 进行屏幕映射时使用的笛卡尔坐标系 不同。
+
+![笛卡尔二维坐标系](笛卡尔二维坐标系.jpg)
+
+##### 三维笛卡尔坐标系
+
+- 有一个原点
+
+- 有三个坐标轴，这 3 个坐标轴被称为 <font color=skyblue>基矢量</font>。
+
+  3 个坐标间互相垂直且长度为 1，被称为 <font color=skyblue>标准正交基</font>。
+
+  3 个坐标间互相垂直，但长度不为 1，被称为 <font color=skyblue>正交基</font>。
+
+<font color=skyblue>正交：</font>互相垂直。
+
+三维笛卡尔坐标系可分为 左手坐标系 和 右手坐标系。
+
 ### 基础知识
 
 #### Unity 内置Shader
@@ -16,7 +47,7 @@
 
 Unity Shader 本质上就是一个文本文件，也有导入设置。
 
-<img src="D:\笔记\Notes-Shader\Unity Shader 的 Inspector 面板.jpg" style="zoom: 80%;" />
+<img src="Unity Shader 的 Inspector 面板.jpg" style="zoom: 80%;" />
 
 ##### Default Maps
 
@@ -280,7 +311,7 @@ samplerCube _Cube;
 表面着色器被定义在 SubShader 语义块中的 CGPROGRAM 和 ENDCG 之间。这能使我们不必关心使用多少个 Pass 块、每个 Pass 块如何渲染等问题，我们只需关心使用什么纹理填充颜色，使用什么法线纹理填充法线，使用 Lambert 光照模型等。
 
 ```
-Shader "Custom/简单的表面着色器"
+Shader "Learning/简单的表面着色器"
 {
     SubShader
     {
@@ -312,7 +343,7 @@ Shader "Custom/简单的表面着色器"
 顶点 / 片元着色器的代码也需要定义在 CGPROGRAM 和 ENDCG 之间，但顶点 / 片元着色器是写在 Pass 语义块内，需要我们自己定义每个 Pass 块需要使用的代码。灵活性更高，能控制更多的渲染的实现细节。
 
 ```
-Shader "Custom/简单的顶点片元着色器"
+Shader "Learning/简单的顶点片元着色器"
 {
     SubShader
     {
@@ -339,5 +370,37 @@ Shader "Custom/简单的顶点片元着色器"
 
 #### 固定函数着色器
 
-不支持可编程管线着色器，对于一些较旧的设备（GPU仅支持 DirectX 7.0、OpenGL 1.5 或 OpenGL ES 1.1）如 iPhone 3。固定函数着色器一般可以完成一些非常简单的效果。 
+不支持可编程管线着色器，对于一些较旧的设备（GPU仅支持 DirectX 7.0、OpenGL 1.5 或 OpenGL ES 1.1）如 iPhone 3。固定函数着色器一般可以完成一些非常简单的效果。 在 Unity 5.2 之后，所有固定函数着色器都会在背后被 Unity 编译成对应的顶点 / 片元着色器，因此真正意义上的固定函数着色器已经不存在了。固定函数着色器的代码被定义在 Pass 块中，这些代码相当于 Pass 块中的一些渲染设置，需要完全使用 ShaderLab 的语法来编写。
+
+```
+![Unity Shader 的三种形式例子](D:\笔记\Notes-Shader\Unity Shader 的三种形式例子.jpg)Shader "Learning/固定函数着色器"
+{
+    Properties
+    {
+        _Color("Main Color",Color) = (1,0.5,0.5,1)
+    }
+    SubShader
+    {
+        Pass
+        {
+            Material
+			{
+				Diffuse [_Color]
+			}
+
+			Lighting On
+        }
+    }
+}
+```
+
+![Unity Shader 的三种形式例子](Unity Shader 的三种形式例子.jpg)
+
+<center>从左至右：表面着色器、顶点 / 片元着色器、固定函数着色器</center>
+
+#### 着色器的选择
+
+- 如果需要与各种光源打交道，需要使用表面着色器，但需要小心它在移动平台的性能
+- 如果需要使用的光照数目非常少 或者 需要很多自定义渲染效果，使用顶点 / 片元着色器是一个更好的选择
+- 需要在非常旧的设备上运行游戏的，选择固定函数着色器
 
