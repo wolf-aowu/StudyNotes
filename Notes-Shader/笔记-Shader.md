@@ -29,6 +29,46 @@
 
 三维笛卡尔坐标系可分为 左手坐标系 和 右手坐标系。
 
+###### 左手坐标系 和 右手坐标系
+
+左手坐标系
+
+<img src="左手坐标系.png" alt="左手坐标系" style="zoom: 67%;" />
+
+<center>左手坐标系</center>
+
+右手坐标系
+
+<img src="右手坐标系.png" alt="右手坐标系" style="zoom: 67%;" />
+
+<center>右手坐标系</center>
+
+###### 左手法则 和 右手法则
+
+左手法则：定义左手坐标系旋转的正方向
+
+右手法则：定义右手坐标系旋转的正方向
+
+大拇指朝向旋转轴，其余手指就是旋转的正方向
+
+<img src="左手法则 和 右手法则.png" alt="左手法则 和 右手法则"  />
+
+###### 左手坐标系 和 右手坐标系的区别
+
+使用左手坐标系 和 右手坐标系 描述同一件事，描述是不同的。
+
+![左手坐标系 和 右手坐标系的区别](左手坐标系 和 右手坐标系的区别.png)
+
+<center>左手坐标系&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp右手坐标系</center>
+
+Unity 中，模型空间 和 世界空间 都使用 <font color = skyblue>左手坐标系</font>。观察空间 使用 <font color = skyblue>右手坐标系</font>。
+
+观察空间：也叫摄像机空间。以摄像机为原点的坐标系，+z 轴指向相机后，+y 轴向上。
+
+<font color = purple>猜测：</font>观察空间为右手坐标系是因为摄像机就像镜子，z 轴原本向前为正方向，透过镜子后向后为正方向。 
+
+<img src="观察空间.png" alt="观差空间" style="zoom: 33%;" />
+
 ### 基础知识
 
 #### Unity 内置Shader
@@ -404,3 +444,4 @@ Shader "Learning/简单的顶点片元着色器"
 - 如果需要使用的光照数目非常少 或者 需要很多自定义渲染效果，使用顶点 / 片元着色器是一个更好的选择
 - 需要在非常旧的设备上运行游戏的，选择固定函数着色器
 
+ 
