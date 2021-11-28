@@ -65,7 +65,7 @@ Unity 中，模型空间 和 世界空间 都使用 <font color = skyblue>左手
 
 观察空间：也叫摄像机空间。以摄像机为原点的坐标系，+z 轴指向相机后，+y 轴向上。
 
-<font color = purple>猜测：</font>观察空间为右手坐标系是因为摄像机就像镜子，z 轴原本向前为正方向，透过镜子后向后为正方向。 
+<font color = cyan>猜测：</font>观察空间为右手坐标系是因为摄像机就像镜子，z 轴原本向前为正方向，透过镜子后向后为正方向。 
 
 <img src="观察空间.png" alt="观差空间" style="zoom: 33%;" />
 
@@ -92,6 +92,93 @@ Unity 中，模型空间 和 世界空间 都使用 <font color = skyblue>左手
 <font color = skyblue>零矢量</font> 是不可被归一化的。零矢量：每个分量的值都为 0 。
 
 ##### 矢量的点积
+
+矢量的点积又叫内积，$ \vec{a} \cdot \vec{b}$ （ $\cdot$ 是不能省略的），其最后结果是一个 <font color=skyblue>标量</font>。
+
+$$
+\vec{a} \cdot \vec{b} = (a_x,\ a_y,\ a_z) \cdot (b_x,\ b_y,\ b_z) = a_xb_x + a_yb_y + a_zb_z
+\\
+\vec{a} \cdot \vec{b} = \vec{b} \cdot \vec{a}
+$$
+
+例子：
+$$
+(1,2,3) \cdot (5,-1,7) = 1 * 5 + 2 * (-1) + 3 * 7 = 5 - 2 + 21 = 24
+$$
+###### 几何意义
+
+点积的几何意义是投影。单位向量 $\vec{a} \cdot \vec{b}$ 的几何意义是：向量 $\vec{b}$ 在<font color = skyblue>单位向量 $\vec{a}$ </font>方向上的投影。
+
+![矢量 b 在单位矢量 a 方向上的投影](矢量 b 在单位矢量 a 方向上的投影.jpg)
+
+<center>向量 b 在单位向量 a 方向上的投影</center>
+
+点积结果可能是一个负数，点积结果的正负号与两个向量的方向有关，如果它们方向相反（夹角大于 90°），结果小于 0；如果它们互相垂直（夹角为 90°），结果为 0；如果它们方向相同（夹角小于 90°），结果大于 0。
+
+![点积的符号](点积的符号.jpg)
+
+<center>点积的符号</center>
+
+如果 $\vec{a}$ 不是单位向量，那么只需在 $\vec{a} \cdot \vec{b}$ 的基础上乘以 a 的长度即可。
+
+###### 性质
+
+性质一
+$$
+(k \vec{a}) \cdot \vec{b} = k (\vec{a} \cdot \vec{b})
+$$
+性质二
+$$
+\vec{a} \cdot (\vec{b} + \vec{c}) = \vec{a} \cdot \vec{b} + \vec{a} \cdot \vec{c}
+\\
+\vec{a} \cdot (\vec{b} - \vec{c}) = \vec{a} \cdot \vec{b} - \vec{a} \cdot \vec{c}
+$$
+性质三
+$$
+\vec{v} \cdot \vec{v} = v_xv_x + v_yv_y + v_zv_z = |v|^2
+$$
+这意味着<font color = skyblue>可以直接利用点积来求向量的模，当我们需要比较两个向量的长度大小时，可以直接使用点积来获得结果，这比 通过开方来计算向量长度 再比较 更省性能。</font>
+
+###### 公式
+
+公式一
+$$
+\vec{a} \cdot \vec{b} = |\vec{a}| \  |\vec{b}| \ cos\theta
+\\
+\theta = arcos(\vec{a}\ 的单位向量\  \cdot \  \vec{b}\ 的单位向量)
+$$
+<img src="点积公式一.jpg" style="zoom:25%;" />
+
+##### 矢量的叉积
+
+矢量的叉积又称外积，$\vec{a} \times \vec{b}$ （$\times$ 是不能省略的），其最后结果仍是一个矢量。
+$$
+\vec{a} \times \vec{b} = (a_x,\ a_y,\ a_z) \times (b_x,\ b_y,\ b_z) = (a_yb_z - a_zb_y,\ a_zb_x - a_xb_z,\ a_xb_y - a_yb_x)
+$$
+
+<img src="叉积的计算规律.jpg" style="zoom:25%;" />
+
+例子：
+$$
+\begin{aligned}
+(1,2,3) \times (-2, -1, 4) &= (2 * 4 - 3 * (-1), 3 * (-2) - 1 * 4, 1 * (-1) - 2 * (-2)) 
+\\
+&= (8 + 3, -6 - 4, -1 + 4)
+\\
+&= (11, -10, 3)
+\end{aligned}
+$$
+<font color = skyblue>注意：</font>$$\vec{a} \times \vec{b} \neq \vec{b} \times \vec{a}$$ ，$\vec{a} \times \vec{b} \times \vec{c} \neq \vec{a} \times (\vec{b} \times \vec{c})$，但是满足 $\vec{a} \times \vec{b} = -(\vec{b} \times \vec{a})$。
+
+###### 几何意义
+
+两个矢量的叉积会得到一个同时垂直于两个矢量的新矢量。新矢量的模：$|\vec{a} \times \vec{b}| = |\vec{a}| \times |\vec{b}| \  sin \theta$。该公式也是平行四边形的面积公式。平行四边形面积 = 底 × 高。平行四边形高 = $|\vec{a}| sin \theta$。
+
+![平行四边形面积公式](平行四边形面积公式.jpg)
+
+<center>平行四边形面积公式</center>
+
+新矢量的方向：可以使用 右手法则 或 左手法则 旋转获得。两种方法都是先摊开手心，手指朝向 $\vec{a}$ 的方向，将手指朝着 $\vec{b}$ 的方向握紧。右手法则：大拇指方向即新矢量的方向；左手法则：大拇指方向的<font color = skyblue>反</font>方向即新矢量的方向。
 
 ### 基础知识
 
