@@ -1,10 +1,10 @@
-### 数学基础知识
+# 数学基础知识
 
-#### 笛卡尔坐标系
+## 笛卡尔坐标系
 
 笛卡尔坐标系就是生活中常说的坐标系。
 
-##### 二维笛卡尔坐标系
+### 二维笛卡尔坐标系
 
 必须满足以下两个条件
 
@@ -15,7 +15,7 @@
 
 ![笛卡尔二维坐标系](笛卡尔二维坐标系.jpg)
 
-##### 三维笛卡尔坐标系
+### 三维笛卡尔坐标系
 
 - 有一个原点
 
@@ -29,7 +29,7 @@
 
 三维笛卡尔坐标系可分为 左手坐标系 和 右手坐标系。
 
-###### 左手坐标系 和 右手坐标系
+#### 左手坐标系 和 右手坐标系
 
 左手坐标系
 
@@ -43,7 +43,7 @@
 
 <center>右手坐标系</center>
 
-###### 左手法则 和 右手法则
+#### 左手法则 和 右手法则
 
 左手法则：定义左手坐标系旋转的正方向
 
@@ -53,7 +53,7 @@
 
 <img src="左手法则 和 右手法则.png" alt="左手法则 和 右手法则"  />
 
-###### 左手坐标系 和 右手坐标系的区别
+#### 左手坐标系 和 右手坐标系的区别
 
 使用左手坐标系 和 右手坐标系 描述同一件事，描述是不同的。
 
@@ -69,21 +69,21 @@ Unity 中，模型空间 和 世界空间 都使用 <font color = skyblue>左手
 
 <img src="观察空间.png" alt="观差空间" style="zoom: 33%;" />
 
-#### 矢量
+## 矢量
 
-##### 矢量加法的三角形定则
+### 矢量加法的三角形定则
 
 就是矢量加法。
 
-##### 矢量减法
+### 矢量减法
 
 某段向量 = 原点到某段向量的终点 - 原点到某段向量的起点
 
-##### 矢量的模
+### 矢量的模
 
 矢量的模 = 每个分量的平方相加后开根号
 
-##### 单位矢量 归一化
+### 单位矢量 归一化
 
 模为 1 的矢量就是单位矢量，也叫 被归一化的矢量。
 
@@ -91,7 +91,7 @@ Unity 中，模型空间 和 世界空间 都使用 <font color = skyblue>左手
 
 <font color = skyblue>零矢量</font> 是不可被归一化的。零矢量：每个分量的值都为 0 。
 
-##### 矢量的点积
+### 矢量的点积
 
 矢量的点积又叫内积，$ \vec{a} \cdot \vec{b}$ （ $\cdot$ 是不能省略的），其最后结果是一个 <font color=skyblue>标量</font>。
 
@@ -105,7 +105,7 @@ $$
 $$
 (1,2,3) \cdot (5,-1,7) = 1 * 5 + 2 * (-1) + 3 * 7 = 5 - 2 + 21 = 24
 $$
-###### 几何意义
+#### 几何意义
 
 点积的几何意义是投影。单位向量 $\vec{a} \cdot \vec{b}$ 的几何意义是：向量 $\vec{b}$ 在<font color = skyblue>单位向量 $\vec{a}$ </font>方向上的投影。
 
@@ -121,7 +121,7 @@ $$
 
 如果 $\vec{a}$ 不是单位向量，那么只需在 $\vec{a} \cdot \vec{b}$ 的基础上乘以 a 的长度即可。
 
-###### 性质
+#### 性质
 
 性质一
 $$
@@ -139,7 +139,7 @@ $$
 $$
 这意味着<font color = skyblue>可以直接利用点积来求向量的模，当我们需要比较两个向量的长度大小时，可以直接使用点积来获得结果，这比 通过开方来计算向量长度 再比较 更省性能。</font>
 
-###### 公式
+#### 公式
 
 公式一
 $$
@@ -149,7 +149,7 @@ $$
 $$
 <img src="点积公式一.jpg" style="zoom:25%;" />
 
-##### 矢量的叉积
+### 矢量的叉积
 
 矢量的叉积又称外积，$\vec{a} \times \vec{b}$ （$\times$ 是不能省略的），其最后结果仍是一个矢量。
 $$
@@ -170,7 +170,7 @@ $$
 $$
 <font color = skyblue>注意：</font>$$\vec{a} \times \vec{b} \neq \vec{b} \times \vec{a}$$ ，$\vec{a} \times \vec{b} \times \vec{c} \neq \vec{a} \times (\vec{b} \times \vec{c})$，但是满足 $\vec{a} \times \vec{b} = -(\vec{b} \times \vec{a})$。
 
-###### 几何意义
+#### 几何意义
 
 两个矢量的叉积会得到一个同时垂直于两个矢量的新矢量。新矢量的模：$|\vec{a} \times \vec{b}| = |\vec{a}| \times |\vec{b}| \  sin \theta$。该公式也是平行四边形的面积公式。平行四边形面积 = 底 × 高。平行四边形高 = $|\vec{a}| sin \theta$。
 
@@ -180,7 +180,7 @@ $$
 
 新矢量的方向：可以使用 右手法则 或 左手法则 旋转获得。两种方法都是先摊开手心，手指朝向 $\vec{a}$ 的方向，将手指朝着 $\vec{b}$ 的方向握紧，大拇指的方向即新矢量的方向。虽然左手和右手法则得到的方向是相反的，但是叉乘的结果始终不变。也就是说如果叉乘的结果大于 0，那么，在左手坐标系中，其方向是左手坐标系中的正方向；在右手坐标系中，其方向是右手坐标系中的正方向。小于 0，同理其方向都是在左、右手坐标系中的反方向。
 
-###### 作用
+#### 作用
 
 用于计算垂直于一个平面、三角形的矢量，还可以判断三角面片的朝向。
 
@@ -190,9 +190,154 @@ $$
 
 <img src="三角面片的朝向判断.jpg" alt="三角面片的朝向判断" style="zoom: 33%;" />
 
-### 基础知识
+## 矩阵
 
-#### Unity 内置Shader
+矩阵可以把一个矢量从一个坐标空间转换到另一个坐标空间。
+
+以下两种矩阵写法都可。
+
+<font color = skyblue>在本笔记中以后都使用 `[]` 来包裹矩阵，矩阵名使用大写英文字母表示，矩阵的元素都以矩阵名的小写字母表示，这样好看一点。</font>
+$$
+\left[
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix}
+\right]
+\qquad\qquad
+\left(
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix}
+\right)
+$$
+矩阵的一般表达式。
+$$
+M = 
+\left[
+\begin{matrix}
+m_{11} & m_{12} & m_{13} \\
+m_{21} & m_{22} & m_{23} \\
+m_{31} & m_{32} & m_{33}
+\end{matrix}
+\right]
+$$
+
+### 矩阵的乘法
+
+#### 矩阵与标量
+
+$$
+\begin{align}
+kM &= Mk
+\\\\
+
+&=k 
+\left[
+\begin{matrix}
+m_{11} & m_{12} & m_{13} \\
+m_{21} & m_{22} & m_{23} \\
+m_{31} & m_{32} & m_{33}
+\end{matrix}
+\right]
+\\\\
+
+&=
+\left[
+\begin{matrix}
+km_{11} & km_{12} & km_{13} \\
+km_{21} & km_{22} & km_{23} \\
+km_{31} & km_{32} & km_{33}
+\end{matrix}
+\right]
+\end{align}
+$$
+
+#### 矩阵与矩阵
+
+一个 $r \times n$ 的矩阵 A 和一个 $r \times c$ 的矩阵 B 相乘，它们的结果是一个 $r \times c$ 大小的矩阵。
+
+矩阵与矩阵相乘，前一个矩阵的列数 必须和 后一个矩阵的行数 相等。<font color = skyblue> 这个条规定必须满足，否则两个矩阵无法相乘。</font>
+
+$矩阵 A \times 矩阵 B = 矩阵 C$，$矩阵C$ 中的每一元素 c 的计算公式如下。
+$$
+\begin{aligned}
+c_{ij} &= a_{i1}b_{1j} + a_{i2}b_{2j} + \cdots + a_{in}b_{nj}
+\\
+&= \sum_{k = 1}^{n}{a_{ik}b_{kj}}
+\end{aligned}
+$$
+
+$c_{ij}$ 其实就是 矩阵 A 的第 i 行向量 与矩阵 B 的第 j 列向量的点乘。
+
+##### 性质
+
+性质一
+
+通常情况下：
+$$
+AB \neq BA
+$$
+性质二
+
+矩阵乘法满足结合律
+$$
+(AB)C = A(BC)
+\\
+ABCDE = ((A(BC))D)E = (AB)(CD)E
+$$
+
+#### 特殊的矩阵
+
+##### 方块矩阵
+
+方块矩阵（square matrix），简称方阵，指 行 和 列 数目相等的矩阵，常用的是 $ 3 \times 3 $ 和 $ 4 \times 4 $ 的方阵。
+
+###### 对角元素
+
+对角元素是只有方阵才具有的。方阵的对角元素是 行号 和 列号 相等的元素，如 $ m_{11} 、 m_{22} $等。
+
+###### 对角矩阵
+
+一个 除了对角元素外所有的元素都为 0 的矩阵。
+$$
+\left[
+\begin{matrix}
+5 & 0 & 0 & 0 & 0 \\
+0 & 9 & 0 & 0 & 0 \\
+0 & 0 & -6 & 0 & 0 \\
+0 & 0 & 0 & 20 & 0 \\
+0 & 0 & 0 & 0 & 8 
+\end{matrix}
+\right]
+$$
+
+###### 单位矩阵
+
+一种特殊的对角矩阵。一种对角元素都为 1 的对角矩阵，一般用 $ I_n $ 来表示。
+$$
+I_4 = 
+\left[
+\begin{matrix}
+1 & 0 & 0 & 0 & \\
+0 & 1 & 0 & 0 & \\
+0 & 0 & 1 & 0 & \\
+0 & 0 & 0 & 1 &
+\end{matrix}
+\right]
+$$
+<font color = skyblue>任何矩阵与单位矩阵相乘的结果都还是原来的矩阵。</font>
+$$
+MI = IM = M
+$$
+
+
+# 基础知识
+
+## Unity 内置Shader
 
 - Standard Surface Shader：会产生一个包含了标准光照模型的表面着色器模板，提供了典型的表面着色器。
 
@@ -204,45 +349,45 @@ $$
 
   更多介绍：https://docs.unity3d.com/Manual/class-ComputeShader.html
 
-#### Inspector 面板
+## Inspector 面板
 
 Unity Shader 本质上就是一个文本文件，也有导入设置。
 
 <img src="Unity Shader 的 Inspector 面板.jpg" style="zoom: 80%;" />
 
-##### Default Maps
+### Default Maps
 
 指定该 Unity Shader使用的默认纹理，当任何材质第一次使用该 Unity Shader 时，这些纹理就会自动被赋予到相应的属性上。
 
-##### Surface Shader
+### Surface Shader
 
 是否是一个表面着色器。
 
 Show generated code：打开一个新的文件，在这个文件里将显示 Unity 在背后为该 <font color=skyblue>表面着色器</font> 生成的顶点/片元着色器。这可以方便我们对这些生成的代码进行修改和保存，但需要复制到一个新的 Unity Shader 中才可保存。
 
-##### Fixed function
+### Fixed function
 
 是否是一个固定函数着色器。
 
 Show generated code：打开一个新的文件，在这个文件里将显示 Unity 在背后为该 <font color=skyblue>固定函数着色器</font> 生成的顶点/片元着色器。这可以方便我们对这些生成的代码进行修改和保存，但需要复制到一个新的 Unity Shader 中才可保存。
 
-##### Compiled code
+### Compiled code
 
 可以检查 Unity Shader 针对不同图像编程接口（例如 OpenGL、D3D9、D3D11等）最终编译成的 Shader 代码。直接单击该按钮可以查看生成的底层的汇编指令。我们可以利用这些代码来分析和优化着色器。
 
-##### Render queue
+### Render queue
 
 使用的渲染队列
 
-##### Disable batching
+### Disable batching
 
 是否关闭批处理
 
-##### Properties
+### Properties
 
 属性列表
 
-#### 结构
+## 结构
 
 ```
 // 与 Shader 的文件名无关，是对 Shader 的分类
@@ -317,9 +462,9 @@ Shader "MyShader/LearningShader1"
 
 更多参考：https://docs.unity3d.com/2020.2/Documentation/Manual/SL-CustomShaderGUI.html
 
-##### SubShader
+### SubShader
 
-###### 标签 Tags
+#### 标签 Tags
 
 以下标签仅能用于 SubShader 中声明，不可用于 Pass 块中声明。
 
@@ -340,7 +485,7 @@ Shader "MyShader/LearningShader1"
 | LightMode      | 定义该 Pass 在 Unity 的渲染流水线中的角色                    | Tags {"LightMode" = "ForwardBase"}         |
 | RequireOptions | 用于指定当满足某些条件时才渲染该 Pass，它的值是一个有空格分隔的字符串。Unity 支持的选项有：SoftVegetation。<font color = grass>（待去官网上查看是否已更新）</font> | Tags {"RequireOptions" = "SoftVegetation"} |
 
-###### 渲染状态 RenderSetup
+#### 渲染状态 RenderSetup
 
 以下渲染状态既可用于 SubShader 中，也可用于 Pass 块中。
 
@@ -351,9 +496,9 @@ Shader "MyShader/LearningShader1"
 | ZWrite   | ZWrite On \| Off                                             | 开启 / 关闭深度写入                      |
 | Blend    | Blend SrcFactor DetFactor                                    | 开启并设置混合模式                       |
 
-#### 属性类型
+## 属性类型
 
-##### Color
+### Color
 
 颜色类型，rgba 每一个方向都在 0 ~ 1 之间
 
@@ -364,7 +509,7 @@ _Color("Color",Color) = (1,1,1,1)
 float4 _Color;
 ```
 
-##### Vector
+### Vector
 
 四维向量
 
@@ -375,7 +520,7 @@ _Vector("Vector",Vector) = (1,2,3,4)
 float4 _Vector;
 ```
 
-##### Int
+### Int
 
 整数
 
@@ -386,7 +531,7 @@ _Int("Int",Int) = 1314
 float _int;
 ```
 
-##### Float、half、fixed
+### Float、half、fixed
 
 小数，没有 double 类型，所以数值不需要加 f
 
@@ -413,7 +558,7 @@ _Float("Float",Float) = 4.5
 float _Float;
 ```
 
-##### Range
+### Range
 
 范围，Range(a,b) 相当于 [a,b]
 
@@ -424,7 +569,7 @@ _Range("Range",Range(1,11)) = 6
 float _Range;
 ```
 
-##### 2D
+### 2D
 
 2D 纹理。`""` 中要么是空的，要么是内置的纹理名称，如 `"white"`、`"black"`、`"gray"`、`"bump"`。white 代表当 Unity Inspector 面板中未指定任何纹理时，默认使用白色的贴图。花括号的作用在 Unity 5.0 以后的版本中被 <font color = skyblue>移除</font> 了，如果我们需要类似的功能，需要自己在顶点着色器中编写计算相应纹理坐标的代码。在 Unity 5.0 以前的版本中，花括号的用处是用于指定一些纹理属性的，我们可以通过 TexGen CubeReflect、TexGen CubeNormal 等选项来控制固定管线的纹理坐标的生成。
 
@@ -437,7 +582,7 @@ _2D("Texture",2D) = "white"{}
 sampler2D _2D;
 ```
 
-##### 3D
+### 3D
 
 3D纹理
 
@@ -448,7 +593,7 @@ _3D("Texture",3D) = "white"{}
 sampler3D _3D;
 ```
 
-##### Cube
+### Cube
 
 立方体纹理，一般用于天空盒子
 
@@ -459,15 +604,15 @@ _Cube("Cube",Cube) = "white"{}
 samplerCube _Cube;
 ```
 
-#### 特殊语义
+## 特殊语义
 
-##### 顶点坐标 POSITION
+### 顶点坐标 POSITION
 
-##### SV_POSITION
+### SV_POSITION
 
-### 简单的例子
+# 简单的例子
 
-#### 表面着色器
+## 表面着色器
 
 表面着色器被定义在 SubShader 语义块中的 CGPROGRAM 和 ENDCG 之间。这能使我们不必关心使用多少个 Pass 块、每个 Pass 块如何渲染等问题，我们只需关心使用什么纹理填充颜色，使用什么法线纹理填充法线，使用 Lambert 光照模型等。
 
@@ -499,7 +644,7 @@ Shader "Learning/简单的表面着色器"
 }
 ```
 
-#### 顶点 / 片元着色器
+## 顶点 / 片元着色器
 
 顶点 / 片元着色器的代码也需要定义在 CGPROGRAM 和 ENDCG 之间，但顶点 / 片元着色器是写在 Pass 语义块内，需要我们自己定义每个 Pass 块需要使用的代码。灵活性更高，能控制更多的渲染的实现细节。
 
@@ -529,7 +674,7 @@ Shader "Learning/简单的顶点片元着色器"
 }
 ```
 
-#### 固定函数着色器
+## 固定函数着色器
 
 不支持可编程管线着色器，对于一些较旧的设备（GPU仅支持 DirectX 7.0、OpenGL 1.5 或 OpenGL ES 1.1）如 iPhone 3。固定函数着色器一般可以完成一些非常简单的效果。 在 Unity 5.2 之后，所有固定函数着色器都会在背后被 Unity 编译成对应的顶点 / 片元着色器，因此真正意义上的固定函数着色器已经不存在了。固定函数着色器的代码被定义在 Pass 块中，这些代码相当于 Pass 块中的一些渲染设置，需要完全使用 ShaderLab 的语法来编写。
 
@@ -559,7 +704,7 @@ Shader "Learning/简单的顶点片元着色器"
 
 <center>从左至右：表面着色器、顶点 / 片元着色器、固定函数着色器</center>
 
-#### 着色器的选择
+## 着色器的选择
 
 - 如果需要与各种光源打交道，需要使用表面着色器，但需要小心它在移动平台的性能
 - 如果需要使用的光照数目非常少 或者 需要很多自定义渲染效果，使用顶点 / 片元着色器是一个更好的选择
