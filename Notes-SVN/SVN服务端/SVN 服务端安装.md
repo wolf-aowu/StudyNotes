@@ -45,15 +45,7 @@ https://www.visualsvn.com/server/download/
 
 ![](创建仓库2.png)
 
-标准文件夹结构：
-
-- branches：分支，如果需要测试新技术或大范围修改，可以将主干代码拷贝到分支中进行，测试无误后可以合并到主干中
-- tags：发布，发布版本需要放到 tags
-- trunk：主干，主要的开发目录
-
-3. 下一页 -> Repository Name
-
-填写仓库名
+3. 下一页 -> Repository Name（填写仓库名）
 
 4. 
 
@@ -63,7 +55,45 @@ https://www.visualsvn.com/server/download/
 
 ![](创建仓库4.png)
 
+### 创建项目
 
+1. 选中仓库 -> 右键 -> 新建 -> Project Structure...
+2. Project name：输入项目名
+
+标准文件夹结构：
+
+- branches：分支，如果需要测试新技术或大范围修改，可以将主干代码拷贝到分支中进行，测试无误后可以合并到主干中
+- tags：发布，发布版本需要放到 tags
+- trunk：主干，主要的开发目录
+
+### 创建用户
+
+每个开发人员都需要拥有自己的 SVN 账号
+
+1. 选中 Users -> 右键 -> Create User...
+
+### 创建组
+
+为每个仓库配置不同的权限，便于管理
+
+1. 选中 Groups -> 右键 -> Create Group...
+2. Group name：输入组的名字
+3. Add -> 选中该组用户 -> OK
+
+### SVN 第一次检出
+
+1. 选中仓库 -> 右键 -> Copy URL to Clipboard
+2. 在需要下载仓库数据的文件夹中，右键 -> SVN 检出
+3. URL of repository：粘贴第 1 步拷贝的 URL
+4. Ceckout Depth：选择 Fully recursive
+5. Revision：选择 Head revision
+6. OK
+7. 输入用户名和密码，可以勾上 Save authentication
+
+### 分配权限
+
+1. 选中仓库 -> 右键 -> 所有任务 -> Manage Security...
+2. Security -> Add -> 选中需要分配权限的用户和组 -> OK
 
 ### 报错
 
