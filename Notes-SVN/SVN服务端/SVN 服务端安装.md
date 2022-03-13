@@ -80,6 +80,11 @@ https://www.visualsvn.com/server/download/
 2. Group name：输入组的名字
 3. Add -> 选中该组用户 -> OK
 
+### 分配权限
+
+1. 选中仓库 -> 右键 -> 所有任务 -> Manage Security...
+2. Security -> Add -> 选中需要分配权限的用户和组 -> OK
+
 ### SVN 第一次检出
 
 1. 选中仓库 -> 右键 -> Copy URL to Clipboard
@@ -90,15 +95,10 @@ https://www.visualsvn.com/server/download/
 6. OK
 7. 输入用户名和密码，可以勾上 Save authentication
 
-### 分配权限
-
-1. 选中仓库 -> 右键 -> 所有任务 -> Manage Security...
-2. Security -> Add -> 选中需要分配权限的用户和组 -> OK
-
 ### 报错
 
 #### 创建临时文件时出错
 
 ![](安装SVNServer时报错.png)
 
-先确定自己是否登![]()录的是 Administrator，如果在 Administrator 账户下运行安装程序仍然报这个错误可以网上搜索方法尝试（因为我是通过登录 Administrator 账户解决的)。
+先确定自己的 Windows 是否登录的是 Administrator，如果在 Administrator 账户下运行安装程序仍然报这个错误可以网上搜索方法尝试（因为我是通过登录 Administrator 账户解决的)。
