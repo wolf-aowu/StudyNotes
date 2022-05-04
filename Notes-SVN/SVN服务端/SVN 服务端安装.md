@@ -102,3 +102,31 @@ https://www.visualsvn.com/server/download/
 ![](安装SVNServer时报错.png)
 
 先确定自己的 Windows 是否登录的是 Administrator，如果在 Administrator 账户下运行安装程序仍然报这个错误可以网上搜索方法尝试（因为我是通过登录 Administrator 账户解决的)。
+
+#### 修改日志信息时出错
+
+![](D:\笔记\Notes-SVN\SVN服务端\修改日志时报错.png)
+
+打开 VisualSVN Sever.msc -> 找到对应仓库 -> 右键 -> Proterties… -> 选中 Hooks 页签 -> 选中 Pre-revision property change hook -> 点击左下角 Edit ->
+
+复制下方代码进空白处 -> Ok -> 应用 ->确定
+
+```svn
+setlocal
+set REPOS=%1
+set REV=%2
+set USER=%3
+set PROPNAME=%4
+set ACTION=%5
+if not "%ACTION%"=="M" goto refuse
+if not "%PROPNAME%"=="svn:log" goto refuse
+goto OK
+:refuse
+echo Cann't set %PROPNAME%/%ACTION%, only svn:log is allowed 1>&2
+endlocal
+exit 1
+:OK
+endlocal
+exit 0
+```
+
