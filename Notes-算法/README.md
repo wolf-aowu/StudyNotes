@@ -29,3 +29,23 @@ https://leetcode.cn/problems/peak-index-in-a-mountain-array/
 ###### 367
 
 https://leetcode.cn/problems/valid-perfect-square/
+
+###### 1385
+
+https://leetcode.cn/problems/find-the-distance-value-between-two-arrays/
+
+###### 69
+
+https://leetcode.cn/problems/sqrtx/
+
+###### 744
+
+https://leetcode.cn/problems/find-smallest-letter-greater-than-target/
+
+###### 278
+
+https://leetcode.cn/problems/first-bad-version/
+
+###### 34
+
+https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/
