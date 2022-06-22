@@ -49,3 +49,19 @@ https://leetcode.cn/problems/first-bad-version/
 ###### 34
 
 https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/
+
+###### 441
+
+https://leetcode.cn/problems/arranging-coins/
+
+###### 1539
+
+https://leetcode.cn/problems/kth-missing-positive-number/
+
+###### 167
+
+https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/
+
+###### 1608
+
+https://leetcode.cn/problems/special-array-with-x-elements-greater-than-or-equal-x/
