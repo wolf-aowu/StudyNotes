@@ -684,6 +684,14 @@ Shader "MyShader/LearningShader1"
 | ZWrite   | ZWrite On \| Off                                             | 开启 / 关闭深度写入                      |
 | Blend    | Blend SrcFactor DetFactor                                    | 开启并设置混合模式                       |
 
+#### Pass 块
+
+Unity Shader 支持一些特殊的 Pass。
+
+UsePass：可以使用该命令复用其他 Unity Shader 中的 Pass。
+
+GrabPass：该 Pass 负责抓取屏幕并将结果存储在一张纹理中，以用于后续的 Pass 处理。
+
 ## 属性类型
 
 ### Color
@@ -802,7 +810,7 @@ samplerCube _Cube;
 
 ## 表面着色器
 
-表面着色器被定义在 SubShader 语义块中的 CGPROGRAM 和 ENDCG 之间。这能使我们不必关心使用多少个 Pass 块、每个 Pass 块如何渲染等问题，我们只需关心使用什么纹理填充颜色，使用什么法线纹理填充法线，使用 Lambert 光照模型等。
+表面着色器（Surface Shader）是 Unity 自己创造的一种着色器代码类型，最后仍旧会被转换成对应的顶点/片元着色器。它被定义在 SubShader 语义块中的 CGPROGRAM 和 ENDCG 之间，中间的代码使用 Cg/HLSL 编写的。这能使我们不必关心使用多少个 Pass 块、每个 Pass 块如何渲染等问题，我们只需关心使用什么纹理填充颜色，使用什么法线纹理填充法线，使用 Lambert 光照模型等。一般被用来处理光照细节。
 
 ```
 Shader "Learning/简单的表面着色器"
@@ -867,7 +875,7 @@ Shader "Learning/简单的顶点片元着色器"
 不支持可编程管线着色器，对于一些较旧的设备（GPU仅支持 DirectX 7.0、OpenGL 1.5 或 OpenGL ES 1.1）如 iPhone 3。固定函数着色器一般可以完成一些非常简单的效果。 在 Unity 5.2 之后，所有固定函数着色器都会在背后被 Unity 编译成对应的顶点 / 片元着色器，因此真正意义上的固定函数着色器已经不存在了。固定函数着色器的代码被定义在 Pass 块中，这些代码相当于 Pass 块中的一些渲染设置，需要完全使用 ShaderLab 的语法来编写。
 
 ```
-![Unity Shader 的三种形式例子](D:\笔记\Notes-Shader\Unity Shader 的三种形式例子.jpg)Shader "Learning/固定函数着色器"
+Shader "Learning/固定函数着色器"
 {
     Properties
     {
