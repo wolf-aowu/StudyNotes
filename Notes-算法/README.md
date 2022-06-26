@@ -2,7 +2,7 @@
 
 二分查找：
 
-https://www.bilibili.com/video/BV1d54y1q7k7?t=835.3
+https://www.bilibili.com/video/BV1d54y1q7k7
 
 ### 题目
 
