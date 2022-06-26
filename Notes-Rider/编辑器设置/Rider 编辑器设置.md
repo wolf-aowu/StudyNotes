@@ -190,3 +190,8 @@ Arttributes：特性，Arrangement：安排。所以，Arrangement of Arttribute
 Languages & Frameworks -> Unity Engine -> Automatically refresh assets in Unity
 
 ![](脚本保存后 Unity 自动刷新.png)
+
+## 输入法全角、半角切换
+
+Shift + Space
+
