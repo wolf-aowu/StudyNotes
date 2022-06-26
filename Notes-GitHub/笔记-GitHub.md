@@ -326,3 +326,73 @@ git push 地址别名 本地分支:远程分支
 git clone 他人项目的 https 地址
 ```
 
+# 上传大文件
+
+Github 限制上传大于 100M 的文件，如果上传大于 100M 的文件会报错<font color=grass>（光顾着处理报错没有截图，下次再出现补上）。</font>
+
+目前有两种解决方案，方法一亲测有用，方法二没有试过。
+
+## 使用 Git LFS
+
+我们可以通过 Git LFS（Large File Storage）来实现大文件上传。
+
+下载 Git LFS 地址：https://git-lfs.github.com/
+
+Windows 用户似乎不需要下载，应该已经在装 git 时安装了。
+
+安装命令：（Windows 执行时应该是已经装完了的，至少我是这样）
+
+```
+git lfs install
+```
+
+让 Git LFS 追踪上大文件
+
+```
+git lfs track 文件名
+```
+
+提交生成的 .gitattributes 文件，<font color = skyblue>一定要先于大文件提交</font>，否则报错概不负责🤡。<font color = skyblue>如果不小心先交了大文件，可以使用版本后退功能后退版本，再重复下面步骤。</font>
+
+官网上说：
+
+Note that defining the file types Git LFS should track will not, by itself, convert any pre-existing files to Git LFS, such as files on other branches or in your prior commit history. 
+
+请注意，定义 Git LFS 应追踪的文件类型本身并不会将任何已存在的文件转换为 Git LFS，例如其他分支上的文件或先前提交历史中的文件。
+
+To do that, use the  [`git lfs migrate`](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-migrate.1.ronn?utm_source=gitlfs_site&utm_medium=doc_man_migrate_link&utm_campaign=gitlfs)  command, which has a range of options designed to suit various potential use cases.
+
+要做到这一点，可以使用 `git lfs migrate` 命令，它有一系列的选项，旨在适应各种潜在的使用情况。
+
+```
+git add .gitattributes
+```
+按正常流程提交大文件：
+
+```
+git add 大文件文件名
+git commit -m "Add design file"
+# 提交到远程分支
+git push origin main
+```
+
+### git lfs migrate 的补充
+
+官方网站：https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-migrate.1.ronn?utm_source=gitlfs_site&utm_medium=doc_man_migrate_link&utm_campaign=gitlfs
+
+别人的中文笔记：https://murphypei.github.io/blog/2019/12/git-lfs
+
+## 改 git 的配置文件
+
+这句是修改上传缓冲上限：524288000 = 500 * 1024 * 1024 = 500M
+
+```
+git config http.postBuffer 524288000
+```
+
+查看修改后的 config 文件
+
+```
+git config -l
+```
+
