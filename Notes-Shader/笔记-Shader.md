@@ -298,17 +298,17 @@ $$
 ABCDE = ((A(BC))D)E = (AB)(CD)E
 $$
 
-#### 特殊的矩阵
+### 特殊的矩阵
 
-##### 方块矩阵
+#### 方块矩阵
 
 方块矩阵（square matrix），简称方阵，指 行 和 列 数目相等的矩阵，常用的是 $ 3 \times 3 $ 和 $ 4 \times 4 $ 的方阵。
 
-###### 对角元素
+##### 对角元素
 
 对角元素是只有方阵才具有的。方阵的对角元素是 行号 和 列号 相等的元素，如 $ m_{11} 、 m_{22} $等。
 
-###### 对角矩阵
+##### 对角矩阵
 
 一个 除了对角元素外所有的元素都为 0 的矩阵。
 $$
@@ -323,7 +323,7 @@ $$
 \right]
 $$
 
-###### 单位矩阵
+##### 单位矩阵
 
 一种特殊的对角矩阵。一种对角元素都为 1 的对角矩阵，一般用 $ I_n $ 来表示。
 $$
@@ -342,7 +342,7 @@ $$
 MI = IM = M
 $$
 
-###### 逆矩阵
+##### 逆矩阵
 
 逆矩阵必须是一个方阵，但不是所有方阵都有逆矩阵（例如所有元素都是 0 的方阵）。用 $M^{-1}$ 来表示逆矩阵。
 
@@ -350,7 +350,7 @@ $$
 
 我们可以通过判断矩阵的行列式是否为 0 来得知其是否可逆，Shader 中一般通过调用第三方库（如 C++ 数学库 Eigen）。
 
-**性质**
+###### 性质
 
 性质一
 
@@ -381,8 +381,423 @@ $$
 (ABCD)^{-1} = D^{-1}C^{-1}B^{-1}A^{-1}
 $$
 
+###### 几何意义
 
-##### 转置矩阵
+一个矩阵可以表示一个变换，逆矩阵可以还原这个变换，也就是计算这个变换的反向变换。例如，如果我们使用变换矩阵 M 对矢量 v 进行了一次变换，然后再使用它的逆矩阵 $M^{-1}$ 进行另一次变换，那么我们会得到原来的矢量。
+$$
+M^{-1}(Mv) = (M^{-1}M)v = Iv = v
+$$
+
+###### 求逆矩阵方法
+
+有三种求逆矩阵的方法，分别是：待定系数法、伴随矩阵法、初等变换法。
+
+例子：
+
+有一个矩阵 A，求其逆矩阵。
+$$
+A = 
+\left[
+\begin{matrix}
+1 & -4 & -3 \\
+1 & -5 & -3 \\
+-1 & 6 & 4
+\end{matrix}
+\right]
+$$
+**待定系数法**
+
+设 A 的逆矩阵为
+$$
+A^{-1} = 
+\left[
+\begin{matrix}
+a & b & c \\
+d & e & f \\
+g & h & i
+\end{matrix}
+\right]
+$$
+根据性质 $AA^{-1} = I$ ，可以得到三组 三元一次方程组
+$$
+a - 4d - 3g = 1 \\
+b - 4e - 3h = 0 \\
+c - 4f - 3i = 0 \\
+a - 5d - 3g = 0 \\
+b - 5e - 3h = 1 \\
+c - 5f - 3i = 0 \\
+-a + 6d + 4g = 0 \\
+-b + 6e + 4h = 0 \\
+-c + 6f + 4i = 1
+$$
+整理后：
+
+第一组
+$$
+a - 4d - 3g = 1 \\
+a - 5d - 3g = 0 \\
+-a + 6d + 4g = 0
+$$
+求得 a = 2，d = 1，g = -1
+
+第二组
+$$
+b - 4e - 3h = 0 \\
+b - 5e - 3h = 1 \\
+-b + 6e + 4h = 0
+$$
+求得 b = 2，e = -1，h = 2
+
+第三组
+$$
+c - 4f - 3i = 0 \\
+c - 5f - 3i = 0 \\
+-c + 6f + 4i = 1
+$$
+求得 c = 3，f = 0，i = 1
+
+所以，
+$$
+\left[
+\begin{matrix}
+2 & 2 & 3 \\
+1 & -1 & 0 \\
+-1 & 2 & 1
+\end{matrix}
+\right]
+$$
+**伴随矩阵法**
+
+有一个公式：$A^{-1} = \frac{1}{|A|}A^*$ ，|A| 表示 A 的行列式，即所有三条对角线的对角元素相乘之和减去三条反向对角线的对角元素之和，$A^*$ 表示伴随矩阵，即代数余子式的转置。
+$$
+\begin{aligned}
+|A| &= 1 * (-5) * 4 + (-4) * (-3) * (-1) + (-3) * 1 * 6 - (-3) * (-5) * (-1) - 1 * (-3) * 6 - (-4) * 1 * 4
+\\
+&= -20 - 12 - 18 + 15 + 18 + 16
+\\
+&= -1
+\\
+\\
+A^* &= 
+\left[
+\begin{matrix}
+|A_{11}| & |A_{21}| & |A_{31}| \\
+|A_{12}| & |A_{22}| & |A_{32}| \\
+|A_{13}| & |A_{23}| & |A_{33}| \\
+\end{matrix}
+\right]
+\\
+\\
+A_{11} &= 
+(-1)^{1 + 1} * 
+\left|
+\begin{matrix}
+-5 & -3 \\
+6 & 4
+\end{matrix}
+\right|
+\\
+&= 1 * ((-5) * 4 - (-3) * 6) \\
+&= -2
+\\
+A_{21} &= 
+(-1)^{2 + 1} * 
+\left|
+\begin{matrix}
+-4 & -3 \\
+6 & 4
+\end{matrix}
+\right|
+\\
+&= -1 * ((-4) * 4 - (-3) * 6) \\
+&= -2
+\\
+A_{31} &= 
+(-1)^{3 + 1} * 
+\left|
+\begin{matrix}
+-4 & -3 \\
+-5 & -3
+\end{matrix}
+\right|
+\\
+&= 1 * ((-4) * (-3) - (-3) * (-5)) \\
+&= -3
+\\
+A_{12} &= 
+(-1)^{1 + 2} * 
+\left|
+\begin{matrix}
+1 & -3 \\
+-1 & 4
+\end{matrix}
+\right|
+\\
+&= -1 * (1 * 4 - (-3) * (-1)) \\
+&= -1
+\\
+A_{22} &= 
+(-1)^{2 + 2} * 
+\left|
+\begin{matrix}
+1 & -3 \\
+-1 & 4
+\end{matrix}
+\right|
+\\
+&= 1 * (1 * 4 - (-3) * (-1)) \\
+&= 1
+\\
+A_{32} &= 
+(-1)^{3 + 2} * 
+\left|
+\begin{matrix}
+1 & -3 \\
+1 & -3
+\end{matrix}
+\right|
+\\
+&= -1 * (1 * (-3) - (-3) * 1) \\
+&= 0
+\\
+A_{13} &= 
+(-1)^{1 + 3} * 
+\left|
+\begin{matrix}
+1 & -5 \\
+-1 & 6
+\end{matrix}
+\right|
+\\
+&= 1 * (1 * (-5) - (-1) * 6) \\
+&= 1
+\\
+A_{23} &= 
+(-1)^{2 + 3} * 
+\left|
+\begin{matrix}
+1 & -4 \\
+-1 & 6
+\end{matrix}
+\right|
+\\
+&= -1 * (1 * (-4)) - (-1) * 6)) \\
+&= -2
+\\
+A_{33} &= 
+(-1)^{3 + 3} * 
+\left|
+\begin{matrix}
+1 & -4 \\
+1 & -5
+\end{matrix}
+\right|
+\\
+&= 1 * (1 * (-5) - 1 * (-4)) \\
+&= -1
+\\
+\\
+A^* &= 
+\left[
+\begin{matrix}
+-2 & -2 & -3 \\
+-1 & 1 & 0 \\
+1 & -2 & -1
+\end{matrix}
+\right]
+\\
+\\
+A^{-1} &=
+-1 * 
+\left[
+\begin{matrix}
+-2 & -2 & -3 \\
+-1 & 1 & 0 \\
+1 & -2 & -1
+\end{matrix}
+\right]
+\\
+&= 
+\left[
+\begin{matrix}
+2 & 2 & 3 \\
+1 & -1 & 0 \\
+-1 & 2 & 1
+\end{matrix}
+\right]
+\end{aligned}
+$$
+**初等变换法**
+
+有一个进行初等行变换的公式：$[A | I] \longrightarrow [I | A^{-1}]$ 。
+$$
+\begin{aligned}
+\left[
+\begin{matrix}
+1 & -4 & -3 \\
+1 & -5 & -3 \\
+-1 & 6 & 4
+\end{matrix}
+\middle|
+\begin{matrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{matrix}
+\right]
+\end{aligned}
+$$
+第二行 = 第一行 - 第二行
+
+第三行 = 第一行 + 第三行
+
+得到：
+$$
+\begin{aligned}
+\left[
+\begin{matrix}
+1 & -4 & -3 \\
+0 & 1 & 0 \\
+0 & 2 & 1
+\end{matrix}
+\middle|
+\begin{matrix}
+1 & 0 & 0 \\
+1 & -1 & 0 \\
+1 & 0 & 1
+\end{matrix}
+\right]
+\end{aligned}
+$$
+第一行 = 第一行 + 4 * 第二行
+
+第三行 = 第三行 - 2 * 第二行
+
+得到：
+$$
+\begin{aligned}
+\left[
+\begin{matrix}
+1 & 0 & -3 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{matrix}
+\middle|
+\begin{matrix}
+5 & -4 & 0 \\
+1 & -1 & 0 \\
+-1 & 2 & 1
+\end{matrix}
+\right]
+\end{aligned}
+$$
+第一行 = 第一行 + 3 * 第三行
+
+得到：
+$$
+\begin{aligned}
+\left[
+\begin{matrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{matrix}
+\middle|
+\begin{matrix}
+2 & 2 & 3 \\
+1 & -1 & 0 \\
+-1 & 2 & 1
+\end{matrix}
+\right]
+\end{aligned}
+$$
+
+##### 正交矩阵
+
+正交矩阵是一种特殊的方阵。正交是一种属性。
+
+正交：一个方阵 M 和它的转置矩阵的乘积是单位矩阵称为正交。
+$$
+MM^T = M^TM = I
+$$
+如果一个矩阵是正交的，那么其转置矩阵和逆矩阵是一样的。
+$$
+M^T = M^{-1}
+$$
+###### 几何意义
+
+$$
+\begin{aligned}
+M^TM &= 
+\left[
+\begin{matrix}
+- & c_1 & - \\
+- & c_2 & - \\
+- & c_3 & -
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+| & | & | \\
+c_1 & c_2 & c_3 \\
+| & | & |
+\end{matrix}
+\right]
+\\
+&=
+\left[
+\begin{matrix}
+c_1 \cdot c_1 & c_1 \cdot c_2 & c_1 \cdot c_3 \\
+c_2 \cdot c_1 & c_2 \cdot c_2 & c_2 \cdot c_3 \\
+c_3 \cdot c_1 & c_3 \cdot c_2 & c_3 \cdot c_3
+\end{matrix}
+\right]
+\\
+&=
+\left[
+\begin{matrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{matrix}
+\right]
+\\
+&= I
+\end{aligned}
+$$
+
+可以得到：
+$$
+c_1 \cdot c_1 = 1 & c_1 \cdot c_2 = 0 & c_1 \cdot c_3 = 0 \\
+c_2 \cdot c_1 = 0 & c_2 \cdot c_2 = 1 & c_2 \cdot c_3 = 0 \\
+c_3 \cdot c_1 = 0 & c_3 \cdot c_2 = 0 & c_3 \cdot c_3 = 1
+$$
+
+可以得到一下结论：
+
+矩阵的每一行，即 $c_1$、$c_2$ 和 $c_3$ 是单位矢量，因为只有这样它们与自己的点积才能是 1。
+
+矩阵的每一行，即 $c_1$、$c_2$ 和 $c_3$ 之间互相垂直，因为只有这样它们之间的点积才能是 0。
+
+如果 M 是正交矩阵，则 $M^T$ 也是正交矩阵。一组标准正交基可以满足上述条件。我们会使用坐标空间的基矢量来构建用于空间变换的矩阵。如果这些基矢量是一组标准正交基的话（例如只存在旋转变换），那么我们可以直接使用转置矩阵来球的该变换的逆变换。
+
+解释：
+
+$c_1 \cdot c_1 = 1$ ：$c_1$ 和 $c_1$ 夹角必为 0，则 $cos0° = 1$ ，所以 $c_1  = 1$ 。
+
+$c_1 \cdot c_2 = 0$ ：由于上面已得出 $c_1$ 、$c_2$ 和 $c_3$ 长度必为 1，所以只有 $cos\theta$ 为 0 才能使等式成立。则 $c_1$ 和 $c_2$ 互相垂直。
+
+###### 补充
+
+基矢量：坐标轴。
+
+一组正交基：一组基矢量互相垂直。
+
+一组标准正交基：长度为 1，且互相垂直的一组基矢量。例如长度为 1 的坐标轴。
+
+正交矩阵的行和列之间分别构成了一组标准正交基，但是一组正交基来不一定能构建处正交矩阵，因为不是一组标准正交基。
+
+#### 转置矩阵
 
 一种对原矩阵的转置运算，就是第 i 行变成了第 i 列，第 j 列变成了第 j 行。矩阵 M 的转置可以用 $M^T$ 来表示。
 $$
@@ -400,7 +815,7 @@ z
 \right]
 $$
 
-###### 性质
+##### 性质
 
 性质一：
 
@@ -415,7 +830,614 @@ $$
 (AB)^T = B^TA^T
 $$
 
-##### 
+### 行矩阵和列矩阵
+
+假设有一个矢量 $v = (x,y,z)$ ，可以把它转换成行矩阵 $v = \left[ \begin{matrix} x & y & z \end{matrix} \right]$ ，也可以转换成列矩阵 $v = \left[ \begin{matrix} x \\ y \\ z\end{matrix} \right]$。
+
+假设有一个矩阵 M：
+$$
+M =
+\left[
+\begin{matrix}
+m_{11} & m_{12} & m_{13} \\
+m_{21} & m_{22} & m_{23} \\
+m_{31} & m_{32} & m_{33}
+\end{matrix}
+\right]
+$$
+如果矢量 v 在 M 的左边与 M 相乘，则需要将矢量 v 转换成行矩阵。
+$$
+vM =
+\left[
+\begin{matrix}
+xm_{11} + ym_{21} + zm{31} & xm_{12} + ym_{22} + zm{32} & xm_{13} + ym_{23} + zm{33}
+\end{matrix}
+\right]
+$$
+如果矢量 v 在 M 的右边边与 M 相乘，则需要将矢量 v 转换成列矩阵。
+$$
+Mv = 
+\left[
+\begin{matrix}
+m_{11}x + m_{12}y + m_{13}z \\
+m_{21}x + m_{22}y + m_{23}z \\
+m_{31}x + m_{32}y + m_{33}z
+\end{matrix}
+\right]
+$$
+<font color = skyblue>一般会把矢量放在矩阵的右侧，也就是矢量会被转换成列矩阵。</font>
+$$
+CBAv = C(B(Av))
+$$
+当矢量是行矩阵时，上面的式子等价于：
+$$
+v 是列矩阵时 \\
+(C(B(Av)))^T = (B(Av))^TC^T = (Av)^TB^TC^T = v^TA^TB^TC^T \\
+v是行矩阵时 \\
+vA^TB^TC^T = ((vA^T)B^T)C^T
+$$
+
+### 矩阵的变换
+
+变换（transform）：把一些数据，如点、方向矢量甚至是颜色等，通过某种方式进行转换的过程。
+
+变换类型：
+
+线性变换（linear transform）：可以保留矢量加和标量乘的变换。
+
+仿射变换（affine transform）：合并线性变换和平移变换。
+
+#### 变换类型
+
+##### 线性变换
+
+线性变换（linear transform）指的是可以保留矢量加和标量乘的变换。
+$$
+f(x) + f(y) = f(x + y)
+\\
+kf(x) = f(kx)
+$$
+线性变换包括：缩放（scale）、旋转（rotation）、错切（shear）、镜像（mirroring，又称 reflection）、正交投影（orthographic projection）等。
+
+<font color = skyblue>平移不是线性变换。</font>假设 $f(x) = x + (1,2,3)$ 。令 $x = (1,1,1)$ 。那么：
+$$
+f(x) + f(x) = x + (1,2,3) + x + (1,2,3) = (1,1,1) + (1,2,3) + (1,1,1) + (1,2,3) = (4,6,8) \\
+f(x + x) = x + x + (1,2,3) = (1,1,1) + (1,1,1) + (1,2,3) = (3,4,5) \\
+所以，f(x) + f(x) \neq f(x + x)
+$$
+当我们对一个三维矢量进行变换时，只需使用 $3 \times 3$ 的矩阵即可。
+
+##### 仿射变换
+
+仿射变换（affine transform）指的是合并线性变换和平移变换。仿射变换需要把矢量扩展到四维空间下。
+
+齐次坐标空间（homogeneous space）：四维空间。
+
+##### 常见变换总结
+
+| 变换名称               | 是线性变换吗 | 是仿射变换吗 | 是可逆矩阵吗 | 是正交矩阵吗 |
+| ---------------------- | ------------ | ------------ | ------------ | ------------ |
+| 平移矩阵               | N            | Y            | Y            | N            |
+| 绕坐标轴旋转的旋转矩阵 | Y            | Y            | Y            | Y            |
+| 绕任意轴旋转的旋转矩阵 | Y            | Y            | Y            | Y            |
+| 按坐标缩放的缩放矩阵   | Y            | Y            | Y            | N            |
+| 错切矩阵               | Y            | Y            | Y            | N            |
+| 镜像矩阵               | Y            | Y            | Y            | Y            |
+| 正交投影矩阵           | Y            | Y            | N            | N            |
+| 透视投影矩阵           | N            | N            | N            | N            |
+
+#### 齐次坐标
+
+齐次坐标（homogeneous coodinate）泛指四维坐标，但齐次坐标的维度可以超过四维。
+
+三维坐标转换成齐次坐标是把 w 分量设为 1，方向矢量转换成齐次坐标是把 w 分量设为 0。这样的设置会导致，当使用一个 $4 \times 4$ 的矩阵对一个点进行变换时，平移、旋转、缩放都会施加于该点。但用于方向矢量变换时，平移效果将会被忽略。
+
+#### 变换矩阵
+
+基础变换矩阵：纯平移、纯旋转、纯缩放的变换矩阵。
+
+基础变换矩阵的共通点：
+$$
+\left[
+\begin{matrix}
+M_{3 \times 3} & t_{3 \times 3} \\
+0_{1 \times 3} & 1
+\end{matrix}
+\right]
+$$
+左上角的矩阵 $M_{3 \times 3}$ 用于表示旋转和缩放，$t_{3 \times 1}$ 用于表示平移，$0_{1 \times 3}$ 是零矩阵，即 $0_{1 \times 3} = \left[ \begin{matrix} 0 & 0 & 0 \end{matrix} \right]$ ，右下角的元素就是标量 1。
+
+##### 平移矩阵
+
+对一个点进行平移变换：
+$$
+\left[
+\begin{matrix}
+1 & 0 & 0 & t_x \\
+0 & 1 & 0 & t_y \\
+0 & 0 & 1 & t_z \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+x \\
+y \\
+z \\
+1
+\end{matrix}
+\right]
+=
+\left[
+\begin{matrix}
+x + t_x \\
+y + t_y\\
+z + t_z\\
+1
+\end{matrix}
+\right]
+$$
+对一个方向矢量进行平移变换：
+$$
+\left[
+\begin{matrix}
+1 & 0 & 0 & t_x \\
+0 & 1 & 0 & t_y \\
+0 & 0 & 1 & t_z \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+x \\
+y \\
+z \\
+0
+\end{matrix}
+\right]
+=
+\left[
+\begin{matrix}
+x \\
+y \\
+z \\
+0
+\end{matrix}
+\right]
+$$
+方向矢量经过平移后还是原方向矢量，因为其方向和长度都没有改变。
+
+构建一个平移矩阵的方法：基础变换矩阵中的 $M_{3 \times 3}$ 为单位矩阵 $I_3$ ，$t_{3 \times 1}$ 矢量为平移矢量。
+
+平移矩阵的<font color = skyblue>逆矩阵就是反向平移</font>得到的矩阵：
+$$
+\left[
+\begin{matrix}
+1 & 0 & 0 & -t_x \\
+0 & 1 & 0 & -t_y \\
+0 & 0 & 1 & -t_z \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+$$
+平移矩阵<font color = skyblue>不是正交矩阵。</font>
+
+##### 缩放矩阵
+
+对一个模型沿空间的 x 轴、y 轴、z 轴 进行缩放变换：
+$$
+\left[
+\begin{matrix}
+k_x & 0 & 0 & 0 \\
+0 & k_y & 0 & 0 \\
+0 & 0 & k_z & 0 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+x \\
+y \\
+z \\
+1
+\end{matrix}
+\right]
+=
+\left[
+\begin{matrix}
+k_xx \\
+k_yy \\
+k_zz \\
+1
+\end{matrix}
+\right]
+$$
+对一个矢量进行缩放变换：
+$$
+\left[
+\begin{matrix}
+k_x & 0 & 0 & 0 \\
+0 & k_y & 0 & 0 \\
+0 & 0 & k_z & 0 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+x \\
+y \\
+z \\
+0
+\end{matrix}
+\right]
+=
+\left[
+\begin{matrix}
+k_xx \\
+k_yy \\
+k_zz \\
+0
+\end{matrix}
+\right]
+$$
+统一缩放（uniform scale）：缩放系数 $k_x = k_y = k_z$ 。扩大整个模型，不会改变角度和比例信息。
+
+非统一缩放（nonuniform scale）：缩放系数至少有一个不相等。拉伸或挤压模型，会改变与模型相关的角度和比例。
+
+在对法线变换时，使用非统一缩放对顶点进行变换时会得到错误的结果。
+
+缩放矩阵的<font color = skyblue>逆矩阵是原缩放系数的倒数 </font>来对点或方向矢量进行缩放：
+$$
+\left[
+\begin{matrix}
+\frac{1}{k_x} & 0 & 0 & 0 \\
+0 & \frac{1}{k_y} & 0 & 0 \\
+0 & 0 & \frac{1}{k_z} & 0 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+$$
+缩放矩阵<font color = skyblue>一般不是正交矩阵。</font>
+
+上面的矩阵值适用于沿坐标轴方向进行缩放，如果希望在任意方向上进行缩放，就需要使用复合变换。<font color = glass>思想：现将缩放轴变换成标准坐标轴，然后进行沿坐标轴的缩放，再使用逆变换得到原来的缩放轴朝向。</font>
+
+##### 旋转矩阵
+
+绕着空间中 x 轴旋转：
+$$
+R_x(\theta) = 
+\left[
+\begin{matrix}
+1 & 0 & 0 & 0 \\
+0 & cos\theta & -sin\theta & 0 \\
+0 & sin\theta & cos\theta & 0 \\
+0 & 0 & 0 & 1 \\
+\end{matrix}
+\right]
+$$
+绕着空间中 y 轴旋转：
+$$
+R_y(\theta) = 
+\left[
+\begin{matrix}
+cos\theta & 0 & sin\theta & 0 \\
+0 & 1 & 0 & 0 \\
+-sin\theta & 0 & cos\theta & 0 \\
+0 & 0 & 0 & 1 \\
+\end{matrix}
+\right]
+$$
+绕着空间中 z 轴旋转：
+$$
+R_x(\theta) = 
+\left[
+\begin{matrix}
+cos\theta & -sin\theta & 0 & 0 \\
+sin\theta & cos\theta & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \\
+\end{matrix}
+\right]
+$$
+旋转矩阵的<font color = skyblue>逆矩阵是旋转反向角度</font>得到的变换矩阵。<font color = skyblue>旋转矩阵是正交矩阵</font>，而且多个旋转矩阵之间的串联同样是正交的。
+
+##### 复合变换
+
+复合变换可以通过矩阵的串联实现。对于列矩阵变换而言，阅读顺序是从右向左。<font color = skyblue>一般先进行缩放变换，再进行旋转变换，最后进行平移变换。</font>由于矩阵乘法不满足交换律，所以矩阵的乘法顺序不同，结果肯能也不同。例如：先左转再向前一步和先向前一步再左转的结果是不同的。
+$$
+P_{new} = M_{translation}(M_{rotation}(M_{scale}P_{old}))
+$$
+例子：
+
+先缩放、再绕 y 轴旋转、最后平移：
+$$
+\begin{aligned}
+M_{translation}(M_{rotation}M_{scale}) &= 
+\left[
+\begin{matrix}
+1 & 0 & 0 & t_x \\
+0 & 1 & 0 & t_y \\
+0 & 0 & 1 & t_z \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+cos\theta & 0 & sin\theta & 0 \\
+0 & 1 & 0 & 0 \\
+-sin\theta & 0 & cos\theta & 0 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+k_x & 0 & 0 & 0 \\
+0 & k_y & 0 & 0 \\
+0 & 0 & k_z & 0 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\\
+&=
+\left[
+\begin{matrix}
+k_xcos\theta & 0 & kzsin\theta & t_x \\
+0 & k_y & 0 & t_y \\
+-k_xsin\theta & 0 & k_zcos\theta & t_z \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\end{aligned}
+$$
+先平移、再缩放，最后绕 y 轴旋转：
+$$
+\begin{aligned}
+M_{translation}(M_{rotation}M_{scale}) &= 
+\left[
+\begin{matrix}
+cos\theta & 0 & sin\theta & 0 \\
+0 & 1 & 0 & 0 \\
+-sin\theta & 0 & cos\theta & 0 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+k_x & 0 & 0 & 0 \\
+0 & k_y & 0 & 0 \\
+0 & 0 & k_z & 0 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+1 & 0 & 0 & t_x \\
+0 & 1 & 0 & t_y \\
+0 & 0 & 1 & t_z \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\\
+&=
+\left[
+\begin{matrix}
+k_xcos\theta & 0 & kzsin\theta & t_xk_xcos\theta + t_zk_zsin\theta \\
+0 & k_y & 0 & t_yk_y \\
+-k_xsin\theta & 0 & k_zcos\theta & -t_zk_zsin\theta + t_zk_zcos\theta \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\end{aligned}
+$$
+同时，我们还要小心各轴的旋转顺序。在 Unity 中，旋转顺序是 zxy。但是这个顺序是 Unity 按照绕坐标系 E 下的 z 轴旋转 $\theta_z$ ，绕坐标系 E 下的 x 轴旋转 $\theta_x$ ，绕坐标系 E 下的 z 轴旋转 $\theta_y$ 得到的。想要像上面一样，则需要将顺序颠倒一下，<font color = skyblue>变成 yxz</font> 。这样则是按照绕坐标系 E 下的 z 轴旋转 $\theta_z$ ，在坐标系 E 下绕 z 轴旋转 $\theta_z$ 后的新坐标系 $E'$ 下的 x 轴旋转 $\theta_x$ ，在坐标系 $E'$ 下绕 y 轴旋转 $\theta_x$ 后的新坐标系 $E''$ 下的 y 轴旋转 $\theta_y$ 。
+
+得到的组合旋转变换矩阵是：
+$$
+M_{rotatez}(M_{rotatex}M_{rotatey}) = 
+\left[
+\begin{matrix}
+cos\theta & -sin\theta & 0 & 0 \\
+sin\theta & cos\theta & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \\
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+1 & 0 & 0 & 0 \\
+0 & cos\theta & -sin\theta & 0 \\
+0 & sin\theta & cos\theta & 0 \\
+0 & 0 & 0 & 1 \\
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+cos\theta & 0 & sin\theta & 0 \\
+0 & 1 & 0 & 0 \\
+-sin\theta & 0 & cos\theta & 0 \\
+0 & 0 & 0 & 1 \\
+\end{matrix}
+\right]
+$$
+
+## 坐标空间
+
+在渲染流水线中，我们通常需要把一个点或一个方向矢量从一个坐标空间转换到另一个空间。
+
+实现流程：
+
+想要定义一个坐标空间，必须指明其原点位置和 3 个坐标轴的方向。而这些数值实际上是相对于另一个坐标空间的。也就是，坐标空间会形成一个层次结构——每个坐标空间都是另一个坐标空间的子空间，反过来说，每个空间都有一个父坐标空间。对坐标空间的变换实际是父空间和子空间之间对点和矢量进行变换。
+
+现有父坐标空间 P 和 子坐标空间 C。已知：父坐标空间中子坐标空间的原点位置和 3 个单位坐标轴。一般有两种需求：
+
+1. 把子坐标空间下表示的点或矢量 $A_c$ 转换到父坐标空间下的表示 $A_p$ ，公式表示：$A_p = M_{c \rightarrow p} A_c$ 
+2. 把父坐标空间下表示的点或矢量 $B_p$ 转换到子坐标空间下的表示 $B_c$ ，公式表示：$B_c = M_{p \rightarrow c} B_p$
+
+其中 $M_{p \rightarrow c}$ 是 $M_{c \rightarrow p}$ 的逆矩阵。
+
+子坐标空间转换到父坐标空间流程：
+
+已知：子坐标空间 C 的 3 个坐标轴在父坐标空间 P 下表示 $x_c$ 、$y_c$ 、$z_c$ ，以及其原点位置 $O_c$ 。给定一个子坐标空间中的一个点 $A_c = (a,b,c)$ 。
+
+目标：确定其父坐标空间下的位置 $A_p$ ：
+
+解：
+
+1. 从坐标空间的原点开始
+
+   已知子坐标空间的原点 $O_c$
+
+2. 向 x 轴方向移动 a 个单位
+
+   $O_c + ax_c$
+
+3. 向 y 轴方向移动 b 个单位
+
+   $O_c + ax_c + by_c$
+
+4. 向 z 轴方向移动 c 个单位
+
+   $O_c + ax_c + by_c + cz_c$
+
+5. 
+   $$
+   \begin{aligned}
+   A_p &= O_c + ax_c + by_c + cz_c
+   \\
+   &= (x_{O_c},y_{O_c},z_{O_c}) + a(x_{x_c},y_{y_c},z_{z_c}) + b(x_{x_c},y_{y_c},z_{z_c}) + c(x_{x_c},y_{y_c},z_{z_c})
+   \\
+   &= (x_{O_c},y_{O_c},z_{O_c}) + 
+   \left[
+   \begin{matrix}
+   x_{x_c} & x_{y_c} & x_{z_c} \\
+   y_{x_c} & y_{y_c} & y_{z_c} \\
+   z_{x_c} & z_{y_c} & z_{z_c}
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   a \\
+   b \\
+   c
+   \end{matrix}
+   \right]
+   \\
+   &= (x_{O_c},y_{O_c},z_{O_c}) + 
+   \left[
+   \begin{matrix}
+   | & | & | \\
+   x_c & y_c & z_c \\
+   | & | & |
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   a \\
+   b \\
+   c
+   \end{matrix}
+   \right]
+   \end{aligned}
+   $$
+   $x_{x_c}$ 代表子坐标空间下 x 轴的 x 分量，其中下标 $x_c$ 就代表子坐标空间下的 x 轴，其他同理
+
+   "|" 表示按列展开。“+“ 代表平移变换，由于 $3 \times 3$ 的矩阵无法表示平移变换，所以需要把式子扩展到齐次坐标空间中。
+   $$
+   \begin{aligned}
+   A_p &= (x_{O_c},y_{O_c},z_{O_c},1) + 
+   \left[
+   \begin{matrix}
+   | & | & | & 0\\
+   x_c & y_c & z_c & 0\\
+   | & | & | & 0 \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   a \\
+   b \\
+   c \\
+   1
+   \end{matrix}
+   \right]
+   \\
+   &= 
+   \left[
+   \begin{matrix}
+   1 & 0 & 0 & x_{O_c} \\
+   0 & 1 & 0 & y_{O_c} \\
+   0 & 0 & 1 & z_{O_c} \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   | & | & | & 0\\
+   x_c & y_c & z_c & 0\\
+   | & | & | & 0 \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   a \\
+   b \\
+   c \\
+   1
+   \end{matrix}
+   \right]
+   \\
+   &= 
+   \left[
+   \begin{matrix}
+   x_{x_c} & x_{y_c} & x_{z_c} & x_{O_c} \\
+   y_{x_c} & y_{y_c} & y_{z_c} & y_{O_c} \\
+   z_{x_c} & z_{y_c} & z_{z_c} & z_{O_c} \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   a \\
+   b \\
+   c \\
+   1
+   \end{matrix}
+   \right]
+   \\
+   &= 
+   \left[
+   \begin{matrix}
+   | & | & | & | \\
+   x_c & y_c & z_c & O_c \\
+   | & | & | & | \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   a \\
+   b \\
+   c \\
+   1
+   \end{matrix}
+   \right]
+   \end{aligned}
+   $$
+   所以，$M_{c \rightarrow p}$ 出现了：
+   $$
+   M_{c \rightarrow p} = 
+   \left[
+   \begin{matrix}
+   | & | & | & | \\
+   x_c & y_c & z_c & O_c \\
+   | & | & | & | \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   $$
+   
 
 # 基础知识
 
