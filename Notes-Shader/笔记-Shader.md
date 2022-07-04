@@ -1262,6 +1262,8 @@ $$
 
 ## 坐标空间
 
+### 坐标空间的变换
+
 在渲染流水线中，我们通常需要把一个点或一个方向矢量从一个坐标空间转换到另一个空间。
 
 实现流程：
@@ -1438,6 +1440,571 @@ $$
    \right]
    $$
    
+
+<font color = skyblue>注意：</font> 3 个坐标轴 $x_c$ 、$y_c$ 和 $z_c$ 可以不是单位向量，可以存在缩放。
+
+我们可以通过这个变换矩阵反推来获取子坐标空间的原点和坐标轴方向。我们可以提取第一列再进行归一化后（消除缩放带来的影响）来得到模型空间的 x 轴在世界空间下的单位矢量表示。或者，因为矩阵 $M_{c \rightarrow p}$ 可以把一个方向矢量从坐标空间 C 变换到坐标空间 P 中，那么，我们只需要用它来变换坐标空间 C 中的 x 轴（1，0，0，0），即使用矩阵乘法 $M_{c \rightarrow p} \left[ \begin{matrix} 1 & 0 & 0 & 0 \end{matrix}\right]^T$ ，得到的结果正是 $M_{c \rightarrow p}$ 的第一列。
+
+对于方向矢量的坐标空间变换，矢量是不会受到平移影响的，所以坐标系的原点是不会对矢量造成影响的。这一也是在 Shader 中，我们常常会看到截取变换矩阵的前 3 行前 3 列来对法线方向、光照方向来进行空间变换。
+$$
+M_{c \rightarrow p} = 
+\left[
+\begin{matrix}
+| & | & | \\
+x_c & y_c & z_c \\
+| & | & | 
+\end{matrix}
+\right]
+$$
+父坐标空间转换到子坐标空间：
+
+一种方法是求 子坐标空间转换到父坐标空间的变换矩阵的逆矩阵，还有一种方法是 当我们知道子坐标空间转换到父坐标空间的变换矩阵是正交矩阵时，直接求其转置即可。
+
+如果我们知道坐标空间 B 的 x 轴、y 轴、z 轴（必须是单位矢量，否则构建不出正交矩阵）在坐标空间 A 下的表示，就可以把它们一次放在矩阵的每一行就可以得到从 A 到 B 的变换矩阵了。
+
+验证变换矩阵：
+
+如果我们无法确定变换矩阵的对错：
+
+假设现在需要把一个矢量从坐标空间 A 变换到坐标空间 B，而且我们已经知道坐标空间 B 的 x 轴、y 轴、z 轴在空间 A 下的表示，即 $x_B$ 、$y_B$ 和 $z_B$。
+
+可以先假设：
+$$
+M_{A \rightarrow B} = 
+\left[
+\begin{matrix}
+| & | & | \\
+x_B & y_B & z_B \\
+| & | & |
+\end{matrix}
+\right]
+$$
+假设我们用变换矩阵来变换 B 的 x 轴，那么结果应该是（1，0，0），我们验证一下。
+$$
+M_{A \rightarrow B}x_B = 
+\left[
+\begin{matrix}
+| & | & | \\
+x_B & y_B & z_B \\
+| & | & |
+\end{matrix}
+\right]
+x_B
+$$
+此时我们无法确定结果，那么这就是错的。此时我们换成按行来摆放。
+$$
+\begin{aligned}
+M_{A \rightarrow B}x_B &= 
+\left[
+\begin{matrix}
+- & x_B & - \\
+- & y_B & - \\
+- & z_B & -
+\end{matrix}
+\right]
+x_B
+\\
+&=
+\left[
+\begin{matrix}
+x_B \cdot x_B \\
+y_B \cdot x_B \\
+z_B \cdot x_B
+\end{matrix}
+\right]
+\\
+&=
+\left[
+\begin{matrix}
+1 \\
+0 \\
+0
+\end{matrix}
+\right]
+\end{aligned}
+$$
+因为已知 x 轴与 y 轴和 z 轴互相垂直所以它们的点乘结果为 0，而 x 轴的单位向量自乘等于模的平方，又是单位向量所以是 1。所以按行来摆放正确。
+
+### 顶点的坐标空间变换过程
+
+在渲染流水线中，一个顶点最开始是在模型空间，最后会被变换到屏幕空间中。
+
+#### 模型空间
+
+模型空间（model space）：也被称为对象空间（object space）或局部空间（local space）。每个模型都有自己独立的坐标空间，当他移动或旋转时候，模型空间也会跟着它移动和旋转。在 Unity 中一般使用左手坐标系。
+
+模型空间的原点和坐标轴通常是由美术人员在建模软件里确定好的。当导入 Unity 后，我们可以在顶点着色器中访问到模型的顶点信息，其中包含每个顶点的坐标，这些坐标都是相对于模型空间中的原点（通常位于模型重心）定义的。
+
+#### 世界空间
+
+世界空间（world space）：是我们所关心的最外层的坐标空间。例如：农场游戏，那么世界空间指的是农场。世界空间可以被用于描述绝对位置。通常原点在游戏空间的中心。在 Unity 中一般使用左手坐标系。它的 x 轴、y 轴和 z 轴是固定不变的。我们可以通过 Transform 组件中的 Position 属性来改变模型的父节点的位置。
+
+#### 观察空间
+
+观察空间（view space）：也被称为摄像机空间（camera space）。观察空间可以认为是模型空间的一个特例。Unity 中，观察空间是右手坐标系。观察空间与屏幕空间不是同一个概念。观察空间是三维空间，屏幕空间是二维的。从观察空间到屏幕空间需要通过投影转换。
+
+#### 裁剪空间
+
+裁剪空间（clip space）：也被称为齐次裁剪空间。用于变换的矩阵被称为裁剪矩阵（clip matrix），也被称为投影矩阵（projection matrix）。裁剪空间上的目标是对图元进行裁剪，将空间外部的图元剔除。该空间是由视锥体（view frustum）来决定的。
+
+视锥体（view frustum）：空间中的一块区域 ，这块区域决定了摄像机可以看到的空间。视锥体由六个平面包围而成，平面也被称为裁剪平面（clip planes）。其中由两块裁剪平面比较特殊，分别被称为近裁剪平面（near clip plane）和远裁剪平面（far clip plane）。视锥体由两种投影类型：正交投影（orthographic projection）和透视投影（perspective projection）。
+
+透视投影（perspective projection）：平行线不会保持平行，离摄像机越近网格越大。模拟了人眼看世界的方式。一般用于 3D 游戏。
+
+正交投影（orthographic projection）：平行线保持平行，网格大小一样。保留了物体之间的距离和角度。一般用于 2D 游戏或渲染小地图等 HUD 元素。
+
+投影：可以理解为一个空间的降维，例如：四维空间投影到三维空间中。投影在屏幕映射时发生。
+
+投影矩阵（clip matrix）：投影矩阵不会进行真正的投影，而是为投影所准备。w 分量作为一个范围值，如果 x、y、z分量位于该范围内，就说明该顶点位于剪裁空间内。
+
+![](透视投影 和 正交投影.png)
+
+<center>左侧图片为透视投影，右侧图片为正交投影</center>
+
+![](透视投影视锥体 和 正交投影视锥体.png)
+
+<center>左侧图片为透视投影视锥体，右侧图片为正交投影视锥体</center>
+
+1. 透视投影
+
+   6 个裁剪平面由 Camera 组件中的参数和 Game 视图的纵横比共同决定的。Field of View（简称 FOV）改变视锥体数值方向的张开角度，Clipping Planes 中的 Near 和 Far 参数控制视锥体的近裁剪平面和远裁剪平面距离摄像机的远近。这样可以求出视锥体近裁剪平面和远裁剪平面的高度：
+   $$
+   nearClipPaneHeight = 2 \cdot Near \cdot tan{\frac{FOV}{2}} \\
+   farClipPlaneHeight = 2 \cdot Far \cdot tan{\frac{FOV}{2}}
+   $$
+   ![](组件对透视视锥体的影响.png)
+   
+   <center>组件对透视视锥体的影响</center>
+
+   摄像机的横向值可以通过摄像机的横纵比得到。摄像机的横纵比由 Game 视图的横纵比和 Viewport Rect 中的 W 和 H 属性共同决定（Unity 允许我们在脚本里通过 `Camera.aspect` 进行更改）。
+   $$
+   Aspect = \frac{nearClipPlaneWith}{nearClipPlaneHeight} \\
+   Aspect = \frac{farClipPlaneWith}{farClipPlaneHeight}
+   $$
+   由 Near、Far、FOV 和 Aspect 得到透视投影矩阵：
+   $$
+   M_{frustum} = 
+   \left[
+   \begin{matrix}
+   \frac{cot{\frac{FOV}{2}}}{Aspect} & 0 & 0 & 0 \\
+   0 & cot{\frac{FOV}{2}} & 0 & 0 \\
+   0 & 0 & -\frac{Far + Near}{Far - Near} & -\frac{2 \cdot Near \cdot Far}{Far - Near} \\
+   0 & 0 & -1 & 0
+   \end{matrix}
+   \right]
+   $$
+   
+
+2. 正交投影
+
+   6 个裁剪平面也是由 Camera 组件中的参数和 Game 视图的纵横比共同决定的。Size 改变视锥体竖直方向上的一般高度，Clipping Planes 中的 Near 和 Far 参数可以控制视锥体的近裁剪平面和远裁剪平面距离摄像机的远近。这样可以求出视锥体近裁剪平面和远裁剪平面的高度：
+   $$
+   nearClipPlaneHeight = 2 \cdot Size \\
+   farClipPlaneHeight = nearClipPlaneHeight
+   $$
+   摄像机的横向值可以通过摄像机的横纵比得到，假设摄像机的横纵比为 Aspect：
+   $$
+   nearClipPlaneWidth = Aspect \cdot nearCliptPlaneHeight \\
+   farCLipPlaneWidth = nearClipPlaneWidth
+   $$
+   
+
+   ![](组件对正交视锥体的影响.png)
+
+   <center>组件对正交视锥体的影响</center>
+
+   由 Near、Far、FOV 和 Aspect 得到透视投影矩阵：
+   $$
+   M_{ortho} = 
+   \left[
+   \begin{matrix}
+   \frac{1}{Aspect \cdot Size} & 0 & 0 & 0 \\
+   0 & \frac{1}{Size} & 0 & 0 \\
+   0 & 0 & -\frac{2}{Far - Near} & -\frac{Far + Near}{Far - Near} \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   $$
+
+#### 屏幕空间
+
+
+
+#### 顶点变换过程
+
+1. 顶点坐标从模型空间变换到世界空间中。该步变换通常 称为模型变换（model transform）。
+
+也就是，prefab 内的子对象的坐标被转换为世界坐标，不再是相对根节点的位置。
+
+![](世界空间和模型空间位置.jpg)
+
+![](模型空间变换到世界空间.jpg)
+
+根据 Transform 组件，可以得到牛牛进行了（2，2，2）的缩放，（0，150，0）的旋转和（5，0，25）的平移。
+
+所以模型变换的变换矩阵是：
+$$
+\begin{aligned}
+M_{model} &=
+\left[
+\begin{matrix}
+1 & 0 & 0 & 5 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 25 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+cos150° & 0 & sin150° & 0 \\
+0 & 1 & 0 & 0 \\
+-sin150° & 0 & cos150° & 0 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+2 & 0 & 0 & 0 \\
+0 & 2 & 0 & 0 \\
+0 & 0 & 2 & 0 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\\
+&= 
+\left[
+\begin{matrix}
+-1.732 & 0 & 1 & 5 \\
+0 & 2 & 0 & 0 \\
+-1 & 0 & -1.732 & 25 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\end{aligned}
+$$
+对牛牛的鼻子进行模型变换：
+$$
+\begin{aligned}
+P_{world} &= M_{model}P_{model} \\
+&=
+\left[
+\begin{matrix}
+-1.732 & 0 & 1 & 5 \\
+0 & 2 & 0 & 0 \\
+-1 & 0 & -1.732 & 25 \\
+0 & 0 & 0 & 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+0 \\
+2 \\
+4 \\
+1
+\end{matrix}
+\right]
+\\
+&=
+\left[
+\begin{matrix}
+9 \\
+4 \\
+18.072 \\
+1
+\end{matrix}
+\right]
+\end{aligned}
+$$
+
+2. 顶点坐标从世界空间变换到观察空间。该步通常被称为观察变换（view transform）。
+
+   ![](世界空间转换到观察空间.png)
+
+   得到顶点在观察空间中的位置有两种方法。一种是计算观察空间的三个坐标轴在世界空间下的表示，然后构建出从观察空间变换到世界空间的变换矩阵，再对该矩阵求逆得到从世界空间变换到观察空间的变换矩阵。另一种方法是，想象平移整个观察空间，让摄像机原点位于世界坐标原点，坐标轴与世界空间中的坐标轴重合即可。
+
+   第二种方法：
+
+   由 Transform 组件可以知道，摄像机在世界空间中的变换是先按（30，0，0）进行旋转，然后按（0，10，-10）进行平移。那么，为了把摄像机重新移回到初始状态（摄像机原点位于世界坐标的原点、坐标轴与世界空间中的坐标轴重合），需要进行逆向变换，即先按（0，-10，10）平移，再按（-30，0，0）进行旋转，使坐标轴重合。所以变换矩阵是：
+   $$
+   \begin{aligned}
+   M_{view} &= 
+   \left[
+   \begin{matrix}
+   1 & 0 & 0 & 0 \\
+   0 & cos(-30°) & -sin(-30°) & 0 \\
+   0 & sin(-30°) & cos(-30°) & 0 \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   1 & 0 & 0 & 0 \\
+   0 & 1 & 0 & -10 \\
+   0 & 0 & 1 & 10 \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \\
+   &=
+   \left[
+   \begin{matrix}
+   1 & 0 & 0 & 0 \\
+   0 & 0.866 & 0.5 & -3.66 \\
+   0 & -0.5 & 0.866 & 13.66 \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \end{aligned}
+   $$
+   由于观察空间是右手坐标系，所以需要对 z 轴分量进行取反操作。我们可以通过乘以另一个特殊的矩阵来的到最终的观察变换矩阵：
+   $$
+   \begin{aligned}
+   M_{view} &= M_{negatez}M_{view} \\
+   &= 
+   \left[
+   \begin{matrix}
+   1 & 0 & 0 & 0 \\
+   0 & 1 & 0 & 0 \\
+   0 & 0 & -1 & 0 \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   1 & 0 & 0 & 0 \\
+   0 & 0.866 & 0.5 & -3.66 \\
+   0 & -0.5 & 0.866 & 13.66 \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \\
+   &=
+   \left[
+   \begin{matrix}
+   1 & 0 & 0 & 0 \\
+   0 & 0.866 & 0.5 & -3.66 \\
+   0 & 0.5 & -0.866 & -13.66 \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \end{aligned}
+   $$
+   现在可以对牛牛的鼻子进行观察空间变换：
+   $$
+   \begin{aligned}
+   P_{view} &= M_{negatez}M_{view} \\
+   &=
+   \left[
+   \begin{matrix}
+   1 & 0 & 0 & 0 \\
+   0 & 0.866 & 0.5 & -3.66 \\
+   0 & 0.5 & -0.866 & -13.66 \\
+   0 & 0 & 0 & 1
+   \end{matrix}
+   \right]
+   \left[
+   \begin{matrix}
+   9 \\
+   4 \\
+   18.072 \\
+   1
+   \end{matrix}
+   \right]
+   \\
+   &=
+   \left[
+   \begin{matrix}
+   9 \\
+   8.84 \\
+   -27.31 \\
+   1
+   \end{matrix}
+   \right]
+   \end{aligned}
+   $$
+   
+3. 观察空间转换到裁剪空间，使用投影矩阵进行变换：
+
+   1. 透视投影
+   
+      透视投影矩阵为（针对的是观察空间，右手坐标系），变换后 z 分量范围将在 [-w，w] 之间：
+      $$
+      M_{frustum} = 
+      \left[
+      \begin{matrix}
+      \frac{cot{\frac{FOV}{2}}}{Aspect} & 0 & 0 & 0 \\
+      0 & cot{\frac{FOV}{2}} & 0 & 0 \\
+      0 & 0 & -\frac{Far + Near}{Far - Near} & -\frac{2 \cdot Near \cdot Far}{Far - Near} \\
+      0 & 0 & -1 & 0
+      \end{matrix}
+      \right]
+      $$
+      顶点与透视投影矩阵相乘：
+      $$
+      \begin{aligned}
+      P_{clip} &= M_{frustum}P_{view} \\
+      &=
+      \left[
+      \begin{matrix}
+      \frac{cot{\frac{FOV}{2}}}{Aspect} & 0 & 0 & 0 \\
+      0 & cot{\frac{FOV}{2}} & 0 & 0 \\
+      0 & 0 & -\frac{Far + Near}{Far - Near} & -\frac{2 \cdot Near \cdot Far}{Far - Near} \\
+      0 & 0 & -1 & 0
+      \end{matrix}
+      \right]
+      \left[
+      \begin{matrix}
+      x \\
+      y \\
+      z \\
+      1
+      \end{matrix}
+      \right]
+      \\
+      &=
+      \left[
+      \begin{matrix}
+      x\frac{cot\frac{FOV}{2}}{Aspect} \\
+      ycot\frac{FOV}{2}
+      -z\frac{Far + Near}{Far - Near} - \frac{2 \cdot Far \cdot Near}{Far - Near} \\
+      -z
+      \end{matrix}
+      \right]
+      \end{aligned}
+      $$
+      由此可以看出投影矩阵的本质是对 x、y 和 z分量进行了不同程度的缩放，z 分量还做了一个平移。
+   
+      判断变换后的顶点坐标是否在视锥体内：
+      $$
+      -w \leq x \leq w \\
+      -w \leq y \leq w \\
+      -w \leq z \leq w
+      $$
+      ![](顶点通过透视投影矩阵变换.png)
+      
+      <center>顶点通过透视投影矩阵变换</center>
+      由上图可得，裁剪矩阵会改变空间得旋向性，空间从右手坐标系变换到了左手坐标系。离摄像机越远，z 值越大。
+      
+   2. 正交投影
+   
+      正交投影矩阵为：
+      $$
+      \left[
+      \begin{matrix}
+      \frac{1}{Aspect \cdot Size} & 0 & 0 & 0 \\
+      0 & \frac{1}{Size} & 0 & 0 \\
+      0 & 0 & -\frac{2}{Far - Near} & -\frac{Far + Near}{Far - Near} \\
+      0 & 0 & 0 & 1
+      \end{matrix}
+      \right]
+      $$
+      顶点与正交投影矩阵相乘：
+      $$
+      \begin{aligned}
+      P_{clip} &= M_{ortho}P_{view} \\
+      &=
+      \left[
+      \begin{matrix}
+      \frac{1}{Aspect \cdot Size} & 0 & 0 & 0 \\
+      0 & \frac{1}{Size} & 0 & 0 \\
+      0 & 0 & -\frac{2}{Far - Near} & -\frac{Far + Near}{Far - Near} \\
+      0 & 0 & 0 & 1
+      \end{matrix}
+      \right]
+      \left[
+      \begin{matrix}
+      x \\
+      y \\
+      z \\
+      1
+      \end{matrix}
+      \right]
+      \\
+      &=
+      \left[
+      \begin{matrix}
+      \frac{x}{Aspect \cdot Size} \\
+      \frac{y}{Size} \\
+      -\frac{2z}{Far - Near} - \frac{Far + Near}{Far - Near} \\
+      1
+      \end{matrix}
+      \right]
+      \end{aligned}
+      $$
+      判断变换后的顶点坐标是否在视锥体内方法同透视投影。
+      
+      
+      
+      ![](顶点通过正交投影矩阵变换.png)
+      
+      由上图可得，裁剪矩阵会改变空间得旋向性，空间从右手坐标系变换到了左手坐标系。离摄像机越远，z 值越大。
+      
+      ![](农场游戏的摄像机参数和横纵比.png)
+      
+      据图可知透视投影参数：FOV 为 60°，Near 为 5，Far 为 40，Aspect 为 4：3。所以，投影矩阵为：
+      $$
+      \begin{aligned}
+      M_{frustum} &= 
+      \left[
+      \begin{matrix}
+      \frac{cot{\frac{FOV}{2}}}{Aspect} & 0 & 0 & 0 \\
+      0 & cot{\frac{FOV}{2}} & 0 & 0 \\
+      0 & 0 & -\frac{Far + Near}{Far - Near} & -\frac{2 \cdot Near \cdot Far}{Far - Near} \\
+      0 & 0 & -1 & 0
+      \end{matrix}
+      \right]
+      \\
+      &=
+      \left[
+      \begin{matrix}
+      1.299 & 0 & 0 & 0 \\
+      0 & 1.732 & 0 & 0 \\
+      0 & 0 & 01.286 & -11.429 \\
+      0 & 0 & -1 & 0
+      \end{matrix}
+      \right]
+      \end{aligned}
+      $$
+      则牛牛的鼻子从观察空间转换到剪裁空间为：
+      $$
+      \begin{aligned}
+      P_{clip} &= M_{frustum}P_{view} \\
+      &=
+      \left[
+      \begin{matrix}
+      1.299 & 0 & 0 & 0 \\
+      0 & 1.732 & 0 & 0 \\
+      0 & 0 & 01.286 & -11.429 \\
+      0 & 0 & -1 & 0
+      \end{matrix}
+      \right]
+      \left[
+      \begin{matrix}
+      9 \\
+      8.84 \\
+      -27.31 \\
+      1
+      \end{matrix}
+      \right]
+      \\
+      &=
+      \left[
+      \begin{matrix}
+      11.691 \\
+      15.311 \\
+      23.692 \\
+      27.31
+      \end{matrix}
+      \right]
+      \end{aligned}
+      $$
+      判断牛牛的鼻子是否在视锥体内：
+      $$
+      -27.31 \leq 11.691 \leq 27.31 \\
+      -27.31 \leq 15.311 \leq 27.31 \\
+      -27.31 \leq 23.692 \leq 27.31
+      $$
+      
 
 # 基础知识
 
