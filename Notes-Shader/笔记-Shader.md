@@ -2392,6 +2392,8 @@ Show generated code：打开一个新的文件，在这个文件里将显示 Uni
 
 # ShaderLab 语法
 
+ShaderLab 是 Unity 提供的一种说明性语言，是开发者不再需要与很多文件和设置打交道，只需使用 ShaderLab 来编写 Unity Shader 文件就可以完成所有工作。
+
 <font color = grass>这是没有 Unity 编辑器的情况下的流水线伪代码。</font>
 
 ```
@@ -2469,28 +2471,45 @@ Shader "MyShader/LearningShader1"
     // 当显卡不适配第一个 SubShader 时，会自动选择第二个 SubShader，如果还不适配时，会继续选择下一个 SubShader，以此类推
     // 必须的
     SubShader{
-    
         // 用于告诉 Unity 渲染引擎：如何以及何时渲染当前对象
         // 全局的，会用于所有 Pass 块
+        // 与 Pass 块中的标签不同，SubShader 中的一些标签设置是特定的
         // 非必须的
         Tags{
         	// "标签类型" = "标签值"
         }
         
-        // 渲染状态，设置显卡的各种状态
         // 全局的，会用于所有 Pass 块
+        // 渲染状态，设置显卡的各种状态
+        // 与 Pass 块中的标签相同
         // 非必须的
+        RenderSetup{
+        
+        }
+        
+        // 一般表面着色器写在这里
         
         // 一个 SubShader 中可以有许多的 Pass 块，但必须有一个 Pass 块
         // 每个 Pass 块定义了一次完整的渲染流程，如果 Pass 的数目过多，会造成渲染性能下降，因此应尽量使用最小数目的 Pass 块
-        // 一个 Pass 块相当于一个方法
+        // 一个 Pass 块相当于一个方法，定义了一次完整的渲染流程
         Pass{
             // 该 Pass 块的名称
             // 通过这个名称，可以使用 ShaderLab 的 UsePass 命令来直接调用其他 Unity Shader 中的 Pass 块，可以提高代码的复用性
-            // Unity 中会把所有 Pass 的名称转换成大写字母表示，所以在使用 UsePass 命令时必须将 Pass 的名称转换成大写形式
+            // Unity 中会把所有 Pass 的名称转换成大写字母表示，所以在使用 UsePass 命令时必须将 Pass 的名称转换成大写形式，例如：MYPASSNAME
             Name "MyPassName"
+           
+            // 非必须的
+            Tags{
+            	// "标签类型" = "标签值"
+            }
             
-            // Pass块中可以使用 CG 语言编写 Shader 代码
+            RenderSetup{
+            
+            }
+            
+            // Pass 块中可以使用 CG 语言编写 Shader 代码
+            // 一般顶点/片元着色器和固定函数着色器写在这里
+            
             // 当需要使用 Properties 中的属性时，需要重新定义一下，但 Properties 中的属性的值会传过来
             // 新定义的属性名需与 Properties 的属性名一样
             // 同时注意 Properties 中支持的类型，在 SubShader 中不一定支持，因此需要改变一下
@@ -2521,6 +2540,8 @@ Shader "MyShader/LearningShader1"
     Fallback "vertexLit"
 }
 ```
+
+我们可以使用 CustomEditor来扩展编辑界面，还可以使用 Category 语义来对 Unity Shader 中的命令进行分组。
 
 更多参考：https://docs.unity3d.com/2020.2/Documentation/Manual/SL-CustomShaderGUI.html
 
@@ -2743,14 +2764,14 @@ float4 modelPos = mul(viewPos,UNITY_MATRIX_IT_MV);
 
 ## 表面着色器
 
-表面着色器（Surface Shader）是 Unity 自己创造的一种着色器代码类型，最后仍旧会被转换成对应的顶点/片元着色器。它被定义在 SubShader 语义块中的 CGPROGRAM 和 ENDCG 之间，中间的代码使用 Cg/HLSL 编写的。这能使我们不必关心使用多少个 Pass 块、每个 Pass 块如何渲染等问题，我们只需关心使用什么纹理填充颜色，使用什么法线纹理填充法线，使用 Lambert 光照模型等。一般被用来处理光照细节。
+表面着色器（Surface Shader）是 Unity 自己创造的一种着色器代码类型，但渲染的代价比较答。它最后仍旧会被转换成对应的顶点/片元着色器。它被定义在 SubShader 语义块中的 CGPROGRAM 和 ENDCG 之间，中间的代码使用 Cg/HLSL 编写的。这能使我们不必关心使用多少个 Pass 块、每个 Pass 块如何渲染等问题，我们只需关心使用什么纹理填充颜色，使用什么法线纹理填充法线，使用 Lambert 光照模型等。一般被用来处理光照细节。
 
 ```
 Shader "Learning/简单的表面着色器"
 {
     SubShader
     {
-        Tags
+       Tags
 		{
 			"RenderType" = "Opaque"
 		}
@@ -2775,7 +2796,7 @@ Shader "Learning/简单的表面着色器"
 
 ## 顶点 / 片元着色器
 
-顶点 / 片元着色器的代码也需要定义在 CGPROGRAM 和 ENDCG 之间，但顶点 / 片元着色器是写在 Pass 语义块内，需要我们自己定义每个 Pass 块需要使用的代码。灵活性更高，能控制更多的渲染的实现细节。
+顶点 / 片元着色器的代码也需要定义在 CGPROGRAM 和 ENDCG 之间，<font color = skyblue>但顶点 / 片元着色器是写在 Pass 语义块内</font>，需要我们自己定义每个 Pass 块需要使用的代码。灵活性更高，能控制更多的渲染的实现细节。
 
 ```
 Shader "Learning/简单的顶点片元着色器"
@@ -2805,7 +2826,7 @@ Shader "Learning/简单的顶点片元着色器"
 
 ## 固定函数着色器
 
-不支持可编程管线着色器，对于一些较旧的设备（GPU仅支持 DirectX 7.0、OpenGL 1.5 或 OpenGL ES 1.1）如 iPhone 3。固定函数着色器一般可以完成一些非常简单的效果。 在 Unity 5.2 之后，所有固定函数着色器都会在背后被 Unity 编译成对应的顶点 / 片元着色器，因此真正意义上的固定函数着色器已经不存在了。固定函数着色器的代码被定义在 Pass 块中，这些代码相当于 Pass 块中的一些渲染设置，需要完全使用 ShaderLab 的语法来编写。
+不支持可编程管线着色器，对于一些较旧的设备（GPU仅支持 DirectX 7.0、OpenGL 1.5 或 OpenGL ES 1.1）如 iPhone 3。固定函数着色器一般可以完成一些非常简单的效果。 在 Unity 5.2 之后，所有固定函数着色器都会在背后被 Unity 编译成对应的顶点 / 片元着色器，因此真正意义上的固定函数着色器已经不存在了。固定函数着色器的代码被定义在 Pass 块中，这些代码相当于 Pass 块中的一些渲染设置，<font color = skyblue>需要完全使用 ShaderLab 的语法来编写</font>。
 
 ```
 Shader "Learning/固定函数着色器"
@@ -2818,10 +2839,10 @@ Shader "Learning/固定函数着色器"
     {
         Pass
         {
-            Material
-			{
-				Diffuse [_Color]
-			}
+        	Material
+        	{
+        		Diffuse [_Color]
+        	}
 
 			Lighting On
         }
