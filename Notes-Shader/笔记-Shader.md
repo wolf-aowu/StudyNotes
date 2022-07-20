@@ -13,7 +13,7 @@
 
 因此，笛卡尔坐标系并不是唯一的，如 OpenGL 进行屏幕映射时使用的笛卡尔坐标系 与 DirectX 进行屏幕映射时使用的笛卡尔坐标系 不同。
 
-![笛卡尔二维坐标系](笛卡尔二维坐标系.jpg)
+![笛卡尔二维坐标系](图片\Shader\笛卡尔二维坐标系.jpg)
 
 ### 三维笛卡尔坐标系
 
@@ -33,13 +33,13 @@
 
 左手坐标系
 
-<img src="左手坐标系.png" alt="左手坐标系" style="zoom: 67%;" />
+<img src="图片\Shader\左手坐标系.png" alt="左手坐标系" style="zoom: 67%;" />
 
 <center>左手坐标系</center>
 
 右手坐标系
 
-<img src="右手坐标系.png" alt="右手坐标系" style="zoom: 67%;" />
+<img src="图片\Shader\右手坐标系.png" alt="右手坐标系" style="zoom: 67%;" />
 
 <center>右手坐标系</center>
 
@@ -51,13 +51,13 @@
 
 大拇指朝向旋转轴，其余手指就是旋转的正方向
 
-<img src="左手法则 和 右手法则.png" alt="左手法则 和 右手法则"  />
+<img src="图片\Shader\左手法则 和 右手法则.png" alt="左手法则 和 右手法则"  />
 
 #### 左手坐标系 和 右手坐标系的区别
 
 使用左手坐标系 和 右手坐标系 描述同一件事，描述是不同的。
 
-![左手坐标系 和 右手坐标系的区别](左手坐标系 和 右手坐标系的区别.png)
+![左手坐标系 和 右手坐标系的区别](图片\Shader\左手坐标系 和 右手坐标系的区别.png)
 
 <center>左手坐标系&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp右手坐标系</center>
 
@@ -67,7 +67,7 @@ Unity 中，模型空间 和 世界空间 都使用 <font color = skyblue>左手
 
 <font color = cyan>猜测：</font>观察空间为右手坐标系是因为摄像机就像镜子，z 轴原本向前为正方向，透过镜子后向后为正方向。 
 
-<img src="观察空间.png" alt="观差空间" style="zoom: 33%;" />
+<img src="图片\Shader\观察空间.png" alt="观差空间" style="zoom: 33%;" />
 
 ## 矢量
 
@@ -111,13 +111,13 @@ $$
 
 点积的几何意义是投影。单位向量 $\vec{a} \cdot \vec{b}$ 的几何意义是：向量 $\vec{b}$ 在<font color = skyblue>单位向量 $\vec{a}$ </font>方向上的投影。
 
-![矢量 b 在单位矢量 a 方向上的投影](矢量 b 在单位矢量 a 方向上的投影.jpg)
+![矢量 b 在单位矢量 a 方向上的投影](图片\Shader\矢量 b 在单位矢量 a 方向上的投影.jpg)
 
 <center>向量 b 在单位向量 a 方向上的投影</center>
 
 点积结果可能是一个负数，点积结果的正负号与两个向量的方向有关，如果它们方向相反（夹角大于 90°），结果小于 0；如果它们互相垂直（夹角为 90°），结果为 0；如果它们方向相同（夹角小于 90°），结果大于 0。
 
-![点积的符号](点积的符号.jpg)
+![点积的符号](图片\Shader\点积的符号.jpg)
 
 <center>点积的符号</center>
 
@@ -149,7 +149,7 @@ $$
 \\
 \theta = arcos(\vec{a}\ 的单位向量\  \cdot \  \vec{b}\ 的单位向量)
 $$
-<img src="点积公式一.jpg" style="zoom:25%;" />
+<img src="图片\Shader\点积公式一.jpg" style="zoom:25%;" />
 
 解释：
 
@@ -162,7 +162,7 @@ $$
 \vec{a} \times \vec{b} = (a_x,\ a_y,\ a_z) \times (b_x,\ b_y,\ b_z) = (a_yb_z - a_zb_y,\ a_zb_x - a_xb_z,\ a_xb_y - a_yb_x)
 $$
 
-<img src="叉积的计算规律.jpg" style="zoom:25%;" />
+<img src="图片\Shader\叉积的计算规律.jpg" style="zoom:25%;" />
 
 例子：
 $$
@@ -180,7 +180,7 @@ $$
 
 两个矢量的叉积会得到一个同时垂直于两个矢量的新矢量。新矢量的模：$|\vec{a} \times \vec{b}| = |\vec{a}| \times |\vec{b}| \  sin \theta$。该公式也是平行四边形的面积公式。平行四边形面积 = 底 × 高。平行四边形高 = $|\vec{a}| sin \theta$。
 
-![平行四边形面积公式](平行四边形面积公式.jpg)
+![平行四边形面积公式](图片\Shader\平行四边形面积公式.jpg)
 
 <center>平行四边形面积公式</center>
 
@@ -192,11 +192,11 @@ $$
 
 如下图，三角形的三个顶点都位于 xy 平面上，人眼位于 z 轴的负方向，向 z 轴的正方向观察。可以通过叉乘判断人眼观察到的是三角面片的正面还是背面，3 个点的顺序是顺时针还是逆时针。
 
-![三角面片的朝向](三角面片的朝向.jpg)
+![三角面片的朝向](图片\Shader\三角面片的朝向.jpg)
 
 图片中的点只是举例，不要被图片迷惑。<font color = skyblue>想象 $p_1$、$p_3$换位置。就是小于 0 的情况</font>
 
-<img src="三角面片的朝向判断.jpg" alt="三角面片的朝向判断" style="zoom: 33%;" />
+<img src="图片\Shader\三角面片的朝向判断.jpg" alt="三角面片的朝向判断" style="zoom: 33%;" />
 
 ## 矩阵
 
@@ -1557,11 +1557,11 @@ $$
 
 投影矩阵（clip matrix）：投影矩阵不会进行真正的投影，而是为投影所准备。w 分量作为一个范围值，如果 x、y、z分量位于该范围内，就说明该顶点位于剪裁空间内。
 
-![](透视投影 和 正交投影.png)
+![](图片\Shader\透视投影 和 正交投影.png)
 
 <center>左侧图片为透视投影，右侧图片为正交投影</center>
 
-![](透视投影视锥体 和 正交投影视锥体.png)
+![](图片\Shader\透视投影视锥体 和 正交投影视锥体.png)
 
 <center>左侧图片为透视投影视锥体，右侧图片为正交投影视锥体</center>
 
@@ -1572,7 +1572,7 @@ $$
    nearClipPaneHeight = 2 \cdot Near \cdot tan{\frac{FOV}{2}} \\
    farClipPlaneHeight = 2 \cdot Far \cdot tan{\frac{FOV}{2}}
    $$
-   ![](组件对透视视锥体的影响.png)
+   ![](图片\Shader\组件对透视视锥体的影响.png)
    
    <center>组件对透视视锥体的影响</center>
 
@@ -1594,7 +1594,6 @@ $$
    \right]
    $$
    
-
 2. 正交投影
 
    6 个裁剪平面也是由 Camera 组件中的参数和 Game 视图的纵横比共同决定的。Size 改变视锥体竖直方向上的一般高度，Clipping Planes 中的 Near 和 Far 参数可以控制视锥体的近裁剪平面和远裁剪平面距离摄像机的远近。这样可以求出视锥体近裁剪平面和远裁剪平面的高度：
@@ -1609,7 +1608,7 @@ $$
    $$
    
 
-   ![](组件对正交视锥体的影响.png)
+   ![](图片\Shader\组件对正交视锥体的影响.png)
 
    <center>组件对正交视锥体的影响</center>
 
@@ -1628,17 +1627,36 @@ $$
 
 #### 屏幕空间
 
+屏幕空间（screen space）：屏幕空间是一个二维空间。在完成了所有剪裁工作后，进行真正的投影，得到真正的像素位置。
 
+顶点从裁剪空间转换到屏幕空间可分为两个步骤。
+
+首先，进行标准齐次除法（homogenous division），也称透视除法（perspective division）。用齐次坐标系的 w 分量去除 x、y、z 分量。在 OpenGL 中，把这一步得到的坐标称为归一化的设备坐标（Normalized Device Coordinates，NDC）。经过透视投影变换后的裁剪空间，经过齐次除法后会变换到一个立方体内。在 OpenGL 中，立方体的 x、y、z 分量的范围都是 [-1，1]。在 DirectX 中，z 的分量范围是 [0，1]。Unity 使用的是 OpenGL。正交投影矩阵变换后的顶点分量 w 是 1，所以齐次除法不会对 x、y、z 坐标产生影响。经过齐次除法后，透视投影和正交投影的视锥体都会变换到一个相同的立方体内。我们可以根据变换后的 x 和 y 坐标来映射输出窗口的对应像素坐标。
+
+然后，进行屏幕映射。Unity 中，屏幕空间左下角的像素坐标是（0，0），右上角的像素坐标是（pixelWidth，pixelHeght）。由于当前 x 和 y 坐标都是 [-1，1]，因此该映射过程就是一个缩放过程。
+$$
+screen_x = \frac{clip_x \cdot pixelWidth}{2 \cdot clip} + \frac{pixelWidth}{2} \\
+screen_y = \frac{clip_y \cdot pixelHeight}{2 \cdot clip} + \frac{pixelHeight}{2}
+$$
+z 分量通常被用于深度缓冲。一个传统方式是把 $\frac{clip_z}{clip_w}$ 的值直接存进深度缓冲中，但这并不是必须的。通常驱动生产商会根据硬件来选择最好的存储格式。此时 $clip_w$ 也不会被抛弃，虽然它已经完成了在齐次除法中作为分母来得到 NDC，但它任然会在后续的工作中起到重要作用，例如：进行透视校正插值。
+
+在 Unity 中，从裁剪空间到屏幕空间的转换是由底层帮我们完成的，我们的顶点着色器只需要把顶点转换到裁剪空间即可。
 
 #### 顶点变换过程
+
+模型空间（左手坐标系） -> 世界空间（左手坐标系） -> 观察空间（右手坐标系） -> 剪裁空间（左手坐标系） -> 屏幕空间（左手坐标系）
+
+![](图片\Shader\顶点变换过程.png)
+
+<center>渲染流水线中顶点的空间变换过程</center>
 
 1. 顶点坐标从模型空间变换到世界空间中。该步变换通常 称为模型变换（model transform）。
 
 也就是，prefab 内的子对象的坐标被转换为世界坐标，不再是相对根节点的位置。
 
-![](世界空间和模型空间位置.jpg)
+![](图片\Shader\世界空间和模型空间位置.jpg)
 
-![](模型空间变换到世界空间.jpg)
+![](图片\Shader\模型空间变换到世界空间.jpg)
 
 根据 Transform 组件，可以得到牛牛进行了（2，2，2）的缩放，（0，150，0）的旋转和（5，0，25）的平移。
 
@@ -1718,7 +1736,7 @@ $$
 
 2. 顶点坐标从世界空间变换到观察空间。该步通常被称为观察变换（view transform）。
 
-   ![](世界空间转换到观察空间.png)
+   ![](图片\Shader\世界空间转换到观察空间.png)
 
    得到顶点在观察空间中的位置有两种方法。一种是计算观察空间的三个坐标轴在世界空间下的表示，然后构建出从观察空间变换到世界空间的变换矩阵，再对该矩阵求逆得到从世界空间变换到观察空间的变换矩阵。另一种方法是，想象平移整个观察空间，让摄像机原点位于世界坐标原点，坐标轴与世界空间中的坐标轴重合即可。
 
@@ -1880,7 +1898,7 @@ $$
       -w \leq y \leq w \\
       -w \leq z \leq w
       $$
-      ![](顶点通过透视投影矩阵变换.png)
+      ![](图片\Shader\顶点通过透视投影矩阵变换.png)
       
       <center>顶点通过透视投影矩阵变换</center>
       由上图可得，裁剪矩阵会改变空间得旋向性，空间从右手坐标系变换到了左手坐标系。离摄像机越远，z 值越大。
@@ -1935,11 +1953,11 @@ $$
       
       
       
-      ![](顶点通过正交投影矩阵变换.png)
+      ![](图片\Shader\顶点通过正交投影矩阵变换.png)
       
       由上图可得，裁剪矩阵会改变空间得旋向性，空间从右手坐标系变换到了左手坐标系。离摄像机越远，z 值越大。
       
-      ![](农场游戏的摄像机参数和横纵比.png)
+      ![](图片\Shader\农场游戏的摄像机参数和横纵比.png)
       
       据图可知透视投影参数：FOV 为 60°，Near 为 5，Far 为 40，Aspect 为 4：3。所以，投影矩阵为：
       $$
@@ -2004,13 +2022,64 @@ $$
       -27.31 \leq 15.311 \leq 27.31 \\
       -27.31 \leq 23.692 \leq 27.31
       $$
-      
+      即牛牛的鼻子位于视锥体内不需要被裁剪。
+   
+4. 从剪裁空间到屏幕空间
+
+   假设当前屏幕的像素坐标为 400，高度为 300。首先，我们需要进行齐次除法，把裁剪空间的坐标投影到 NDC 中，然后映射到屏幕空间中。
+   $$
+   \begin{aligned}
+   screen_x &= \frac{clip_x \cdot pixelWidth}{2 \cdot clip_w} + \frac{pixelWidth}{2} \\
+   &= \frac{11.691 \cdot 400}{2 \cdot 27.31} + \frac{400}{2} \\
+   &= 285.617 \\
+   screen_y &= \frac{clip_y \cdot pixelHeight}{2 \cdot clip_w} + \frac{pixelHeight}{2} \\
+   &= \frac{15.311 \cdot 300}{2 \cdot 27.31} + \frac{300}{2} \\
+   &= 234.096
+   \end{aligned}
+   $$
+   所以，牛牛的鼻子子在屏幕空间上的位置是（285.617，234.096）。
+
+### 法线变换
+
+法线（normal）：又被称为法矢量（normal vector）。法线是一种需要特殊处理的法矢量。当我们变换一个模型时，不仅需要变换顶点，还要变换顶点法线，一般用于后续处理（如片元着色器）中光照的计算等。
+
+切线（tangent）：又被称为切矢量（tangentvector）。它通常与纹理空间对齐，且与法线方向垂直。
+
+在变换法线时，不能使用与变换顶点的变换矩阵相同的变换矩阵，因为这样可能无法保持法线的垂直性。由于切线时是两个顶点之间的差值计算得到的，所以我们可以直接使用用于变换顶点的变换矩阵来变换切线。
+
+使用的变换矩阵 M 是 $3 \times 3$ 的矩阵，因为法线和切线都是方向向量不受平移影响，变换公式：
+$$
+T_B = M_{A \rightarrow B}T_A
+$$
+$T_A$ 和 $T_B$ 分别表示坐标空间 A 和坐标空间 B 下的切线方向。假设法线为 $N_A$。
+
+已知：$T_A \cdot N_A$ = 0。此时我们需要找到一个法线变换矩阵 G，使得法线变换后仍与变换后的切线垂直。
+$$
+T_B \cdot N_B = (M_{A \rightarrow B}T_A) \cdot (G_{A \rightarrow B}N_A) = 0
+$$
+由于 $T_A \cdot N_A = 0$ ，所以假设 $M_{A \rightarrow B}^TG_{A \rightarrow B} = I$ ，即 $G_{A \rightarrow B} = {M_{A \rightarrow B}^T}^{-1} = {M_{A \rightarrow B}^{-1}}^T$ ，使用原变换矩阵的逆转置矩阵来变换法线就可以得到正确结果：
+$$
+\begin{aligned}
+(M_{A \rightarrow B}T_A) \cdot (G_{A \rightarrow B}N_A) &= (M_{A \rightarrow B}T_A)^T \cdot (G_{A \rightarrow B}N_A) \\
+&= T_A^TM_{A \rightarrow B}^TG_{A \rightarrow B}N_A \\
+&= T_A^T(M_{A \rightarrow B}^TG_{A \rightarrow B})N_A \\
+\end{aligned}
+$$
+如果 $M_{A \rightarrow B}$ 是正交矩阵，那么 $M_{A \rightarrow B}^{-1} = M_{A \rightarrow B}^T$ ，所以 $(M_{A \rightarrow B}^{T})^{-1} = M_{A \rightarrow B}$ ，可以使用用于变换顶点的变换矩阵来直接变换法线。如果变换只包括旋转变换，那么这个变换矩阵就是正交矩阵。如果变换只包括旋转和统一缩放，而不包含非统一变换，那么必须要求解逆矩阵来得到变换法线的矩阵。
+
+<font color = grass>这一块没有看懂。</font>
 
 # 基础知识
 
 ## 渲染流水线
 
 由CPU流水线和GPU流水线共同构成
+
+### 用自己的话概括
+
+渲染流水线分 3 个阶段：应用阶段 -> 几何阶段 -> 光栅化阶段。
+
+<img src="图片\Shader\渲染流水线总结.jpg" style="zoom:150%;" />
 
 ### CPU流水线
 
@@ -2040,13 +2109,15 @@ GPU 流水线分为 几何阶段 和 光栅化阶段。
 
 GPU 流水线中有一些流程是不可配置和编程的。
 
-![](GPU 流水线流程.png)
+![](图片\Shader\GPU 流水线流程.png)
 
 <center>绿色表示该阶段流水线阶段是完全可编程控制的；黄色表示该流水线阶段可以配置但不可编程的；蓝色表示该流水线阶段是由 GPU 固定实现的，开发者没有任何控制权。实现表示该 Shader 必须由开发者实现，虚线表示该 Shader 是可选的</center>
 
-流程：
+#### 流程
 
 ​		顶点数据 -> 几何阶段 -> 光栅化阶段 -> 屏幕图像
+
+#### 概念
 
 顶点数据是 GPU 流水线的输入，这些顶点数据是在 CPU 流水线的第一步加载到显存中，在由 Draw Call 指定，然后传递给顶点着色器。
 
@@ -2149,7 +2220,7 @@ Unity 中，深度测试是在片元着色器之前，将深度测试提前执�
 
 模板测试与深度测试流程：
 
-![](模板测试和深度测试流程图.jpg)
+![](图片\Shader\模板测试和深度测试流程图.jpg)
 
 
 
@@ -2175,15 +2246,90 @@ Unity 中，深度测试是在片元着色器之前，将深度测试提前执�
 
 混合流程：
 
-![](混合流程图.jpg)
+![](图片\Shader\混合流程图.jpg)
 
 混合结束后，就会显示到我们的屏幕上。屏幕上显示的就是颜色缓冲区中的颜色值。但是为了避免我们看到那些正在进行光栅化的图元，GPU 会使用双缓冲（Double Buffering）的策略。也就是，对场景的渲染是在幕后发生的，即后置缓冲（Back Buffer）中。一旦场景已经被渲染到后置缓冲中，GPU 就会交换后置缓冲区和前置缓冲区中的内容。由此，保证了我们看到的图像总是连续的。
 
 双缓冲解说：https://www.bilibili.com/video/BV1FK4y1x7bk
 
+## Unity 中屏幕坐标：ComputeScreenPos / VPos / WPos
+
+在顶点 / 片元着色器中，有两种方式来获得片元的屏幕坐标。一种是在片元着色器的输入中声明 VPOS 或 WPOS 语义。另一种是通过 Unity 提供的 ComputeScreenPos 函数。
+
+VPOS 是 HLSL 中对屏幕坐标的语义，而 WPOS 是 Cg 中对屏幕坐标的语义。两者在 Unity Shader 中式等价的。我们可以在 HLSL / Cg 中通过语义的方式来定义顶点 / 片元着色器的默认输入，而不需要自己定义输入输出的数据结构，如下。
+
+```
+fixed4 frag(float4 sp:VPOS): SV_Target{
+	// 用屏幕坐标除以屏幕分辨率 _ScreenParams.xy，得到视口空间中的坐标
+	return fixed4(sp.xy/_ScreenParams.xy, 0.0, 1.0);
+}
+```
+
+效果：
+
+![](图片\Shader\由片元的像素位置得到的图像.png)
+
+VPOS / WPOS 语义定义的输入是一个 float4 类型的变量。如果屏幕分辨率为 $400 \times 300$ ，那么 x 的范围是 [0.5, 400.5]，y 的范围是 [0.5, 300.5]。在 Unity 中，VPOS / WPOS 的 z 分量范围是 [0, 1]，在摄像机的近裁剪平面处，z 值为 0，在远裁剪平面处，z 值为 1。对于 w 分量，我们需要考虑摄像机的投影类型。如果过使用的是透视投影，那么 w 的分量范围是 $[\frac{1}{Near}, \frac{1}{Far}]$，Near 和 Far 对应了在 Carmera 组件中设置的近裁剪平面和远裁剪平面距离摄像机的远近；如果使用的是正交投影，那么 w 分量值恒为 1。这些值是通过对经过投影矩阵变换后的 w 分量取倒数后得到的。代码最后，通过把屏幕空间除以屏幕分辨率来得到视口空间（viewport space）中的坐标。视口坐标，就是把屏幕坐标归一化，这样屏幕左下角就是（0，0），右上角是（1，1）。如果已知屏幕坐标，只需要把 xy 值除以屏幕分辨率即可。
+
+ComputeScreenPos 函数在 UnityCG.cginc 里被定义。通常用法需要两个步骤，首先在顶点着色器中将 ComputeScreenPos 的结果保存在输出结构体中，然后在片元着色器中进行一个齐次除法运算后得到视口空间下坐标。
+
+例如：
+
+```
+struct vertOut {
+	float4 pos: SV_POSITION;
+	float4 scrPos: TEXCOORD0;
+};
+
+vertOut vert(appdata_base v) {
+	vertOut o;
+	o.pos = mul(UNITY_MATRIX_MVP,v.vertex);
+	// 第一步：把 ComputeScreenPos 的结果保存到 scrPos 中
+	o.scrPos = ComputeScreenPos(o.pos);
+	return o;
+}
+
+fixed4 frag(vertOut i): SV_Target {
+	// 第二步：用 scrPos.xy 除以 scrPos.w 得到视口空间中的坐标
+	float2 wcoord = (i,scrPos.xy / i.scrPos.w);
+	return fixed4(wcoord,0.0,1.0);
+}
+```
+
+上面代码实现效果与使用 VPos / WPos 一样。这个方法手动实现了屏幕映射的过程，而且它得到的坐标直接就是视口空间中的坐标。得到视口空间的坐标公式：
+$$
+viewport_x = \frac{clip_x}{2 \cdot clip_w} + \frac{1}{2} \\
+viewport_y = \frac{clip_y}{2 \cdot clip_w} + \frac{1}{2}
+$$
+上面公式的思想：对裁剪空间下的坐标进行齐次除法，得到范围在[-1, 1] 的 NDC，然后再将其映射到范围在 [0, 1] 的视口空间下的坐标。ComputeScreenPos 函数的定义：
+
+```
+inline float4 ComputeScreenPos(float4 pos) {
+	float4 o = pos * 0.5f;
+	#if defined(UNITY_HALF_TEXEL_OFFSET)
+	o.xy = float2(o.x,o.y * _ProjectionParams.x) + o.w * _ScreenParams.zw;
+	#else
+	o.xy = float2(o.x,o.y * _ProjectionParams.x) + o.w;
+	#endif
+	o.zw = pos.zw
+	return o;
+}
+```
+
+ComputeScreenPos 的输入参数 pos 是经过 MVP 矩阵变换后在裁剪空间中的顶点坐标。UNITY_HALF_TEXEL_OFFSET 是 Unity 在某些 DirectX 平台上使用的宏，在这里可以忽略它。只需关注 #else 部分。_ProjectionParams.x 在默认情况下是 1，如果我们使用了一个翻转的投影矩阵话就是 -1。上述代码的过程实际输出：
+$$
+Output_x = \frac{clip_x}{2} + \frac{clip_w}{2} \\
+Output_y = \frac{clip_y}{2} + \frac{clip_w}{2} \\
+Output_z = clip_z \\
+Output_w = clip_w
+$$
+这里的 xy 不是真正的视口空间下的坐标。所以，需要对片元着色器进行进一步的处理，除以裁剪坐标的 w 分量。为什么 Unity 不直接在 ComputeScreenPos 中进行除以 w 分量这个步骤呢？因为从顶点着色器到片元着色器的过程会有一个插值过程，如果在顶点着色器中那么做的话会破坏插值结果。如果不在顶点着色器中进行这个除法，保留 x、y 和 w 分量，在插值后进行除法，得到的 $\frac{x}{w}$ 和 $\frac{y}{w}$ 就是正确的。我们不可以在投影空间中进行插值，因为着不是一个线性空间，而插值往往是线性的。
+
+对于 zw 的值，在顶点着色器中直接把裁剪空间的 zw 值存进了输出结构体中，所以片元着色器的输入就是这些插值后的裁剪空间中的 zw 值。即，如果是透视摄像机，那么 z 的值范围是 [-Near, Far]，w 的值范围是 [Near, Far]；如果是正交摄像机，那么 z 的值范围是 [-1, 1]，而 w 值恒为 1。
+
 ## Unity shader 使用
 
-Unity shader 需要与材质（Material）配合来使用。Unity Shader 定义了渲染所需的各种代码（如顶点着色器 和 片元着色器）、属性（如使用哪些纹理等）和指令（渲染和标签设置等），而材质这允许我们调节这些属性，并将其赋给相应的模型。
+Unity shader 需要与材质（Material）配合来使用。Unity 材质需要结合 GameObject 的 Mesh 或 Particle Systems 组件来工作。Unity Shader 定义了渲染所需的各种代码（如顶点着色器 和 片元着色器）、属性（如使用哪些纹理等）和指令（渲染和标签设置等），而材质这允许我们调节这些属性，并将其赋给相应的模型。
 
 Unity shader 使用 ShaderLab 来编写。
 
@@ -2196,9 +2342,9 @@ Unity shader 使用 ShaderLab 来编写。
 
 ## Unity 内置 Shader
 
-- Standard Surface Shader：会产生一个包含了标准光照模型的表面着色器模板，提供了典型的表面着色器。
+- Standard Surface Shader：会产生一个包含了标准光照模型的<font color = skyblue>表面着色器模板</font>，提供了典型的表面着色器。
 
-- Unlit Shader：会产生一个不包含光照（但包含雾效）的基本的 顶点 / 片元着色器。
+- Unlit Shader：会产生一个不包含光照（但包含雾效）的基本的 <font color = skyblue>顶点 / 片元着色器</font>。
 
 - Image Effect Shader：实现各种屏幕后处理效果，提供了一个基本模板。
 
@@ -2210,7 +2356,7 @@ Unity shader 使用 ShaderLab 来编写。
 
 Unity Shader 本质上就是一个文本文件，也有导入设置。
 
-<img src="Unity Shader 的 Inspector 面板.jpg" style="zoom: 80%;" />
+<img src="图片\Shader\Unity Shader 的 Inspector 面板.jpg" style="zoom: 80%;" />
 
 ### Default Maps
 
@@ -2245,6 +2391,62 @@ Show generated code：打开一个新的文件，在这个文件里将显示 Uni
 属性列表
 
 # ShaderLab 语法
+
+<font color = grass>这是没有 Unity 编辑器的情况下的流水线伪代码。</font>
+
+```
+// 初始化渲染设置
+void Initialization() {
+　　// 从硬盘上加载顶点着色器的代码
+　　string vertexShaderCode = LoadShaderFromFile(VertexShader.shader);
+　　// 从硬盘上加载片元着色器的代码
+　　string fragmentShaderCode = LoadShaderFromFile(FragmentShader.shader);
+　　// 把顶点着色器加载到GPU中
+　　LoadVertexShaderFromString(vertexShaderCode);
+　　// 把片元着色器加载到GPU中
+　　LoadFragmentShaderFromString(fragmentShaderCode);
+　　// 设置名为"vertexPosition"的属性的输入，即模型顶点坐标
+　　SetVertexShaderProperty("vertexPosition"，vertices);
+　　// 设置名为"MainTex"的属性的输入，someTexture是某张已加载的纹理
+　　SetVertexShaderProperty("MainTex"，someTexture);
+　　// 设置名为"MVP"的属性的输入，MVP是之前由开发者计算好的变换矩阵
+　　SetVertexShaderProperty("MVP"，MVP);
+　　// 关闭混合
+　　Disable(Blend);
+　　// 设置深度测试
+　　Enable(ZText);
+　　SetZTestFunction(LessOrEqual);
+　　// 其他设置
+　　…
+}
+// 每一帧进行渲染
+void OnRendering() {
+　　// 调用渲染命令
+　　DrawCall();
+　　// 当涉及多种渲染设置时，我们可能还需要在这里改变各种渲染设置
+　　……
+}
+VertexShader.shader：
+// 输入：顶点位置、纹理、MVP变换矩阵
+in float3 vertexPosition;
+in sampler2D MainTex;
+in Matrix4x4 MVP;
+// 输出：顶点经过MVP变换后的位置
+out float4 position;
+void main() {
+　　// 使用MVP对模型顶点坐标进行变换
+　　position = MVP * vertexPosition;
+}
+FragmentShader.shader：
+// 输入：VertexShader输出的position、经过光栅化程序插值后的该片元对应的position
+in float4 position;
+// 输出：该片元的颜色值
+out float4 fragColor;
+void main() {
+　　// 将片元颜色设为白色
+　　fragColor = float4(1.0，1.0，1.0，1.0);
+}
+```
 
 ## 结构
 
@@ -2472,6 +2674,65 @@ _Cube("Cube",Cube) = "white"{}
 samplerCube _Cube;
 ```
 
+## Unity Shader 内置变量
+
+### 变换矩阵
+
+下面所有矩阵都是 float $4 \times 4$ 类型的。
+
+Unity 5.2 版本的。
+
+| 变量名             |                                                              |
+| ------------------ | ------------------------------------------------------------ |
+| UNITY_MATRIX_MVP   | 当前的模型观察投影矩阵，用于将顶点 / 方向矢量从模型空间变换到裁剪空间 |
+| UNITY_MATRIX_MV    | 当前的模型观察矩阵，用于将顶点 / 方向矢量从模型空间变换到观察空间 |
+| UNITY_MATRIX_V     | 当前的观察矩阵，用于将顶点 / 方向矢量从世界空间变换到观察空间 |
+| UNITY_MATRIX_P     | 当前的投影矩阵，用于将顶点 / 方向矢量从观察空间变换到裁剪空间 |
+| UNITY_MATRIX_VP    | 当前的观察投影矩阵，用于将顶点 / 方向矢量从世界空间变换到裁剪空间 |
+| UNITY_MATRIX_T_MV  | UNITY_MATRIX_MV的转置矩阵                                    |
+| UNITY_MATRIX_IT_MV | UNITY_MATRIX_MV的逆转置矩阵，用于将法线从模型空间变换到观察空间，也可用于得到UNITY_MATRIX_MV的逆矩阵 |
+| _Object2World      | 当前的模型矩阵，用于将顶点 / 方向矢量从模型空间变换到世界空间 |
+| _World2Object      | _Object2World 的逆矩阵，用于将顶点 / 方向矢量从世界空间变换到模型空间 |
+
+<center>Unity 内置的变换矩阵</center>
+
+UNITY_MATRIX_T_MV：
+
+如果 UNITY_MATRIX_MV 是正交矩阵，也就是模型的变换只包含旋转，那么 UNITY_MATRIX_T_MV 是 UNITY_MATRIX_MV 的逆矩阵。我们就可以使用 UNITY_MATRIX_T_MV 把顶点 / 反向矢量从观察空间变换到模型空间。如果模型的变换包含旋转和统一缩放（缩放系数为k），那么 $\frac{1}{k}$ UNITY_MATRIX_T_MV 是 UNITY_MATRIX_MV 的逆矩阵。我们就可以使用 $\frac{1}{k}$ UNITY_MATRIX_T_MV  把顶点 / 反向矢量从观察空间变换到模型空间。如果对反向矢量进行变换，我们可以截取 UNITY_MATRIX_T_MV 的前 3 行前 3 列把反向矢量从观察空间变换到模型空间（前提是只存在旋转和统一缩放）。同样也进行归一化处理，消除统一缩放的影响。
+
+UNITY_MATRIX_IT_MV：
+
+UNITY_MATRIX_IT_MV 可以把法线从模型空间变换到观察空间，我们只需要对它进行转置就可以得到 UNITY_MATRIX_MV 的逆矩阵，把顶点 / 方向矢量从观察空间变换到模型空间。
+
+方法 1：
+
+```
+// 使用 transpose 函数对 UNITY_MATRIX_IT_MV 进行转置
+// 得到 UNITY_MATRIX_MV 的逆矩阵，然后进行列矩阵乘法
+// 观察空间中的点或方向矢量变换到模型空间中
+float4 modelPos = mul(transpose(UNITY_MATRIX_IT_MV),viewPos);
+```
+
+方法 2：
+
+```
+// 不直接使用转置函数 transpose，而是交换 mul 参数的位置，使用行矩阵乘法
+float4 modelPos = mul(viewPos,UNITY_MATRIX_IT_MV);
+```
+
+### 摄像机和屏幕参数
+
+| 变量名                          | 类型              | 描述                                                         |
+| ------------------------------- | ----------------- | ------------------------------------------------------------ |
+| _WorldSpaceCameraPos            | float3            | 该摄像机在世界空间中的位置                                   |
+| _ProjectionParams               | float4            | x = 1.0（或 -1.0，如果正在使用一个翻转的投影矩阵进行渲染），y = Near，z = Far，w = 1.0 + 1.0 / Far，其中 Near 和 Far 分别是近裁剪平面和远裁剪平面和摄像机的距离 |
+| _ScreenParams                   | float4            | x = width，y = height，z = 1.0 + 1.0 / width，w = 1.0 + 1.0 / height，其中 width 和 height 分别是该摄像机的渲染目标（render target）的像素宽度和高度 |
+| _ZBufferParams                  | float4            | x = 1 - Far / Near，y = Far / Near，z = x / Far，w = y / Far，该变量用于线性化 Z 缓存中的深度值 |
+| unity_OrthoParams               | float4            | x = width，y = height，z 没有定义，w = 1.0（该摄像机是正交摄像机）或 w = 0.0（该摄像机是透视摄像机），其中 width 和 height 是正交投影摄像机的宽度和高度 |
+| unity_CameraProjection          | float$4 \times 4$ | 该摄像机的投影矩阵                                           |
+| unity_CameraInvProjection       | float$4 \times 4$ | 该摄像机的投影矩阵的逆矩阵                                   |
+| unity_CameraWorldClipPlanes [6] | float4            | 该摄像机的 6 个裁剪平面在世界空间下的等式，按如下顺序，左、右、下、上、近、远裁剪平面 |
+
 ## 特殊语义
 
 ### 顶点坐标 POSITION
@@ -2568,7 +2829,7 @@ Shader "Learning/固定函数着色器"
 }
 ```
 
-![Unity Shader 的三种形式例子](Unity Shader 的三种形式例子.jpg)
+![Unity Shader 的三种形式例子](图片\Shader\Unity Shader 的三种形式例子.jpg)
 
 <center>从左至右：表面着色器、顶点 / 片元着色器、固定函数着色器</center>
 
