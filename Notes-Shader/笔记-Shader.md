@@ -2523,6 +2523,9 @@ Shader "MyShader/LearningShader1"
             // pragma fragment 片元函数申明，函数名 frag 可以自定义
             #pragma fragment frag
             
+            // 变量类型和变量名必须与属性中定义的相匹配
+            变量类型 变量名;
+            
             // 返回值 vert(形式参数)
             // float4 vector4 : POSITION 意思是将 POSITION 赋值给 vector4
             // float4 vert() : SV_POSITION 意思是 vert 函数的返回值将赋值给 SV_POSITION
@@ -2587,7 +2590,7 @@ UsePass：可以使用该命令复用其他 Unity Shader 中的 Pass。
 
 GrabPass：该 Pass 负责抓取屏幕并将结果存储在一张纹理中，以用于后续的 Pass 处理。
 
-## 属性类型
+## 变量类型
 
 ### Color
 
@@ -2695,6 +2698,141 @@ _Cube("Cube",Cube) = "white"{}
 samplerCube _Cube;
 ```
 
+### ShaderLab 中属性的类型与 Cg 中变量类型的匹配关系
+
+| ShaderLab 属性类型 | Cg 变量类型           |
+| ------------------ | --------------------- |
+| Color，Vector      | float4，half4，fixed4 |
+| Range，Float       | float，half，fixed    |
+| 2D                 | sampler2D             |
+| Cube               | samplerCube           |
+| 3D                 | sampler3D             |
+
+## SubShader
+
+### 结构体
+
+```
+struct 结构体名 {
+	类型 变量名: 语义（也可理解为赋的值，不能被省略）;
+};
+```
+
+### 声明顶点着色器
+
+`#pragma vertex 函数名` 
+
+### 声明片元着色器
+
+`#pragma fragment 函数名`
+
+## 内置的包含文件
+
+包含文件（include file）：类似于 C++ 中头文件的一种文件，文件后缀是 .cginc。使用 `#include` 指令把文件包含进来，就可以使用 Unity 为我们提供的一些非常有用的变量和帮助函数。
+
+```
+CGPROGRAM
+#include "UnityCG.cginc"
+ENDCG
+```
+
+这些内置的包含文件可以在 Unity 安装路径/Data/CGIncludes 中找到，Unity 安装路径可以通过 Unity Hub -> 安装 -> 对应版本的设置 -> 在资源管理器中显示。
+
+| 文件名                     | 描述                                                         |
+| -------------------------- | ------------------------------------------------------------ |
+| UnityCG.cginc              | 包含了最常使用的帮助函数、宏和结构体                         |
+| UnityShaderVariables.cginc | 在编译 Unity Shader 时，会被自动包含进来。包含了许多内置的全局变量，如 UNITY_MATRIX_MVP 等 |
+| Lighting.cginc             | 包含了各种内置的光照模型，如果编写的 Surface Shader 的话，会自动包含进来 |
+| HLSLSupport.cginc          | 在编译 Unity Shader 时，会被自动包含进来。声明了很多用于跨平台编译的宏和定义 |
+
+### UnityCG
+
+#### 预定义结构体
+
+| 名称         | 描述                 | 包含的变量                                           |
+| ------------ | -------------------- | ---------------------------------------------------- |
+| appdata_base | 可用于顶点着色器输入 | 顶点位置、顶点法线、第一组纹理坐标                   |
+| appdata_tan  | 可用于顶点着色器输入 | 顶点位置、顶点切线、顶点法线、第一组纹理坐标         |
+| appdata_full | 可用于顶点着色器输入 | 顶点位置、顶点切线、顶点法线、四组（或更多）纹理坐标 |
+| appdata_img  | 可用于顶点着色器输入 | 顶点位置、第一组纹理坐标                             |
+| v2f_img      | 可用于顶点着色器输出 | 裁剪空间中的位置、纹理坐标                           |
+
+<center>常用结构体</center>
+
+##### appdata_base
+
+```
+struct appdata_base {
+    float4 vertex : POSITION;
+    float3 normal : NORMAL;
+    float4 texcoord : TEXCOORD0;
+    UNITY_VERTEX_INPUT_INSTANCE_ID
+};
+```
+
+##### appdata_tan
+
+```
+struct appdata_tan {
+    float4 vertex : POSITION;
+    float4 tangent : TANGENT;
+    float3 normal : NORMAL;
+    float4 texcoord : TEXCOORD0;
+    UNITY_VERTEX_INPUT_INSTANCE_ID
+};
+```
+
+##### appdata_full
+
+```
+struct appdata_full {
+    float4 vertex : POSITION;
+    float4 tangent : TANGENT;
+    float3 normal : NORMAL;
+    float4 texcoord : TEXCOORD0;
+    float4 texcoord1 : TEXCOORD1;
+    float4 texcoord2 : TEXCOORD2;
+    float4 texcoord3 : TEXCOORD3;
+    fixed4 color : COLOR;
+    UNITY_VERTEX_INPUT_INSTANCE_ID
+};
+```
+
+##### appdata_img
+
+```
+struct appdata_img
+{
+    float4 vertex : POSITION;
+    half2 texcoord : TEXCOORD0;
+    UNITY_VERTEX_INPUT_INSTANCE_ID
+};
+```
+
+##### v2f_img
+
+```
+struct v2f_img
+{
+    float4 pos : SV_POSITION;
+    half2 uv : TEXCOORD0;
+    UNITY_VERTEX_INPUT_INSTANCE_ID
+    UNITY_VERTEX_OUTPUT_STEREO
+};
+```
+
+#### 帮助函数
+
+| 函数名                                       | 描述                                                         |
+| -------------------------------------------- | ------------------------------------------------------------ |
+| float3 WorldSpaceViewDir(float4 v)           | 输入一个模型空间中的顶点位置，返回世界空间中从该点到摄像机的观察方向 |
+| float3 ObjSpaceViewDir(float4 v)             | 输入一个模型空间中的顶点位置，返回模型空间中从该点到摄像机的观察方向 |
+| float3 WorldSpaceLightDir(float4 v)          | 仅可用于前向渲染中。输入一个模型空间中的顶点位置，返回世界空间中从该点到光源的光照方向。没有被归一化。 |
+| float3 ObjSpaceLightDir(float4 v)            | 仅可用于前向渲染中。输入一个模型空间中的顶点位置，返回模型空间中从该点到光源的光照方向。没有被归一化。 |
+| float3 UnityObjectToWorldNormal(float3 norm) | 把法线方向从模型空间转换到世界空间中。                       |
+| float3 UnityObjectToWorldDir(float3 dir)     | 把方向矢量从模型空间转换到世界空间中。                       |
+| float3 UnityWorldToObjectDir(float3 dir)     | 把方向矢量从世界空间变换到模型空间中。                       |
+
 ## Unity Shader 内置变量
 
 ### 变换矩阵
@@ -2705,7 +2843,7 @@ Unity 5.2 版本的。
 
 | 变量名             |                                                              |
 | ------------------ | ------------------------------------------------------------ |
-| UNITY_MATRIX_MVP   | 当前的模型观察投影矩阵，用于将顶点 / 方向矢量从模型空间变换到裁剪空间 |
+| UNITY_MATRIX_MVP   | 当前的模型观察投影矩阵，用于将顶点 / 方向矢量从模型空间变换到裁剪空间。Unity 5.6 版本后 所有与 UNITY_MATRIX_MVP 运算的矩阵或向量的 mul 方法都会被自动转成 UnityObjectToClipPos 方法。 |
 | UNITY_MATRIX_MV    | 当前的模型观察矩阵，用于将顶点 / 方向矢量从模型空间变换到观察空间 |
 | UNITY_MATRIX_V     | 当前的观察矩阵，用于将顶点 / 方向矢量从世界空间变换到观察空间 |
 | UNITY_MATRIX_P     | 当前的投影矩阵，用于将顶点 / 方向矢量从观察空间变换到裁剪空间 |
@@ -2754,11 +2892,152 @@ float4 modelPos = mul(viewPos,UNITY_MATRIX_IT_MV);
 | unity_CameraInvProjection       | float$4 \times 4$ | 该摄像机的投影矩阵的逆矩阵                                   |
 | unity_CameraWorldClipPlanes [6] | float4            | 该摄像机的 6 个裁剪平面在世界空间下的等式，按如下顺序，左、右、下、上、近、远裁剪平面 |
 
+## 关键字
+
+### uniform
+
+是 Cg 中修饰变量和参数的一种修饰词，用于提供一些关于该变量的初始值是如何指定和存储的相关信息。uniform 关键词是可以省略的。
+
+```
+uniform fixed4 _Color;
+```
+
 ## 特殊语义
 
-### 顶点坐标 POSITION
+语义：就是一个赋给 Shader 输入和输出的字符串，这个字符串表达了参数的含义，也就是让 Shader 知道从哪里读取数据，并把数据输出到哪里。Unity 没有支持所有的语义。Unity 为了方便对模型数据的传输，对一些语义进行了特别的含义规定。<font color = skyblue>即便语义的名称一样，如果出现的位置不同，含义也不同。</font>例如在输入结构体 a2f 中，TEXCOORD0  代表把模型的第一组纹理坐标存储在该变量中，而在输出结构体 v2f 中，其含义是有我们决定的。
 
-### SV_POSITION
+在 DirectX 10 后，有了一种新的语义，是 系统数值语义（system-value semantiecs）。这类语义是以 SV 开头，SV 就代表 系统数值（system-value）。用这些语义描述的变量是不可以随意赋值的，因为流水线需要使用它们来完成特定的目的，如渲染引擎会把用 SV_POSITION  修饰的变量经过光栅化后显示在屏幕上。一些 Shader 会使用 PSOITION 而非 SV_POSITION 来修饰顶点着色器的输出。在绝大多数平台上，SV_POSITION 和 POSITION 语义是等价的，但在某些平台（如 索尼 PS4）上必须使用 SV_POSITION 来修饰顶点着色器的输出，否则无法让 Shader 正常工作。还用 COLOR 和 SV_Target。所以，为了让 Shader 有更好的跨平台性，<font color = skyblue>我们最好使用 SV 开头的语义进行修饰。</font>
+
+一个语义可以使用的寄存器只能处理 4 个浮点值（float）。对于矩阵类型数组，可以将矩阵拆分成多个变量存储。
+
+可以在下面网站找到更多关于语义的详细说明页面。
+
+https://docs.microsoft.com/zh-cn/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics?redirectedfrom=MSDN#VS.aspx#VS
+
+### 从应用阶段传递模型数据给顶点着色器
+
+| 语义                               | 描述                                                         |
+| ---------------------------------- | ------------------------------------------------------------ |
+| POSITION                           | 模型空间中的顶点位置，通常是 float4 类型                     |
+| NORMAL                             | 顶点法线，通常是 float3 类型                                 |
+| TANGENT                            | 顶点切线，通常是 float4 类型                                 |
+| TEXCOORDn，如 TEXCOORD0、TEXCOORD1 | 顶点的纹理坐标，TEXCOORD0 表示第一组纹理坐标，依此类推。通常是 float2 或 float4 类型。n 的数目与 Shader Model 有关。一般在 Shader Model 2 和 Shader Model 3 中，n 等于 8。而在 Shader Model 4 和 Shader Model 5 中，n 等于 16。在Unity 内置的数据结构体 appdata_full 中，最多使用 6 个坐标纹理组。 |
+| COLOR                              | 顶点颜色，通常是 fixed4 或 float4 类型                       |
+
+### 顶点着色器传递数据给片元着色器
+
+| 语义                 | 描述                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| SV_POSITION          | 裁剪空间中的顶点坐标，结构体中必须包含一个用该语义修饰的变量。等同于 Direct X 9 中的 POSITION，但最好使用 SV_POSITION。 |
+| COLOR                | 通常由于输出第一组顶点颜色，但不是必须的。                   |
+| COLOR1               | 通常用于输出第二组顶点颜色，但不是必须的。                   |
+| TEXCOORD ~ TEXCOORD7 | 通常用于输出纹理坐标，但不是必须的。                         |
+
+除了 SV_POSITION 有特别含义外，其他语义可以存储任意值到变量中。通常我们需要把一些自定义的数据从顶点着色器传递到片元着色器，一般选用 TEXCOORD0。
+
+### 片元着色器输出
+
+| 语义      | 描述                                                         |
+| --------- | ------------------------------------------------------------ |
+| SV_Target | 输出值将会存储到渲染目标（render target）中。等同于 DirectX 9 中的 COLOR 语义，但最好使用 SV_Target。 |
+
+# 调试
+
+## 假彩色图像
+
+假彩色图像（false-color image）：指的是用假彩色技术生成的一种图像。一张假彩色图像可以用于可视化。
+
+真彩色图像（true-color image）：例如 照片。
+
+假彩色图像法主要把需要调试的变量映射到 [0,1] 之间，将它们作为颜色输出到屏幕上，通过屏幕上显示的像素颜色来判断这个值是否正确。如果我们已知变量的值域范围，就将它映射到 [0,1] 之间进行输出。如果不知道变量范围，只能不停地实验，颜色分量中任何大于 1 地数值将会被设置为 1，任何小于 0 的数值会被设置为 0。所以，我们可以尝试使用不同的映射，直到发现颜色发生了变化。
+
+下面的例子使用了假彩色图像的方式来可视化一些模型数据，如法线、切线、纹理坐标、顶点颜色和它们之间的运算结果等。我们可以通过对代码添加或取消注释，观察到不同运算和数据得到不同结果。
+
+```
+Shader "Unlit/MyShader/DebugWithFalseColor"
+{
+	SubShader
+    {
+	    Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+			#include "UnityCG.cginc"
+
+			struct v2f
+			{
+				float4 pos: SV_POSITION;
+				float4 color: COLOR0;
+			};
+		
+			v2f vert(appdata_full v)
+			{
+				v2f o;
+				// Unity 5.6 版本后 所有与 UNITY_MATRIX_MVP 运算的矩阵或向量的 mul 方法都会被自动转成 UnityObjectToClipPos 方法
+				o.pos = UnityObjectToClipPos(v.vertex);
+				// 可视化法线方向
+				//o.color = fixed4(v.normal * 0.5 + fixed3(0.5,0.5,0.5), 1.0);
+				// 可视化切线方向
+				//o.color = fixed4(v.tangent * 0.5 + fixed3(0.5,0.5,0.5), 1.0);
+				// 可视化副切线方向
+				//fixed3 binormal = cross(v.normal, v.tangent.xyz) * v.tangent.w;
+				//o.color = fixed4(binormal * 0.5 + fixed3(0.5,0.5,0.5), 1.0);
+				// 可视化第一组纹理坐标
+				//o.color = fixed4(v.texcoord.xy, 0.0, 1.0);
+				// 可视化第二组纹理坐标
+				//o.color = fixed4(v.texcoord1.xy, 0.0, 1.0);
+				// 可视化第一组纹理坐标的小数部分
+				//o.color = frac(v.texcoord);
+				//if(any(saturate(v.texcoord) - v.texcoord))
+    //    	    {
+			 //       o.color.b = 0.5;
+    //    	    }
+				//o.color.a = 1.0;
+				// 可视化第二组纹理坐标的小数部分
+				//o.color = frac(v.texcoord1);
+				//if(any(saturate(v.texcoord1) - v.texcoord1))
+    //    	    {
+    //   	    		o.color.b = 0.5;
+    //   			}
+				//o.color.a = 1.0;
+				// 可视化顶点颜色
+				o.color = v.color;
+				return o;
+			}
+
+			fixed4 frag(v2f i): SV_Target
+			{
+				return i.color;
+			}
+			ENDCG
+        }
+    }
+}
+```
+
+## Visual Studio
+
+可以使用 Visual Studio  的 Graphics Debugger。可以查看到每个像素的最终颜色、位置等信息，还可以对顶点着色器和片元着色器进行单步调试。
+
+参考网站：https://docs.unity.cn/cn/2020.1/Manual/SL-DebuggingD3D11ShadersWithVS.html
+
+该网站有详细的教程，<font color = grass>暂时没有细看</font>。
+
+![](图片\Shader\Graphic Debugger.png)
+
+## 帧调试器
+
+帧调试器（Frame Debugger）：在 Unity 的 Window -> Frame Debugger 中。
+
+![](图片\Shader\帧调试器.png)
+
+帧调试器可以用于查看渲染该帧时进行的各种渲染事件（event），这些事件包含了 Draw Call 序列，也包括了类似清空帧缓存等操作。帧调试器窗口大致可分为3个部分：最上面的区域可以开启/关闭（单击 Enable 按钮）帧调试功能，当开启了帧调试时，通过移动窗口最上方的滑动条（或单击前进和后退按钮），我们可以重放这些渲染事件；左侧的区域显示了所有事件的树状图，在这个树状图中，<font color = skyblue>每个叶子节点就是一个事件，而每个父节点的右侧显示了该节点下的事件数目。</font>我们可以从事件的名字了解这个事件的操作，例如以Draw开头的事件通常就是一个 Draw Call；当单击了某个事件时，在右侧的窗口中就会显示出该事件的细节，例如几何图形的细节以及使用了哪个 Shader 等。同时在 Game 视图中我们也可以看到它的效果。如果该事件是一个 Draw Call 并且对应了场景中的一个 GameObject，那么这个 GameObject 也会在 Hierarchy 视图中被高亮显示出来，下图显示了单击渲染某个对象的深度图事件的结果。
+
+![](图片\Shader\帧调试器结果例子.png)
+
+如果被选中的 Draw Call 是对一个渲染纹理（RenderTexture）的渲染操作，那么这个渲染纹理就会显示在 Game 视图中。而且，此时右侧面板上方的工具栏中也会出现更多的选项，例如在Game视图中单独显示 R、G、B 和 A 通道。
+Unity 5 提供的帧调试器实际上并没有实现一个真正的帧拾取（frame capture）的功能，而是仅仅使用停止渲染的方法来查看渲染事件的结果。例如，如果我们想要查看第 4 个 Draw Call 的结果，那么帧调试器就会在第 4 个 Draw Call 调用完毕后停止渲染。这种方法虽然简单，但得到的信息也很有限。如果读者想要获取更多的信息，还是需要使用外部工具，例如 Visual Studio 插件、Intel GPA、RenderDoc、NVIDIA NSight、AMD GPU PerfStudio 等工具。
 
 # 简单的例子
 
@@ -2796,7 +3075,7 @@ Shader "Learning/简单的表面着色器"
 
 ## 顶点 / 片元着色器
 
-顶点 / 片元着色器的代码也需要定义在 CGPROGRAM 和 ENDCG 之间，<font color = skyblue>但顶点 / 片元着色器是写在 Pass 语义块内</font>，需要我们自己定义每个 Pass 块需要使用的代码。灵活性更高，能控制更多的渲染的实现细节。
+顶点 / 片元着色器的代码也需要定义在 CGPROGRAM 和 ENDCG 之间，<font color = skyblue>但顶点 / 片元着色器是写在 Pass 语义块内</font>，需要我们自己定义每个 Pass 块需要使用的代码。灵活性更高，能控制更多的渲染的实现细节。顶点着色器的输出结构中，<font color = skyblue>必须包含一个语义是 SV_POSITION 的变量</font>，否则无法渲染到屏幕上。顶点着色器是逐顶点调用的，而片元着色器是逐片元调用的。片元着色器中的输入是把顶点着色器的输出进行插值后的结果。
 
 ```
 Shader "Learning/简单的顶点片元着色器"
