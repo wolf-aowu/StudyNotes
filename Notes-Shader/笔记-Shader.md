@@ -3039,6 +3039,10 @@ Shader "Unlit/MyShader/DebugWithFalseColor"
 如果被选中的 Draw Call 是对一个渲染纹理（RenderTexture）的渲染操作，那么这个渲染纹理就会显示在 Game 视图中。而且，此时右侧面板上方的工具栏中也会出现更多的选项，例如在Game视图中单独显示 R、G、B 和 A 通道。
 Unity 5 提供的帧调试器实际上并没有实现一个真正的帧拾取（frame capture）的功能，而是仅仅使用停止渲染的方法来查看渲染事件的结果。例如，如果我们想要查看第 4 个 Draw Call 的结果，那么帧调试器就会在第 4 个 Draw Call 调用完毕后停止渲染。这种方法虽然简单，但得到的信息也很有限。如果读者想要获取更多的信息，还是需要使用外部工具，例如 Visual Studio 插件、Intel GPA、RenderDoc、NVIDIA NSight、AMD GPU PerfStudio 等工具。
 
+# 注意
+
+<font color = grass>这里留一个坑位，5.6 节</font>。
+
 # 简单的例子
 
 ## 表面着色器
@@ -3139,4 +3143,89 @@ Shader "Learning/固定函数着色器"
 - 如果需要使用的光照数目非常少 或者 需要很多自定义渲染效果，使用顶点 / 片元着色器是一个更好的选择
 - 需要在非常旧的设备上运行游戏的，选择固定函数着色器
 
- 
+# 基础光照
+
+## 基本概念
+
+### 光源
+
+我们通常使用 l 来表示<font color = skyblue>光源发出的光的方向</font>。
+
+### 辐照度
+
+辐照度（irradiance）：用来量化光。对于平行光，辐照度通过计算在垂直于 l 的单位面积上的单位时间内穿过的能量得到。光源发出的光的方向通常不与物体表面垂直，我们通常使用光源方向 l 与表面法线 n 之间的夹角的余弦值得到辐照度。余弦值 可以使用 光源方向l 与 表面法线 n 的点积得到。
+
+辐照度 与 照射到物体表面时光线之间的距离`d / cos` 成反比，辐照度 与 `cos` 成正比。
+
+### 散射与吸收
+
+光源发出光线与物体相交的结果通常有两个：散射（scattering） 与 吸收（absorption）。
+
+#### 散射
+
+散射：只改变光线的<font color = skyblue>方向</font>。光线经过物体表面散射后，有两种方向：散射到物体内部 和 散射到物体外部。散射到物体<font color = skyblue>内部</font>被称为<font color = skyblue>折射（refraction）或投射（transmission）</font>。散射到物体<font color = skyblue>外部</font>被称为<font color = skyblue>反射（reflaction）</font>。
+
+#### 吸收
+
+吸收：只改变光线的<font color = skyblue>密度和颜色</font>。
+
+在光照模型中，我使用<font color = skyblue>高光反射（specular）</font>来表示物体表面如何<font color = skyblue>反射</font>光线的；<font color = skyblue>漫反射（diffuse）</font>表示<font color = skyblue>有多少光线会被折射、吸收和散射出表面</font>。
+
+### 出射度
+
+出射度：出射光线的数量和方向。
+
+### 着色
+
+着色（shading）：根据材质属性（如漫反射属性等）、光源信息（如光源方向、辐照度等），使用等式去计算沿某个观察方向的出射度的过程。
+
+### 光照模型
+
+光照模型（Lighting Model）：一个计算沿某个观察方向的出射度的等式。
+
+### 标准光照模型
+
+由裴祥风（Bui Tuong Phong）提出。标准光照模型只关心直接光照（direct light），也就是那些直接从光源发射出来照射到物体表面后，经过物体表面的一次反射直接进入摄像机的光线。
+
+#### 基本方法
+
+将进入摄像机的光线分为 4 个部分，每个部分使用一种方法来计算它的贡献度。
+
+##### 环境光
+
+环境光（ambient）：使用 $c_{ambient}$ 表示。用于描述其他所有的间接光照（间接光照（indirect light）：光线在多个物体之间反射后进入摄像机，即光线在进入摄像机之前经过了不止一次的物体反射。）。它通常是一个全局变量，场景中的所有物体都使用这个环境光。
+$$
+c_{ambient} = g_{ambient}
+$$
+
+##### 自发光
+
+自发光（emissive）：使用 $c_{emissive}$ 表示。用于描述当给定一个方向时，一个表面本身会向该方向发射多少辐射量。如果没有全局光照（global illumination），自发光的表面<font color = skyblue>不会真正的照亮周围物体</font>，而是本身看起来更亮了。直接由光源发射光线进入摄像机，不经过任何物体的反射。
+$$
+c_{emissive} = m_{emissive}
+$$
+
+##### 高光反射
+
+高光反射（specular）：使用 $c_{specular}$ 表示。用于描述当光线从光源照射到模型表面时，该表面会在完全镜面反射方向散射多少辐射量。一般被用来使物体看起来有光泽。计算高光反射需要较多的信息，如表面法线、视角方向、光源方向、反射方向等。
+
+![](图片\Shader\Phong模型高光反射需要的信息.png)
+
+计算反射方向：
+$$
+\vec{r} = 2(\vec{n} \cdot \vec{l})\vec{n} - \vec{l}
+$$
+计算高光反射：
+$$
+c_{specular} = (c_{light} \cdot m_{specular})max(0,\vec{v} \cdot \vec{r})^{m_{gloss}}
+$$
+$m_{gloss}$ 是材质的光泽度（gloss），也被称为反光度（shininess）。它用于控制高光区域的 亮点 宽度，$m_{gloss}$ 越大，亮点就越小。$m_{specular}$ 是材质的高光反射颜色，用于控制材质对于高光反射的强度和颜色。$c_{light}$ 则是光源的颜色和强度。<font color = skyblue>注意：</font>需要防止 $\vec{v} \cdot \vec{r}$ 的结果为负数。
+
+##### 漫反射
+
+漫反射（diffuse）：使用 $c_{diffuse}$ 表示。用于描述当光线照射到模型表面时，该表面会向每个方向散射多少辐射量。在漫反射中，视角的位置是不重要的，反射是完全随机的，我们可以认为任何反射方向上的的分布是一样的。但是，<font color = skyblue>入射光线的角度十分重要</font>。漫反射光照符合<font color = skyblue>兰伯特定律（Lambert's law）：反射光线的强度 与 表面法线和光源方向之间夹角的的余弦值 成正比。</font>
+$$
+c_{diffuse} = (c_{light} \cdot m_{diffuse})max(0,\vec{n} \cdot \vec{l})
+$$
+$\vec{n}$ 是表面法线，$\vec{l}$ 是指向光源的单位矢量，$m_{diffuse}$ 是材质的漫反射颜色，$c_{light}$ 是光源的颜色。<font color = skyblue>注意：</font>需要防止法线和光源方向点乘的结果为负值，我们可以使用取最大值的函数来将其截取到 0，这可以防止物体被从后面的光源照亮。
+
