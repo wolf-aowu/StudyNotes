@@ -20,6 +20,23 @@ git init
 git help 命令
 ```
 
+# bash 中文乱码
+
+先尝试下面代码（我试了就成功了）
+
+```shell
+git config --global core.quotepath false
+```
+
+如果不成功，尝试下面代码
+
+```shell
+git config --global gui.encoding utf-8
+git config --global i18n.commit.encoding utf-8
+git config --global i18n.logoutputencoding utf-8
+export LESSCHARSET=utf-8
+```
+
 # 设置签名
 
 必须要设置签名。
@@ -322,8 +339,71 @@ git push 地址别名 本地分支:远程分支
 
 # 克隆他人 GitHub 项目
 
+## 使用 https 下载
+
 ```
 git clone 他人项目的 https 地址
+```
+
+## 使用 ssh 下载
+
+### 设置 config
+
+需要设置 name 和 email，设置方法见 设置签名。
+
+### 新建 ssh key
+
+```shell
+ssh-keygen -t rsa -C "config中配置的邮箱"
+```
+
+会询问 ssh key 文件的存放位置，一般直接回车使用默认的存放位置。
+
+然后会询问设置密码，一般直接回车。
+
+![](设置 ssh key.png)
+
+然后前往默认路径或者刚刚自己设置的路径，找到 id_rsa.pub 文件复制全部。
+
+如果不知道默认路径可以使用以下命令进入并查看具体内容
+
+```shell
+cd ~/.ssh
+cat id_rsa.pub
+```
+
+### 为 GitHub 设置 SSH
+
+右上角，进入个人设置页面 Settings，选择左侧 SSH and GPG keys，然后点击右上角 New SSH key。
+
+Title 是为 SSH key 起的名字，我一般以使用的设备进行命名。
+
+Key type 使用默认的 Authentication Key 就行。
+
+Key 为从 id_rsa.pub 中复制的内容，把内容结尾自己的邮箱去掉，最后应该是以 `=` 结尾。
+
+### 验证
+
+可以使用以下命令验证 ssh 是否配置成功
+
+```shell
+ssh -T git@github.com
+```
+
+成功会出现：
+
+![](ssh验证成功.png)
+
+警告的翻译：
+
+永久添加 github.com 到已知主机列表。你已经认证成功了，但是 GitHub 不提供 shell 访问。
+
+所以这个警告没什么，可以忽略。
+
+### 下载
+
+```shell
+git clone ssh 地址
 ```
 
 # 上传大文件
@@ -378,9 +458,23 @@ git push origin main
 
 ### git lfs migrate 的补充
 
-官方网站：https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-migrate.1.ronn?utm_source=gitlfs_site&utm_medium=doc_man_migrate_link&utm_campaign=gitlfs
+官方网站：https://github.com/git-lfs/git-lfs
 
 别人的中文笔记：https://murphypei.github.io/blog/2019/12/git-lfs
+
+# 下载含大文件的仓库
+
+对于使用 lfs 来上传大文件的仓库，需要使用 lfs 来拉取仓库。如果没有使用 lfs 来拉去仓库，下载会卡住。使用 lfs 拉取仓库时下载大文件可能需要很久，需要耐心等待，主要注意下载速度是否改变，改变就慢慢等。
+
+下载大文件失败如下图所示，会卡在红框那停住，Ctrl + C 终止会出下面这段提示。
+
+![](下载含大文件仓库失败.png)
+
+使用 lfs 下载仓库：
+
+```shell
+git lfs clone 项目的 https/ssh 地址
+```
 
 ## 改 git 的配置文件
 
