@@ -10,13 +10,13 @@
 
 在当前目录下本地库初始化，会在当前目录中生成隐藏文件夹 .git
 
-```
+```shell
 git init
 ```
 
 # 查看命令帮助文档
 
-```
+```shell
 git help 命令
 ```
 
@@ -61,7 +61,7 @@ Email：1093731746@qq.com
 
 项目级别优先于系统用户级别
 
-```
+```shell
 # 项目级别/仓库级别
 git config user.name wolf
 git config user.email 1093731746@qq.com
@@ -81,34 +81,34 @@ cat ~/.gitconfig
 
 # 查看状态
 
-```
+```shell
 # 查看工作区、暂存区状态
 git status
 ```
 
 # 提交文件至暂存区
 
-```
+```shell
 # 将工作区的 “新建/修改” 提交至暂存区
 git add 文件名
 ```
 
 # 将文件移出暂存区
 
-```
+```shell
 git rm --cached 文件名
 ```
 
 # 提交文件
 
-```
+```shell
 # 将暂存区的内容提交到本地库
 git commit -m "提交文件的日志" 文件名
 ```
 
 # 提交所有修改过的文件
 
-```
+```shell
 # 方法一
 # 正常提交，一个文件一个提交：先提交暂存区，再提交到本地库
 # 方法二
@@ -118,7 +118,7 @@ git commit -m "提交文件的日志" -a
 
 # 查看版本历史记录
 
-```
+```shell
 # 查看所有版本历史记录,详细显示
 git log
 # 多屏显示控制方式
@@ -141,7 +141,7 @@ git reflog
 
 - 基于索引值操作（推荐）
 
-  ```
+  ```shell
   # 前进后退都可
   git reset --hard 索引值 （# 局部索引值即可）
   
@@ -153,7 +153,7 @@ git reflog
 
   只能后退
 
-  ```
+  ```shell
   git reset --hard HEAD^ （# 一个 ^ 符号后退一步，后退三步则 ^^^）
   ```
 
@@ -161,7 +161,7 @@ git reflog
 
   只能后退
 
-  ```
+  ```shell
   git reset --hard HEAD~后退步数 （# ~3为后退3步）
   ```
 
@@ -172,7 +172,7 @@ reset 的三个参数对比:
 
   1. 仅仅在本地库移动 HEAD 指针
 
-  ``` 
+  ``` shell
   git reset --soft 索引值 （# 局部索引值即可）
   ```
 
@@ -188,7 +188,7 @@ reset 的三个参数对比:
 
   2. 重置暂存区
 
-   ```
+   ```shell
    git reset --mixed 索引值 （# 局部索引值即可）
    ```
 
@@ -206,7 +206,7 @@ reset 的三个参数对比:
   
   3. 重置工作区
   
-   ```
+   ```shell
    git reset --hard 索引值 （# 局部索引值即可）
    ```
   
@@ -222,13 +222,13 @@ reset 的三个参数对比:
 
 ​		被删除的文件一定要已提交至本地库，才可被找回。
 
-```
+```shell
 rm 文件名
 ```
 
 # 比较文件
 
-```
+```shell
 # 将工作区内文件与暂存区内文件进行比较
 # 因此对于新建的文件需要先使用 git add 命令将文件提交至暂存区
 git diff 文件名
@@ -265,19 +265,19 @@ git 中主干为 master 。各个分支的功能是互相独立的，不会造�
 
 ### 查看所有分支
 
-```
+```shell
 git branch -v
 ```
 
 ### 创建分支
 
-```
+```shell
 git branch 分支名
 ```
 
 ### 切换分支
 
-```
+```shell
 git checkout 分支名
 ```
 
@@ -289,7 +289,7 @@ git checkout 分支名
 
 2. 合并
 
-   ```
+   ```shell
    git merge 分支名（# 已修改过的分支）
    ```
 
@@ -297,7 +297,7 @@ git checkout 分支名
 
    文件中的冲突表现为：
 
-   ```
+   ```shell
    # 各分支内容间用一行 = 隔开
    <<<<<<< 分支一名
    分支一内容
@@ -312,7 +312,7 @@ git checkout 分支名
 
 6. 提交文件至本地库
 
-   ```
+   ```shell
    git commit -m "提交文件的日志" （# 此处不能加文件名，加文件名会报错）
    ```
 
@@ -320,20 +320,28 @@ git checkout 分支名
 
 # 查看所有地址别名
 
-```
+```shell
 # fetch 表示获取 push 表示推送
 git remote -v
 ```
 
 # 添加地址和对应别名
 
-```
+```shell
 git remote add 地址别名 github 上的 https 地址
 ```
 
 # 推送分支至 GitHub
 
+如果我们的本地仓库不是通过 `git clone` 命令从网上拉取的，而是先在本地自己使用 `git init` 命令创建的。那么我们需要先执行下面这句来与远程仓库的某个分支建立联系：
+
+```shell
+git pull --rebase 远程地址别名 远程分支名
 ```
+
+推送分支至 GitHub：
+
+```shell
 git push 地址别名 本地分支:远程分支
 ```
 
@@ -341,7 +349,7 @@ git push 地址别名 本地分支:远程分支
 
 ## 使用 https 下载
 
-```
+```shell
 git clone 他人项目的 https 地址
 ```
 
@@ -422,13 +430,13 @@ Windows 用户似乎不需要下载，应该已经在装 git 时安装了。
 
 安装命令：（Windows 执行时应该是已经装完了的，至少我是这样）
 
-```
+```shell
 git lfs install
 ```
 
 让 Git LFS 追踪上大文件
 
-```
+```shell
 git lfs track 文件名
 ```
 
@@ -444,12 +452,12 @@ To do that, use the  [`git lfs migrate`](https://github.com/git-lfs/git-lfs/blob
 
 要做到这一点，可以使用 `git lfs migrate` 命令，它有一系列的选项，旨在适应各种潜在的使用情况。
 
-```
+```shell
 git add .gitattributes
 ```
 按正常流程提交大文件：
 
-```
+```shell
 git add 大文件文件名
 git commit -m "Add design file"
 # 提交到远程分支
@@ -480,13 +488,13 @@ git lfs clone 项目的 https/ssh 地址
 
 这句是修改上传缓冲上限：524288000 = 500 * 1024 * 1024 = 500M
 
-```
+```shell
 git config http.postBuffer 524288000
 ```
 
 查看修改后的 config 文件
 
-```
+```shell
 git config -l
 ```
 
