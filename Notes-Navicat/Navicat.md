@@ -248,3 +248,48 @@ pause
 `reg delete` 的参数 `/f`：删除现有的注册表子项或条目，而不要求确认。
 
 `reg delete` 命令官方文档：https://learn.microsoft.com/zh-cn/windows-server/administration/windows-commands/reg-delete
+
+# 连接 MySQL
+
+## 查看 MySQL 端口号
+
+MySQL 安装时，有一个端口号。
+
+默认 Port：3306；默认 X Protocol Port：330060
+
+Windows Service Name：MySQL80
+
+打开命令行，进入 MySQL 安装位置\bin 目录下，输入如下命令：
+
+```shell
+mysql -uroot -p
+```
+
+输入安装时设置的密码：1234
+
+输入：
+
+```mysql
+show global variables like 'port';
+```
+
+## 新建连接
+
+左上角连接 -> MySQL
+
+一共有六个页签：常规、高级、数据库、SSL、SSH、HTTP
+
+高级中可以设置位置，数据库应该可以添加数据库
+
+常规：
+
+连接名：随意取
+
+主机：localhost
+
+端口：MySQL 的端口号，默认 3306
+
+用户名：MySQL 的用户名，默认 root
+
+密码：MySQL 的密码，1234
+
