@@ -4,25 +4,73 @@
 
 SQL（sequel）：结构化查询语言。几乎所有重要的 DBMS 都支持 SQL。许多 DBMS 厂商通过增加语句或指令，对 SQL 进行了扩展。这种扩展的目的是提供执行特定操作的额外功能或简化方法。虽然这种扩展很有用，但一般都是针对个别 DBMS 的，很少有两个以上的供应商支持这种扩展。 标准 SQL 由 ANSI 标准委员会管理，从而称为 ANSI SQL。所有主要的 DBMS，即使有自己的扩展，也都支持 ANSI SQL。各个实现有自己的名称，如 PL/SQL、Transact-SQL 等。
 
+---
+
 数据库（database）：保存有组织的数据的容器（通常是一个文件或一组文件）。
+
+---
 
 数据库管理系统（DBMS）：数据库软件。
 
+---
+
 表（table）：某种特定类型数据的结构化清单。存储在表中的数据应为<font color = skyblue>同一种类型</font>的数据或清单，否则会使以后检索和访问很困难。在同一个数据库中表名应具有唯一性，但不同的数据库之间可以使用相同的表明。
+
+---
 
 模式（schema）：关于数据库和表的布局及特性的信息。表具有一些特性，这些特性定义了数据在表中如何存储，包含什么样的数据，数据如何分解，各部分信息如何命名等信息，这组信息被称为模式。模式可以用来描述数据库中特定的表，也可以用来描述整个数据库和其中表的关系。
 
+---
+
 关键字（keyword）：作为 SQL 组成部分的保留字。关键字不能用作表或列的名字。
+
+---
 
 子句（clause）：SQL 语句由子句构成，有些子句是必需的，有些则是可选的。一个子句通常由一个关键字加上所提供的数据组成。例如：SELECT 语句的 FROM 子句。
 
+---
+
 操作符（operator）：用来联结或改变 WHERE 子句中的子句的关键字，也称为<font  color = skyblue>逻辑操作符 （logical operator）</font>。
+
+---
 
 通配符（wildcard）：用来匹配值的一部分的特殊字符。通配符本身实际上是 SQL 的 WHERE 子句中有特殊含义的字符。在搜索子句中使用通配符，<font color = skyblue>必须使用 LIKE 操作符。</font><font color = skyblue>通配符搜索只能用于文本字段（字符串），非文本数据类型字段不能使用通配符搜索。</font>
 
+---
+
 搜索模式（search pattern）：由字面值、通配符或两者组合构成的搜索条件。
 
+---
+
 谓词（predicate）：操作符何时不是操作符？答案是，它作为谓词时。从技术上说，LIKE 是谓词而不是操作符。
+
+---
+
+字段（field）：基本上与列（column）的意思相同，经常互换使用，不过数据库列一 般称为列，而字段这个术语通常在计算字段这种场合下使用。
+
+---
+
+计算字段：存储在数据库表中的数据一般不是应用程序所需要的格式，此时需要直接从数据库中检索出转换、计算或格式化过的数据，而不是检索出数据，然后再在客户端应用程序中重新格式化。计算字段就是用在此时。计算字段并不实际存在于数据库表中。计算字段是运行时在 SELECT 语句内创建的。<font color = skyblue>只有数据库知道 SELECT 语句中哪些列是实际的表列，哪些列是计算字段。从客户端（如应用程序）来看，计算字段的数据与其他列的数据的返回方式相同。</font>一般来说，<font color = orange>在数据库服务器上完成这些操作比在 客户端中完成要快得多。</font>
+
+计算字段应用场景举例：
+
+1. 需要显示公司名，同时还需要显示公司的地址，但这两个信息存储在不同的表列中。
+2. 城市、州和邮政编码存储在不同的列中（应该这样），但邮件标签打印程序需要把它们作为一个有恰当格式的字段检索出来。
+3. 列数据是大小写混合的，但报表程序需要把所有数据按大写表示出来。
+4. 物品订单表存储物品的价格和数量，不存储每个物品的总价格（用价格乘以数量即可）。但为打印发票，需要物品的总价格。
+5. 需要根据表数据进行诸如总数、平均数的计算。
+
+---
+
+拼接（concatenate）：将值联结到一起（将一个值附加到另一个值）构成单个值。
+
+---
+
+别名（alias）：是一个字段或值的替换名。别名有时也称为导出列（derived column）。
+
+---
+
+可移植（portable）：所编写的代码可以在多个系统上运行。
 
 ### 表
 
@@ -1099,4 +1147,356 @@ ORDER BY cust_contact;
 1. 不要过度使用通配符。如果其他操作符能达到相同的目的，应该使用其他操作符。
 2. 在确实需要使用通配符时，也尽量不要把它们用在搜索模式的开始处。把通配符置于开始处，搜索起来是最慢的。
 3. 仔细注意通配符的位置。如果放错地方，可能不会返回想要的数据。
+
+### 创建计算字段
+
+#### 拼接字段
+
+如何使用计算字段的一个简单例子：
+
+Vendors 表包含供应商名和地址信息。假如要生成一个供应商报表，需要在格式化的名称（位置）中列出供应商的位置。此报表需要一个值，而表中数据存储在两个列 vend_name 和 vend_country 中。还需要用括号将 vend_country 括起来。
+
+解决方法是把两个列拼接起来。在 SQL 中的 SELECT 语句中，可使用一 个特殊的操作符来拼接两个列。根据所使用的 DBMS，此操作符可用加号（+）或两个竖杠（||）表示。<font color = orange>SQL Server 使用+号。DB2、Oracle、PostgreSQL 和 SQLite 使用 ||。详细请参阅相应的 DBMS 文档。在 MySQL 和 MariaDB 中，必须使用特殊的函数 Concat。</font>
+
+使用 +
+
+```sql
+SELECT vend_name + '(' + vend_country + ')'
+FROM Vendors
+ORDER BY vend_name;
+```
+
+使用 ||
+
+```sql
+SELECT vend_name || '(' || vend_country || ')'
+FROM Vendors
+ORDER BY vend_name;
+```
+
+输出：
+
+```sql
+-----------------------------------------------------------
+Bear Emporium (USA )
+Bears R Us (USA )
+Doll House Inc. (USA )
+Fun and Games (England )
+Furball Inc. (USA )
+Jouets et ours (France )
+```
+
+在 MySQL 和 MariaDB 中
+
+```sql
+SELECT Concat(vend_name, ' (', vend_country, ')') 
+FROM Vendors
+ORDER BY vend_name;
+```
+
+输出：
+
+```sql
++--------------------------------------------+
+| Concat(vend_name, ' (', vend_country, ')') |
++--------------------------------------------+
+| Bear Emporium (USA)                        |
+| Bears R Us (USA)                           |
+| Doll House Inc. (USA)                      |
+| Fun and Games (England)                    |
+| Furball Inc. (USA)                         |
+| Jouets et ours (France)                    |
++--------------------------------------------+
+6 rows in set (0.00 sec)
+```
+
+返回的这一列就是计算机字段。SELECT 语句返回的输出结合成一个计算字段，所用的两个列末尾会用空格填充，<font color = skyblue>部分数据库的计算字段会保留填充的空格。</font>
+
+可以使用 RTRIM() 函数来去掉不必要的空格。RTRIM() 函数是去掉值右边的所有空格。
+
+```sql
+SELECT RTRIM(vend_name) + ' (' + RTRIM(vend_country) + ')'
+FROM Vendors
+ORDER BY vend_name;
+```
+
+输出：
+
+```sql
+-----------------------------------------------------------
+Bear Emporium (USA)
+Bears R Us (USA)
+Doll House Inc. (USA)
+Fun and Games (England)
+Furball Inc. (USA)
+Jouets et ours (France)
+```
+
+<font color = skyblue>大多数 DBMS 都支持 RTRIM()（去掉字符串右边的空格）、LTRIM()（去掉字符串左边的空格）以及 TRIM()（去掉字符串左右两边的空格）</font>
+
+#### 使用别名
+
+SELECT 语句可以很好地拼接地址字段。但是，这个新计算列实际上没有名字，它只是一个值。一个未命名的列不能用于客户端应用中，因为客户端没有办法引用它。为了解决这个问题，SQL 支持列别名。别名（alias）是一个字段或值的替换名。别名用 AS 关键字赋予。别名的名字既可以是一个单词，也可以是一个字符串。如果是后者，<font color = orange>字符串应该括在引号中。虽然这种做法是合法的，但不建议这么去做。 多单词的名字可读性高，不过会给客户端应用带来各种问题。</font><font color = skyblue>因此， 别名最常见的使用是将多个单词的列名重命名为一个单词的名字。</font>
+
+别名的用途：
+
+1. 给计算字段起名
+2. 实际表列名包含不合法字符时，重新命名表列名
+3. 当原来的表列名含混或容易误解时，扩充表列名
+
+SELECT 语句本身与以前使用的相同，只不过计算字段之后跟了文本 AS vend_title。指示 SQL 创建一个包含指定计算结果的名为 vend_title 的计算字段。结果与以前的相同，但现在列名为 vend_title，任何客户端应用都可以按名称引用这个列，就像 它是一个实际的表列一样。
+
+使用 +
+
+```sql
+SELECT RTRIM(vend_name) + ' (' + RTRIM(vend_country) + ')' 
+AS vend_title
+FROM Vendors
+ORDER BY vend_name;
+```
+
+使用 ||
+
+```sql
+SELECT RTRIM(vend_name) || ' (' || RTRIM(vend_country) || ')'
+AS vend_title
+FROM Vendors
+ORDER BY vend_name; 
+```
+
+输出：
+
+```sql
+vend_title
+-----------------------------------------------------------
+Bear Emporium (USA)
+Bears R Us (USA)
+Doll House Inc. (USA)
+Fun and Games (England)
+Furball Inc. (USA)
+Jouets et ours (France)
+```
+
+在 MySQL 和 MarialDB 中：
+
+```sql
+SELECT Concat(RTrim(vend_name), ' (', RTrim(vend_country), ')') AS vend_title
+FROM Vendors
+ORDER BY vend_name;
+```
+
+输出：
+
+``` sql
++-------------------------+
+| vend_title              |
++-------------------------+
+| Bear Emporium (USA)     |
+| Bears R Us (USA)        |
+| Doll House Inc. (USA)   |
+| Fun and Games (England) |
+| Furball Inc. (USA)      |
+| Jouets et ours (France) |
++-------------------------+
+6 rows in set (0.02 sec)
+```
+
+<font color = orange>在很多 DBMS 中，AS 关键字是可选的，不过最好使用它，这被视为一条最佳实践。</font>
+
+#### 执行算术计算
+
+计算字段的另一常见用途是对检索出的数据进行算术计算。
+
+Orders 表包含收到的所有订单，OrderItems 表包含每个订单中的各项物品。item_price 列包含订单中每项物品的单价。检索订单号 20008 中的所有物品并汇总物品的价格（单价乘以订购数量）。
+
+```sql
+SELECT prod_id, quantity, item_price,
+       quantity*item_price AS expanded_price
+FROM OrderItems
+WHERE order_num = 20008; 
+```
+
+输出：
+
+```sql
++---------+----------+------------+----------------+
+| prod_id | quantity | item_price | expanded_price |
++---------+----------+------------+----------------+
+| RGAN01  |        5 |       4.99 |          24.95 |
+| BR03    |        5 |      11.99 |          59.95 |
+| BNBG01  |       10 |       3.49 |          34.90 |
+| BNBG02  |       10 |       3.49 |          34.90 |
+| BNBG03  |       10 |       3.49 |          34.90 |
++---------+----------+------------+----------------+
+5 rows in set (0.00 sec)
+```
+
+输出中显示的 expanded_price 列是一个计算字段，此计算为 quantity * item_price，客户端应用现在可以使用这个新计算列。
+
+SQL 支持的基本算术操作符，圆括号可用来区分优先顺序。
+
+| 操作符 | 说明 |
+| ------ | ---- |
+| +      | 加   |
+| -      | 减   |
+| *      | 乘   |
+| /      | 除   |
+
+#### 测试计算
+
+SELECT 语句为测试、检验函数和计算提供了很好的方法。<font color = skyblue>SELECT 省略了 FROM 子句后就是简单地访问和处理表达式</font>，例如 SELECT 3 * 2; 将返回 6，SELECT Trim(' abc '); 将返回 abc，SELECT Curdate(); 使用 Curdate() 函数返回当前日期和时间。可以根据需要使用 SELECT 语句进行检验。
+
+```sql
+SELECT 3 * 2;
+```
+
+输出：
+
+```sql
++-------+
+| 3 * 2 |
++-------+
+|     6 |
++-------+
+1 row in set (0.00 sec)
+```
+
+---
+
+```sql
+SELECT Trim(' abc ');
+```
+
+输出：
+
+``` sql
++---------------+
+| Trim(' abc ') |
++---------------+
+| abc           |
++---------------+
+1 row in set (0.00 sec)
+```
+
+---
+
+``` sql
+SELECT Curdate();
+```
+
+输出：
+
+```sql
++------------+
+| Curdate()  |
++------------+
+| 2022-10-04 |
++------------+
+1 row in set (0.02 sec)
+```
+
+### 使用函数处理数据
+
+#### 函数
+
+SQL 可以用函数来处理数据。函数一般是在数据上执行的，为数据的转换和处理提供了方便。<font color = skyblue>它不仅可以作为 SELECT 语句的其他成分，如在 WHERE 子句中使用，在其他 SQL 语句中使用等。</font>与几乎所有 DBMS 都等同地支持 SQL 语句（如 SELECT）不同，每一个 DBMS 都有特定的函数。<font color = orange>只有少数几个函数被所有主要的 DBMS 等同地支持。</font>虽然所有类型的函数一般都可以在每个 DBMS 中使用，但各个函数的名称和语法可能极其不同。
+
+常用的 3 个函数在各个 DBMS 中的语法
+
+| 函数                 | 语法                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| 提取字符串的组成部分 | DB2、Oracle、PostgreSQL 和 SQLite 使用 SUBSTR()；MarialDB、MySQL 和 SQL Server 使用 SUBSTRING() |
+| 数据类型转换         | Oracle 使用多个函数，每种类型的转换有一个函数；DB2 和 PostgreSQL 使用 CAST()；MarialDB、MySQL 和 SQL Server 使用 CONVERT() |
+| 取当前日期           | DB2 和 PostgreSQL 使用 CURRENT_DATE；MariaDB 和 MySQL 使用 CURDATE()；Oracle 使用 SYSDATE；SQL Server 使用 GETDATE()； SQLite 使用DATE() |
+
+为了代码的可移植，许多 SQL 程序员不赞成使用特定于实现的功能。虽然这样做很有好处，但有的时候并不利于应用程序的性能。如果不使用这些函数，编写某些应用程序代码会很艰难。必须利用其他方法来实现 DBMS 可以非常有效完成的工作。是否使用函数的决定权在你，使用或是不使用没有对错之分。<font color = orange>如果决定使用函数，应该保证做好代码注释， 以便以后你自己（或其他人）能确切地知道这些 SQL 代码的含义。优先考虑使用常规操作符，当使用操作符过于复杂和艰难时考虑使用函数。</font>
+
+大多数 SQL 支持以下类型的函数：
+
+1. 用于处理文本字符串（如删除或填充值，转换值为大写或小写）的文本函数。
+2. 用于在数值数据上进行算术操作（如返回绝对值，进行代数运算）的数值函数。
+3. 用于处理日期和时间值并从这些值中提取特定成分（如返回两个日期之差，检查日期有效性）的日期和时间函数。
+4. 用于生成美观好懂的输出内容的格式化函数（如用语言形式表达出日期，用货币符号和千分位表示金额）。
+5. 返回 DBMS 正使用的特殊信息（如返回用户登录信息）的系统函数。
+
+#### 文本处理函数
+
+拼接字段中已经见过了 RTRIM() 来去除列值右边的空格。现在介绍 UPPER() 函数。UPPER() 将文本转换为大写。
+
+```sql
+SELECT vend_name, UPPER(vend_name) AS vend_name_upcase
+FROM Vendors
+ORDER BY vend_name;
+```
+
+输出：
+
+``` sql
++-----------------+------------------+
+| vend_name       | vend_name_upcase |
++-----------------+------------------+
+| Bear Emporium   | BEAR EMPORIUM    |
+| Bears R Us      | BEARS R US       |
+| Doll House Inc. | DOLL HOUSE INC.  |
+| Fun and Games   | FUN AND GAMES    |
+| Furball Inc.    | FURBALL INC.     |
+| Jouets et ours  | JOUETS ET OURS   |
++-----------------+------------------+
+6 rows in set (0.02 sec)
+```
+
+<font color = orange>SQL 函数是不区分大小写的，所以 upper()、UPPER()、Upper() 都可以，但注意风格保持一致，否则会影响代码的可读性。</font>
+
+常用文本处理函数：
+
+| 函数                                     | 说明                    |
+| ---------------------------------------- | ----------------------- |
+| LEFT()（或使用子字符串函数）             | 返回字符串左边的字符    |
+| LENGTH()（也使用 DATALENGTH() 或 LEN()） | 返回字符串的长度        |
+| LOWER()                                  | 将字符串转换为小写      |
+| LTRIM()                                  | 去掉字符串左边的空格    |
+| RIGHT()（或使用子字符串函数）            | 返回字符串右边的字符    |
+| RTRIM()                                  | 去掉字符串右边的空格    |
+| SUBSTR() 或 SUBSTRING()                  | 提取字符串的组成部分    |
+| SOUNDEX()                                | 返回字符串的 SOUNDEX 值 |
+| UPPER()                                  | 将字符串转换为大写      |
+
+SOUNDEX 是一个将任何文本串转换为描述其语音表示的字母数字模式的算法。SOUNDEX 考虑了类似的发音字符和音节，使得能对字符串进行发音比较而不是字母比较。虽然 SOUNDEX 不是 SQL 概念，但多数 DBMS 都提供对 SOUNDEX 的支持。<font color = orange>PostgreSQL不支持 SOUNDEX()。如果在创建 SQLite 时使用了 SQLITE_SOUNDEX 编译时选项，那么 SOUNDEX() 在 SQLite 中就可用。因为 SQLITE_SOUNDEX 不是默认的编译时选项，所以多数 SQLite 实现不支持 SOUNDEX()。</font>
+
+Customers 表中有一个顾客 Kids Place，其联系名为 Michelle Green。但如果这是错误的输入，此联系名实际上应该是 Michael Green。显然，按正确的联系名搜索不会返回数据。
+
+```sql
+SELECT cust_name, cust_contact
+FROM Customers
+WHERE cust_contact = 'Michael Green';
+```
+
+输出：
+
+```sql
+Empty set (0.00 sec)
+```
+
+使用 SOUNDEX() 函数搜索。
+
+```sql
+SELECT cust_name, cust_contact
+FROM Customers
+WHERE SOUNDEX(cust_contact) = SOUNDEX('Michael Green');
+```
+
+输出：
+
+```sql
++------------+----------------+
+| cust_name  | cust_contact   |
++------------+----------------+
+| Kids Place | Michelle Green |
++------------+----------------+
+1 row in set (0.00 sec)
+```
+
+在这个例子中，WHERE 子句使用 SOUNDEX() 函数把 cust_contact 列值和搜索字符串转换为它们的 SOUNDEX 值。因为 Michael Green 和 Michelle Green 发音相似，所以它们的 SOUNDEX 值匹配，因此 WHERE 子句正确地过滤出了所需的数据。
+
+#### 日期与时间处理函数
 
