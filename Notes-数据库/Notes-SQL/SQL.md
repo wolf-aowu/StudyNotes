@@ -16,6 +16,14 @@ SQL（sequel）：结构化查询语言。几乎所有重要的 DBMS 都支持 S
 
 子句（clause）：SQL 语句由子句构成，有些子句是必需的，有些则是可选的。一个子句通常由一个关键字加上所提供的数据组成。例如：SELECT 语句的 FROM 子句。
 
+操作符（operator）：用来联结或改变 WHERE 子句中的子句的关键字，也称为<font  color = skyblue>逻辑操作符 （logical operator）</font>。
+
+通配符（wildcard）：用来匹配值的一部分的特殊字符。通配符本身实际上是 SQL 的 WHERE 子句中有特殊含义的字符。在搜索子句中使用通配符，<font color = skyblue>必须使用 LIKE 操作符。</font><font color = skyblue>通配符搜索只能用于文本字段（字符串），非文本数据类型字段不能使用通配符搜索。</font>
+
+搜索模式（search pattern）：由字面值、通配符或两者组合构成的搜索条件。
+
+谓词（predicate）：操作符何时不是操作符？答案是，它作为谓词时。从技术上说，LIKE 是谓词而不是操作符。
+
 ### 表
 
 #### 列（column）
@@ -569,3 +577,526 @@ WHERE prod_price = 3.49;
 | IS NULL | 为 NULL 值         |
 
 <font color = orange>注意</font>：上表中的某些操作符是冗余的（例如，<> 和 !=，!< 相当于 >=）
+
+<font color = skyblue>许多 DBMS 扩展了标准的操作符集，提供了更高级的过滤选择。</font>更多信息请参阅相应的 DBMS 文档。
+
+#### 检查单个值
+
+列出所有价格小于 10 美元的产品
+
+``` sql
+SELECT prod_name, prod_price
+FROM Products
+WHERE prod_price < 10; 
+```
+
+输出：
+
+``` sql
++---------------------+------------+
+| prod_name           | prod_price |
++---------------------+------------+
+| Fish bean bag toy   |       3.49 |
+| Bird bean bag toy   |       3.49 |
+| Rabbit bean bag toy |       3.49 |
+| 8 inch teddy bear   |       5.99 |
+| 12 inch teddy bear  |       8.99 |
+| Raggedy Ann         |       4.99 |
+| King doll           |       9.49 |
+| Queen doll          |       9.49 |
++---------------------+------------+
+8 rows in set (0.03 sec)
+```
+
+检索所有价格小于等研究 10 美元的产品，由于没有价格刚好是 10 美元的产品，所以结果与上一个例子相同
+
+```sql
+SELECT prod_name, prod_price
+FROM Products
+WHERE prod_price <= 10;
+```
+
+输出：
+
+```sql
++---------------------+------------+
+| prod_name           | prod_price |
++---------------------+------------+
+| Fish bean bag toy   |       3.49 |
+| Bird bean bag toy   |       3.49 |
+| Rabbit bean bag toy |       3.49 |
+| 8 inch teddy bear   |       5.99 |
+| 12 inch teddy bear  |       8.99 |
+| Raggedy Ann         |       4.99 |
+| King doll           |       9.49 |
+| Queen doll          |       9.49 |
++---------------------+------------+
+8 rows in set (0.00 sec)
+```
+
+#### 不匹配检查
+
+列出所有不是供应商 DLL01 制造的产品。由于 DLL01 是字符串类型，所以需要使用单引号括起来，数值类型不需要使用单引号。
+
+``` sql
+SELECT vend_id, prod_name
+FROM Products
+WHERE vend_id <> 'DLL01';
+```
+
+输出：
+
+```sql
++---------+--------------------+
+| vend_id | prod_name          |
++---------+--------------------+
+| BRS01   | 8 inch teddy bear  |
+| BRS01   | 12 inch teddy bear |
+| BRS01   | 18 inch teddy bear |
+| FNG01   | King doll          |
+| FNG01   | Queen doll         |
++---------+--------------------+
+5 rows in set (0.03 sec)
+```
+
+使用 != 的结果与 <> 的结果是相同的。<font color = skyblue>!= 和 <> 通常可以互换。</font>但是，并非所有  DBMS 都支持这两种不等于操作符。<font color = skyblue>使用前请参阅相应的 DBMS 文档。</font>MySQL 两者都支持。
+
+```sql
+SELECT vend_id, prod_name
+FROM Products
+WHERE vend_id != 'DLL01';
+```
+
+#### 范围值检查
+
+要检查某个范围的值，可以使用 BETWEEN 操作符。它需要有两个值，开始值和结束值。这两个值必须用 AND 关键字分隔。BETWEEN 匹配范围中所有的值，包括指定的开始值和结束值。例如，BETWEEN 操作符可用来检索价格在 5 美元和 10 美元之间的所有产品，或在指定的开始日期和结束日期之间的所有日期。
+
+```sql
+SELECT prod_name, prod_price
+FROM Products
+WHERE prod_price BETWEEN 5 AND 10;
+```
+
+输出：
+
+```sql
++--------------------+------------+
+| prod_name          | prod_price |
++--------------------+------------+
+| 8 inch teddy bear  |       5.99 |
+| 12 inch teddy bear |       8.99 |
+| King doll          |       9.49 |
+| Queen doll         |       9.49 |
++--------------------+------------+
+4 rows in set (0.00 sec)
+```
+
+#### 空值检查
+
+在创建表时，表设计人员可以指定其中的列能否不包含值。在一个列不包含值时，称其包含空值 NULL。NULL，无值（no value），它与字段包含 0、空字符串或仅仅包含空格不同。<font color = orange>确定值是否为 NULL，不能简单地检查是否等于 NULL。</font>SELECT 语句有一个特殊的 WHERE 子句，可用来检查具有 NULL 值的列。<font color = skyblue>这个 WHERE 子句就是 IS NULL 子句。</font>
+
+```sql
+SELECT prod_name
+FROM Products
+WHERE prod_price IS NULL;
+```
+
+输出：
+
+```sql
+Empty set (0.00 sec)
+```
+
+这条语句返回所有没有价格（空 prod_price 字段，不是价格为 0）的产品，由于表中没有这样的行，所以没有返回数据。
+
+但是，Customers 表确实包含具有 NULL 值的列：如果没有电子邮件地址，则  cust_email 列将包含 NULL 值。
+
+```sql
+SELECT cust_name
+FROM Customers
+WHERE cust_email IS NULL; 
+```
+
+输出：
+
+```sql
++---------------+
+| cust_name     |
++---------------+
+| Kids Place    |
+| The Toy Store |
++---------------+
+2 rows in set (0.00 sec)
+```
+
+<font color = orange>通过过滤选择不包含指定值的所有行时，你可能希望返回含 NULL 值的行。但是这做不到。</font>因为 NULL 比较特殊，所以在进行匹配过滤或非匹配过滤时，不会返回这些结果。
+
+### 高级数据过滤
+
+#### 组合 WHERE 子句
+
+为了进行更强的过滤控制，SQL 允许给出多个  WHERE 子句。这些子句有两种使用方式，即以  AND 子句或 OR 子句的方式使用。
+
+##### AND 操作符
+
+要通过不止一个列进行过滤，可以使用 AND 操作符给 WHERE 子句附加条件。<font color = skyblue>AND 是用在 WHERE 子句中的关键字</font>，用来指示检索满足所有给定条件的行。<font color = orange>如果需要用到 ORDER BY 子句，它应该放在 WHERE 子句之后。</font>
+
+检索由供应商 DLL01 制造且价格小于等于 4 美元的所有产品的名称和价格。这条 SELECT 语句中的 WHERE 子句包含两个条件，用 AND 关键字联结在一起。AND 指示 DBMS 只返回满足所有给定条件的行。如果某个产品由供应商 DLL01 制造，但价格高于 4 美元，则不检索它。类似地，如果产品价格小于 4 美元，但不是由指定供应商制造的也不被检索。
+
+``` sql
+SELECT prod_id, prod_price, prod_name
+FROM Products
+WHERE vend_id = 'DLL01' AND prod_price <= 4;
+```
+
+输出：
+
+```sql
++---------+------------+---------------------+
+| prod_id | prod_price | prod_name           |
++---------+------------+---------------------+
+| BNBG01  |       3.49 | Fish bean bag toy   |
+| BNBG02  |       3.49 | Bird bean bag toy   |
+| BNBG03  |       3.49 | Rabbit bean bag toy |
++---------+------------+---------------------+
+3 rows in set (0.00 sec)
+```
+
+##### OR 操作符
+
+OR 是 WHERE 子句中使用的关键字，OR 操作符指示 DBMS 检索匹配任一条件的行。许多 DBMS 在 OR WHERE 子句的第一个条件得到满足的情况下，就不再计算第二个条件了（在第一个条件满足时，不管第二个条 件是否满足，相应的行都将被检索出来）。
+
+检索由任一个指定供应商制造的所有产品的产品名和价格。
+
+```sql
+SELECT prod_id, prod_price, prod_name
+FROM Products
+WHERE vend_id = 'DLL01' OR vend_id = 'BRS01';
+```
+
+输出：
+
+```sql
++---------+------------+---------------------+
+| prod_id | prod_price | prod_name           |
++---------+------------+---------------------+
+| BR01    |       5.99 | 8 inch teddy bear   |
+| BR02    |       8.99 | 12 inch teddy bear  |
+| BR03    |      11.99 | 18 inch teddy bear  |
+| BNBG01  |       3.49 | Fish bean bag toy   |
+| BNBG02  |       3.49 | Bird bean bag toy   |
+| BNBG03  |       3.49 | Rabbit bean bag toy |
+| RGAN01  |       4.99 | Raggedy Ann         |
++---------+------------+---------------------+
+7 rows in set (0.02 sec)
+```
+
+##### AND 与 OR 的求值顺序
+
+WHERE 子句可以包含任意数目的 AND 和 OR 操作符。允许两者结合以进行复杂、高级的过滤。<font color = skyblue>SQL 在处理 OR 操作符前，优先处理 AND 操作符。可以使用圆括号改变操作符求值顺序，进行正确分组。</font>圆括号具有比 AND 或 OR 操作符更高的优先级。
+
+列出由供应商 BRS01 制造的价格为 10 美元以上的所有产品，以及由供应商 DLL01 制造的所有产品。（可以与下一个例子对比就能发现不同）
+
+```sql
+SELECT prod_name, prod_price
+FROM Products
+WHERE vend_id = 'DLL01' OR vend_id = 'BRS01'
+      AND prod_price >= 10;
+```
+
+输出：
+
+```sql
++---------------------+------------+
+| prod_name           | prod_price |
++---------------------+------------+
+| 18 inch teddy bear  |      11.99 |
+| Fish bean bag toy   |       3.49 |
+| Bird bean bag toy   |       3.49 |
+| Rabbit bean bag toy |       3.49 |
+| Raggedy Ann         |       4.99 |
++---------------------+------------+
+5 rows in set (0.00 sec)
+```
+
+列出价格为10 美元及以上，且由 DLL01 或 BRS01 制造的所有产品。使用圆括号改变了求值顺序。
+
+```sql
+SELECT prod_name, prod_price
+FROM Products
+WHERE (vend_id = 'DLL01' OR vend_id = 'BRS01')
+      AND prod_price >= 10;
+```
+
+输出：
+
+```sql
++--------------------+------------+
+| prod_name          | prod_price |
++--------------------+------------+
+| 18 inch teddy bear |      11.99 |
++--------------------+------------+
+1 row in set (0.00 sec)
+```
+
+任何时候使用具有 AND 和 OR 操作符的 WHERE 子句，<font color = orange>都应该使用圆括号明确地分组操作符。</font>不要过分依赖默认求值顺序，即使它确实如你希望的那样。使用圆括号没有什么坏处，它能消除歧义。
+
+#### IN 操作符
+
+IN 操作符用来指定条件范围，范围中的每个条件都可以进行匹配。IN 取一组由逗号分隔、括在圆括号中的合法值。IN 操作符后跟由逗号分隔的合法值，这些值必须括在圆括号中。 IN 操作符功能与 OR 相当。
+
+使用 IN 操作符的优点：
+
+1. 在有很多合法选项时，IN 操作符的语法更清楚，更直观。
+2. 在与其他 AND 和 OR 操作符组合使用 IN 时，求值顺序更容易管理。
+3. <font color = orange>IN 操作符一般比一组 OR 操作符执行得更快</font>。
+4. IN 的最大优点是可以包含其他 SELECT 语句，能够更动态地建立 WHERE 子句。
+
+检索由供应商 DLL01 和 BRS01 制造的所有产品。
+
+```sql
+SELECT prod_name, prod_price
+FROM Products
+WHERE vend_id IN ('DLL01','BRS01')
+ORDER BY prod_name;
+```
+
+输出：
+
+```sql
++---------------------+------------+
+| prod_name           | prod_price |
++---------------------+------------+
+| 12 inch teddy bear  |       8.99 |
+| 18 inch teddy bear  |      11.99 |
+| 8 inch teddy bear   |       5.99 |
+| Bird bean bag toy   |       3.49 |
+| Fish bean bag toy   |       3.49 |
+| Rabbit bean bag toy |       3.49 |
+| Raggedy Ann         |       4.99 |
++---------------------+------------+
+7 rows in set (0.00 sec)
+```
+
+使用 OR 花了 0.02 秒，而 IN 只花了 0.00 秒。
+
+#### NOT 操作符
+
+WHERE 子句中的 NOT 操作符有且只有一个功能，那就是否定其后所跟的任何条件。NOT 从不单独使用（它总是与其他操作符一起使用）。NOT 关键字可以用在要过滤的列前， 而不仅是在其后。
+
+列出除 DLL01 之外的所有供应商制造的产品
+
+```sql
+SELECT prod_name
+FROM Products
+WHERE NOT vend_id = 'DLL01'
+ORDER BY prod_name;
+```
+
+输出：
+
+```sql
++--------------------+
+| prod_name          |
++--------------------+
+| 12 inch teddy bear |
+| 18 inch teddy bear |
+| 8 inch teddy bear  |
+| King doll          |
+| Queen doll         |
++--------------------+
+5 rows in set (0.00 sec)
+```
+
+上面例子中的 NOT 可以替换为 <>，结果是相同的。
+
+```sql
+SELECT prod_name
+FROM Products
+WHERE vend_id <> 'DLL01'
+ORDER BY prod_name;
+```
+
+输出：
+
+```sql
++--------------------+
+| prod_name          |
++--------------------+
+| 12 inch teddy bear |
+| 18 inch teddy bear |
+| 8 inch teddy bear  |
+| King doll          |
+| Queen doll         |
++--------------------+
+5 rows in set (0.00 sec)
+```
+
+NOT 在更复杂的子句中是非常有用的的。例如，在 与 IN 操作符联合使用时，NOT 可以非常简单地找出与条件列表不匹配的行。
+
+<font color = orange>注意</font>：MariaDB 支持使用 NOT 否定 IN、BETWEEN 和 EXISTS 子句。大多数 DBMS  允许使用 NOT 否定任何条件。
+
+### 通配符过滤
+
+#### LIKE 操作符
+
+利用通配符，可以创建比较特定数据的搜索模式。例如，找出名称包含 bean bag 的所有产品，可以构造一个通配符搜索模式，找出在产品名的任何位置出现 bean bag 的产品。在搜索子句中使用通配符，<font color = skyblue>必须使用 LIKE 操作符。</font>LIKE 指示 DBMS，后跟的搜索模式利用通配符匹配而不是简单的相等匹配进行比较。<font color = skyblue>通配符搜索只能用于文本字段（字符串），非文本数据类型字段不能使用通配符搜索。</font>
+
+#### % 通配符
+
+最常使用的通配符是百分号（%）。在搜索串中，%表示任何字符出现任意次数。% 除了能匹配一个或多个字符外，%还能匹配 0 个字符。
+
+找出所有以词 Fish 起头的产品。%告诉 DBMS 接受 Fish 之后的任意字符，不管它有多少字符。
+
+``` sql
+SELECT prod_id, prod_name 
+FROM Products 
+WHERE prod_name LIKE 'Fish%';
+```
+
+输出：
+
+```sql
++---------+-------------------+
+| prod_id | prod_name         |
++---------+-------------------+
+| BNBG01  | Fish bean bag toy |
++---------+-------------------+
+1 row in set (0.00 sec)
+```
+
+<font color = orange>注意</font>：根据 DBMS 的不同及其配置，搜索可以是区分大小写的。如果区分大小写，则 fish% 与 Fish bean bag toy 就不匹配。
+
+<font color = skyblue>通配符可在搜索模式中的任意位置使用，并且可以使用多个通配符。</font>下面的例子使用两个通配符，它们位于模式的两端。
+
+找出名称包含 bean bag 的所有产品，可以构造一个通配符搜索模式，找出在产品名的任何位置出现 bean bag 的产品。
+
+``` sql
+SELECT prod_id, prod_name 
+FROM Products 
+WHERE prod_name LIKE '%bean bag%';
+```
+
+输出：
+
+```sql
++---------+---------------------+
+| prod_id | prod_name           |
++---------+---------------------+
+| BNBG01  | Fish bean bag toy   |
+| BNBG02  | Bird bean bag toy   |
+| BNBG03  | Rabbit bean bag toy |
++---------+---------------------+
+3 rows in set (0.00 sec)
+```
+
+<font color = skyblue>通配符也可以出现在搜索模式的中间</font>，虽然这样做不太有用。
+
+找出以 F 起头、以 y 结尾的所有产品。
+
+```sql
+SELECT prod_name
+FROM Products
+WHERE prod_name LIKE 'F%y';
+```
+
+输出：
+
+```sql
++-------------------+
+| prod_name         |
++-------------------+
+| Fish bean bag toy |
++-------------------+
+1 row in set (0.00 sec)
+```
+
+<font color = orange>注意</font>：有些 DBMS 用空格来填补字段的内容。例如，<font color = skyblue>如果某列有 50 个字符， 而存储的文本为 Fish bean bag toy（17 个字符），则为填满该列需要在文本后附加 33 个空格。这样做一般对数据及其使用没有影响，但是可能对上述 SQL 语句有负面影响。子句 WHERE prod_name LIKE  'F%y' 只匹配以 F 开头、以 y 结尾的 prod_name。如果值后面跟空格， 则不是以 y 结尾，所以 Fish bean bag toy 就不会检索出来。</font>简单的解决办法是给搜索模式再增加一个 % 号：'F%y%' 还匹配 y 之后的字符（或空格）。<font color = skyblue>更好的解决办法是用函数去掉空格。</font>
+
+<font color = orange>注意</font>：通配符 % 不会匹配 NULL。子句 WHERE prod_name LIKE '%'不会匹配产品名称为 NULL 的行。
+
+<font color = orange>根据邮件地址的一部分来查找电子邮件时使用通配符是很有用的。</font>
+
+```sql
+WHERE email LIKE 'b%@forta.com'
+```
+
+####  _ 通配符
+
+下划线的用途与 % 一样，但它只匹配单个字符，而不是多个字符。_ 总是刚好匹配一个字符，不能多也不能少。<font color = skyblue>DB2 不支持通配符_。</font>
+
+```sql
+SELECT prod_id, prod_name
+FROM Products
+WHERE prod_name LIKE '__ inch teddy bear';
+```
+
+输出：
+
+``` sql
++---------+--------------------+
+| prod_id | prod_name          |
++---------+--------------------+
+| BR02    | 12 inch teddy bear |
+| BR03    | 18 inch teddy bear |
++---------+--------------------+
+2 rows in set (0.00 sec)
+```
+
+<font color = orange>注意</font>：与 % 通配符一样，要小心有些 DBMS 用空格来填补字段的内容。
+
+#### [] 通配符
+
+方括号（[]）通配符用来指定一个字符集，它必须匹配指定位置（通配符的位置）的一个字符。 <font color = orange>并不是所有 DBMS 都支持用来创建集合的 []。微软的 SQL Server 支持集合，但是 MySQL，Oracle，DB2，SQLite 都不支持。</font>为确定使用的 DBMS 是否支持集合，请参阅相应的文档。
+
+找出所有名字以 J 或 M 起头的联系人。[JM] 匹配方括号中任意一个字符，它也只能匹配单个字符。[JM] 之后的%通配符匹配第 一个字符之后的任意数目的字符。
+
+```sql
+SELECT cust_contact 
+FROM Customers 
+WHERE cust_contact LIKE '[JM]%' 
+ORDER BY cust_contact;
+```
+
+输出：
+
+```sql
++-------------------+
+| cust_contact      |
++-------------------+
+| Jim Jones         |
+| John Smith        |
+| Michelle Green    |
++-------------------+
+```
+
+_ 通配符可以用前缀字符^ （脱字号）来否定。J 和 M 之外的任意字符起头的任意联系人名。
+
+```sql
+SELECT cust_contact
+FROM Customers
+WHERE cust_contact LIKE '[^JM]%'
+ORDER BY cust_contact;
+```
+
+也可以使用 NOT 操作符得出类似的结果。^ 的唯一优点是在使用多个 WHERE 子句时可以简化语法。
+
+```sql
+SELECT cust_contact
+FROM Customers
+WHERE NOT cust_contact LIKE '[JM]%'
+ORDER BY cust_contact;
+```
+
+#### 使用通配符的技巧
+
+<font color = orange>缺点</font>：
+
+1. 通配符搜 索一般比前面讨论的其他搜索要耗费更长的处理时间。
+
+<font color = orange>技巧</font>：
+
+1. 不要过度使用通配符。如果其他操作符能达到相同的目的，应该使用其他操作符。
+2. 在确实需要使用通配符时，也尽量不要把它们用在搜索模式的开始处。把通配符置于开始处，搜索起来是最慢的。
+3. 仔细注意通配符的位置。如果放错地方，可能不会返回想要的数据。
+
