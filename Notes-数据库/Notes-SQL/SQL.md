@@ -72,6 +72,10 @@ SQL（sequel）：结构化查询语言。几乎所有重要的 DBMS 都支持 S
 
 可移植（portable）：所编写的代码可以在多个系统上运行。
 
+---
+
+聚集函数（aggregate function）：对某些行运行的函数，计算并返回一个值。
+
 ### 表
 
 #### 列（column）
@@ -1236,7 +1240,7 @@ Jouets et ours (France)
 
 #### 使用别名
 
-SELECT 语句可以很好地拼接地址字段。但是，这个新计算列实际上没有名字，它只是一个值。一个未命名的列不能用于客户端应用中，因为客户端没有办法引用它。为了解决这个问题，SQL 支持列别名。别名（alias）是一个字段或值的替换名。别名用 AS 关键字赋予。别名的名字既可以是一个单词，也可以是一个字符串。如果是后者，<font color = orange>字符串应该括在引号中。虽然这种做法是合法的，但不建议这么去做。 多单词的名字可读性高，不过会给客户端应用带来各种问题。</font><font color = skyblue>因此， 别名最常见的使用是将多个单词的列名重命名为一个单词的名字。</font>
+SELECT 语句可以很好地拼接地址字段。但是，这个新计算列实际上没有名字，它只是一个值。一个未命名的列不能用于客户端应用中，因为客户端没有办法引用它。为了解决这个问题，SQL 支持列别名。别名（alias）是一个字段或值的替换名。别名用 AS 关键字赋予。别名的名字既可以是一个单词，也可以是一个字符串。如果是后者，<font color = orange>字符串应该括在引号中。虽然这种做法是合法的，但不建议这么去做。 多单词的名字可读性高，不过会给客户端应用带来各种问题。在指定别名以包含某个聚集函数的结果时，不应该使用表中实际的列名。虽然这样做也算合法，但许多 SQL 实现不支持，可能会产生模糊的错误消息。</font><font color = skyblue>因此， 别名最常见的使用是将多个单词的列名重命名为一个单词的名字。</font>
 
 别名的用途：
 
@@ -1499,4 +1503,641 @@ WHERE SOUNDEX(cust_contact) = SOUNDEX('Michael Green');
 在这个例子中，WHERE 子句使用 SOUNDEX() 函数把 cust_contact 列值和搜索字符串转换为它们的 SOUNDEX 值。因为 Michael Green 和 Michelle Green 发音相似，所以它们的 SOUNDEX 值匹配，因此 WHERE 子句正确地过滤出了所需的数据。
 
 #### 日期与时间处理函数
+
+<font color = skyblue>日期和时间采用相应的数据类型存储在表中，每种 DBMS 都有自己的特殊形式。</font><font color = orange>日期和时间值以特殊的格式存储，以便能快速和有效地排序或过滤，并且节省物理存储空间。</font>
+
+应用程序一般不使用日期和时间的存储格式，<font color = skyblue>因此日期和时间函数总是用来读取、统计和处理这些值。</font>由于这个原因，日期和时间函数在 SQL 中具有重要的作用。遗憾的是，<font color = skyblue>它们很不一致，可移植性最差。</font>
+
+Orders 表中包含的订单都带有订单日期。要检索出某年的所有订单，需要按订单日期去找，但不需要完整日期，只要年份即可。
+
+```sql
+SELECT order_num
+FROM Orders
+WHERE DATEPART(yy, order_date) = 2012; 
+```
+
+输出：
+
+```sql
+order_num
+-----------
+20005
+20006
+20007
+20008
+20009
+```
+
+这个例子使用了 DATEPART() 函数，顾名思义，此函数返回日期的某一部分。DATEPART() 函数有两个参数，它们分别是返回的成分和从中返回成分的日期。在此例子中，DATEPART() 只从 order_date 列中返回年份。 通过与 2020 比较，WHERE 子句只过滤出此年份的订单。
+
+<font color = orange>在 PostgreSQL 中该函数为 DATE_PART()。PostgreSQL 还支持 Extract() 函数。</font>
+
+``` sql
+SELECT order_num
+FROM Orders
+WHERE DATE_PART('year', order_date) = 2012;
+```
+
+<font color = orange>在 Oracle 中，使用 EXTRACT() 函数用来提取日期的成分，year 表示提取哪个部分，返回值再与 2020 进行比较。</font>
+
+```sql
+SELECT order_num
+FROM Orders
+WHERE EXTRACT(year FROM order_date) = 2012;
+```
+
+<font color = orange>在 Oracle 中，使用 BETWEEN 操作符与 to_date() 函数一起实现。</font>to_date() 函数用来将两个字符串转换为日期。 一个包含 2020 年 1 月 1 日，另一个包含 2020 年 12 月 31 日。BETWEEN 操作符用来找出两个日期之间的所有订单。
+
+``` sql
+SELECT order_num
+FROM Orders
+WHERE order_date BETWEEN to_date('2012-01-01', 'yyyy-mm-dd') 
+AND to_date('2012-12-31', 'yyyy-mm-dd');
+```
+
+<font color = orange>在 SQL Server 中，也可以使用 BETWEEN 操作符与 DATEPART() 函数一起实现。</font>
+
+<font color = orange>DB2，MySQL 和 MariaDB 用户可使用名为 YEAR() 的函数从日期中提取年份。</font>
+
+```sql
+SELECT order_num
+FROM Orders
+WHERE YEAR(order_date) = 2012; 
+```
+
+输出：
+
+```sql
++-----------+
+| order_num |
++-----------+
+|     20005 |
+|     20006 |
+|     20007 |
+|     20008 |
+|     20009 |
++-----------+
+5 rows in set (0.00 sec)
+```
+
+在 SQLite 中。
+
+```sql
+SELECT order_num
+FROM Orders
+WHERE strftime('%Y', order_date) = '2012';
+```
+
+这里给出的例子提取和使用日期的成分（年）。按月份过滤，可以进行相同的处理，使用 AND 操作符可以进行年份和月份的比较。
+
+#### 数值处理
+
+数值处理函数仅处理<font color = skyblue>数值数据</font>。这些函数一般主要用于代数、三角或几 何运算，因此不像字符串或日期−时间处理函数使用那么频繁。<font color = orange>在主要 DBMS 的函数中，数值函数是最一致、最统一的函数。</font>
+
+常用数值处理函数：
+
+| 函数   | 说明                  |
+| ------ | --------------------- |
+| ABS()  | 返回一个数的绝对值    |
+| COS()  | 返回一个角度的余弦    |
+| EXP()  | 返回一个数的指数值    |
+| PI()   | 返回圆周率 $\pi$ 的值 |
+| SIN()  | 返回一个角度的正选    |
+| SQRT() | 返回一个数的平方根    |
+| TAN()  | 返回一个角度的正切    |
+
+具体 DBMS 所支持的算术处理函数，请参阅相应的文档。
+
+### 汇总数据
+
+#### 聚集函数
+
+聚集函数对某些行运行的函数，计算并返回一个值。例如，确定表中的行数（或者满足某个条件或包含某个特定值的行数）；获得表中某些行的和；找出表列（或所有行或某些特定的行）的最大值、最小值、平均值。<font color = orange>上述例子都需要汇总出表中的数据，而不需要查出数据本身。</font>因此，返回实际表数据纯属浪费时间和处理资源（更不用说带宽了）。SQL 的聚集函数在各种主要 SQL 实现中得到了相当一致的支持。<font color = orange>聚集函数很高效，它返回结果一般比在客户端应用程序中计算要快得多。</font>
+
+SQL 聚集函数：
+
+| 函数    | 说明             |
+| ------- | ---------------- |
+| AVG()   | 返回某列的平均值 |
+| COUNT() | 返还某列的行数   |
+| MAX()   | 返回某列的最大值 |
+| MIN()   | 返回某列的最小值 |
+| SUM()   | 返回某列值之和   |
+
+<font color = skyblue>所有聚集函数都可用来执行多个列上的计算。</font>
+
+##### AVG() 函数
+
+AVG() 通过对表中行数计数并计算其列值之和，求得该列的平均值。AVG() 可用来返回所有列的平均值，也可以用来返回特定列或行的平均值。AVG() 只能用来确定特定数值列的平均值，<font color = skyblue>而且列名必须作为函数参数给出。</font>为了获得多个列的平均值，必须使用多个 AVG() 函数。<font color = skyblue>只有一个例外是要从多个列计算出一个值时。AVG() 函数忽略列值为 NULL 的行。</font>
+
+使用 AVG() 返回 Products 表中所有产品的平均价格。
+
+``` sql
+SELECT AVG(prod_price) AS avg_price
+FROM Products;
+```
+
+输出：
+
+```sql
++-----------+
+| avg_price |
++-----------+
+|  6.823333 |
++-----------+
+1 row in set (0.03 sec)
+```
+
+返回特定供应商所提供产品的平均价格。
+
+```sql
+SELECT AVG(prod_price) AS avg_price
+FROM Products
+WHERE vend_id = 'DLL01';
+```
+
+输出：
+
+``` sql
++-----------+
+| avg_price |
++-----------+
+|  3.865000 |
++-----------+
+1 row in set (0.00 sec)
+```
+
+##### COUNT() 函数
+
+COUNT() 函数进行计数。可利用 COUNT() 确定表中行的数目或符合特定条件的行的数目。<font color = skyblue>如果指定列名，则 COUNT() 函数会忽略指定列的值为 NULL 的行，但如果 COUNT() 函数中用的是星号（*），则不忽略。</font>
+
+COUNT() 函数有两种使用方式：
+
+1. 使用 COUNT(*) 对表中行的数目进行计数，不管表列中包含的是空值 （NULL）还是非空值。
+2. 使用 COUNT(column) 对特定列中具有值的行进行计数，忽略 NULL 值。
+
+返回 Customers 表中顾客的总数。
+
+```sql
+SELECT COUNT(*) AS num_cust
+FROM Customers;
+```
+
+输出：
+
+```sql
++----------+
+| num_cust |
++----------+
+|        5 |
++----------+
+1 row in set (0.03 sec)
+```
+
+只对具有电子邮件地址的客户计数。
+
+```sql
+SELECT COUNT(cust_email) AS num_cust
+FROM Customers;
+```
+
+输出：
+
+```sql
++----------+
+| num_cust |
++----------+
+|        3 |
++----------+
+1 row in set (0.00 sec)
+```
+
+##### MAX() 函数
+
+MAX() 返回指定列中的最大值。MAX() 要求指定列名。虽然 MAX() 一般用来找出最大的数值或日期值，但许多（并非所有）DBMS 允许将它用来返回任意列中的最大值，包括返回文本列中的最大值。<font color = skyblue>在用于文本数据时，MAX() 返回按该列排序后的最后一行。MAX() 函数忽略列值为 NULL 的行。</font>
+
+```sql
+SELECT MAX(prod_price) AS max_price
+FROM Products;
+```
+
+输出：
+
+```sql
++-----------+
+| max_price |
++-----------+
+|     11.99 |
++-----------+
+1 row in set (0.14 sec)
+```
+
+##### MIN() 函数
+
+MIN() 返回指定列的最小值。MIN() 要求指定列名。MIN() 一般用来找出最小的数值或日期值，但许多（并非所有）DBMS 允许将它用来返回任意列中的最小值，包括返回文本列中的最小值。<font color = skyblue>在用于文本数据时，MIN() 返回该列排序后最前面的行。MIN() 函数忽略列值为 NULL 的行。</font>
+
+MIN()返回 Products 表中最便宜物品的价格。
+
+```sql
+SELECT MIN(prod_price) AS min_price
+FROM Products;
+```
+
+输出：
+
+```sql
++-----------+
+| min_price |
++-----------+
+|      3.49 |
++-----------+
+1 row in set (0.00 sec)
+```
+
+##### SUM() 函数
+
+SUM() 用来返回指定列值的和（总计）。SUM() 也可以用来合计计算值。<font color = skyblue>SUM() 函数忽略列值为 NULL 的行。</font>
+
+OrderItems 包含订单中实际的物品，每个物品有相应的数量。检索所订购物品的总数（所有 quantity 值之和）。
+
+```sql
+SELECT SUM(quantity) AS items_ordered
+FROM OrderItems
+WHERE order_num = 20005;
+```
+
+输出：
+
+``` sql
++---------------+
+| items_ordered |
++---------------+
+|           200 |
++---------------+
+1 row in set (0.00 sec)
+```
+
+合计每项物品的 item_price*quantity，得出总的订单金额。
+
+```sql
+SELECT SUM(item_price*quantity) AS total_price
+FROM OrderItems
+WHERE order_num = 20005;
+```
+
+输出：
+
+```sql
++-------------+
+| total_price |
++-------------+
+|     1648.00 |
++-------------+
+1 row in set (0.00 sec)
+```
+
+#### 聚集不同值
+
+AVG()、COUNT()、MAX()、MIN()、SUM() 五个聚集函数都可以如下使用：
+
+1. 对所有行执行计算，指定 ALL 参数或不指定参数（因为 ALL 是默认行为）。
+2. 只包含不同的值，指定 DISTINCT 参数。
+
+ALL 参数不需要指定，因为它是默认行为。如果不指定 DISTINCT，则假定为 ALL。
+
+返回特定供应商提供的产品的平均价格。平均值只考虑各个不同的价格。Products 表中 vend_id = 'DLL01' 的 prod_price 有 3 个 3.49 和 1 个 4.99。所以，(3.49 + 4.99) / 2 = 4.24
+
+```sql
+SELECT AVG(DISTINCT prod_price) AS avg_price
+FROM Products
+WHERE vend_id = 'DLL01';
+```
+
+输出：
+
+```sql
++-----------+
+| avg_price |
++-----------+
+|  4.240000 |
++-----------+
+1 row in set (0.04 sec)
+```
+
+如果指定列名，则 DISTINCT 只能用于 COUNT()。<font color = orange>DISTINCT 不能用于 COUNT(*)。</font>类似地，DISTINCT 必须使用列名，不能用于计算或表达式。虽然 DISTINCT 从技术上可用于 MIN() 和 MAX()，但这样做实际上没有价值。一个列中的最小值和最大值不管是否只考虑不同值，结果都是相同的。除了 DISTINCT 和 ALL 参数，有的 DBMS 还支持其他参数， 如支持对查询结果的子集进行计算的 TOP 和 TOP PERCENT。具体的 DBMS 支持哪些参数，请参阅相应的文档。
+
+#### 组合聚集函数
+
+SELECT 语句可根据需要包含多个聚集函数。
+
+```sql
+SELECT COUNT(*) AS num_items,
+       MIN(prod_price) AS price_min,
+       MAX(prod_price) AS price_max,
+       AVG(prod_price) AS price_avg
+FROM Products;
+```
+
+输出：
+
+```sql
++-----------+-----------+-----------+-----------+
+| num_items | price_min | price_max | price_avg |
++-----------+-----------+-----------+-----------+
+|         9 |      3.49 |     11.99 |  6.823333 |
++-----------+-----------+-----------+-----------+
+1 row in set (0.00 sec)
+```
+
+### 分组函数
+
+#### 数据分组
+
+使用分组可以将数据分为多个逻辑组， 对每个组进行聚集计算。分组是使用 SELECT 语句的 GROUP BY 子句建立的。
+
+<font color = orange>GROUP BY 子句规定：</font>
+
+1. GROUP BY 子句可以包含任意数目的列，因而可以对分组进行嵌套，更细致地进行数据分组。
+2. 如果在 GROUP BY 子句中嵌套了分组，数据将在最后指定的分组上进行汇总。换句话说，在建立分组时，指定的所有列都一起计算（所以不能从个别的列取回数据）
+3. GROUP BY 子句中列出的每一列都必须是检索列或有效的表达式（但不能是聚集函数）。如果在 SELECT 中使用表达式，则必须在 GROUP BY 子句中指定相同的表达式。不能使用别名。
+4. 大多数 SQL 实现不允许 GROUP BY 列带有长度可变的数据类型（如文本或备注型字段）。
+5. 除聚集计算语句外，SELECT 语句中的每一列都必须在 GROUP BY 子句中给出。
+6. 如果分组列中包含具有 NULL 值的行，则 NULL 将作为一个分组返回。如果列中有多行 NULL 值，它们将分为一组。
+7. GROUP BY 子句必须出现在 WHERE 子句之后，ORDER BY 子句之前。
+
+<font color = orange>注意</font>：Microsoft SQL Server 等有些 SQL 实现在 GROUP BY 中支持可选的 ALL 子句。这个子句可用来返回所有分组，即使是没有匹配行的分组也返回（在此情况下，聚集将返回 NULL）。具体的 DBMS 是否支持 ALL，请参阅相应的文档。
+
+有的 SQL 实现允许根据 SELECT 列表中的位置指定 GROUP BY 的列。例如，GROUP BY 2, 1 可表示按选择的第二个列分组，然后再按第一个列分组。虽然这种速记语法很方便，但并非所有 SQL 实现都支持，并且使用它容易在编辑 SQL 语句时出错。<font color = skyblue>不建议使用。</font>
+
+SELECT 语句指定了两个列：vend_id 包含产品供应商的 ID，num_prods 为计算字段（用 COUNT(*) 函数建立）。GROUP BY 子句指示 DBMS 按 vend_id 排序并分组数据。这就会对每个 vend_id 而不是整个表计算 num_prods 一次。使用了 GROUP BY，就不必指定要计算和估值的每个组了。系统会自动完成。GROUP BY 子句指示 DBMS 分组数据，然后对每个组而不是整个结果集进行聚集。
+
+```sql
+SELECT vend_id, COUNT(*) AS num_prods
+FROM Products
+GROUP BY vend_id;
+```
+
+输出：
+
+```sql
++---------+-----------+
+| vend_id | num_prods |
++---------+-----------+
+| BRS01   |         3 |
+| DLL01   |         4 |
+| FNG01   |         2 |
++---------+-----------+
+3 rows in set (0.00 sec)
+```
+
+#### 过滤分组
+
+SQL 还允许过滤分组，规定包括哪些分组，排除哪些分组。HAVING 子句非常类似于 WHERE。事实上，目前为止所学过的所有类型的  WHERE 子句都可以用 HAVING 来替代。唯一的差别是，WHERE 过滤行，而 HAVING 过滤分组。WHERE 子句的条件（包括通配符条 件和带多个操作符的子句）都适用于 HAVING。
+
+```sql
+SELECT cust_id, COUNT(*) AS orders
+FROM Orders
+GROUP BY cust_id
+HAVING COUNT(*) >= 2;
+```
+
+输出：
+
+```sql
++------------+--------+
+| cust_id    | orders |
++------------+--------+
+| 1000000001 |      2 |
++------------+--------+
+1 row in set (0.01 sec)
+```
+
+如果将上面例子中的 HAVING 替换为 WHERE 会报错。这里有另一种理解方法，WHERE 在数据分组前进行过滤，HAVING 在数据分组后进行过滤。这是一个重要的区别，WHERE 排除的行不包括在分组中。这可能会改变计算值，从而影响 HAVING 子句中基于这些值过滤掉的分组。
+
+列出具有两个以上产品且其价格 大于等于 4 的供应商。
+
+```sql
+SELECT vend_id, COUNT(*) AS num_prods
+FROM Products
+WHERE prod_price >= 4
+GROUP BY vend_id
+HAVING COUNT(*) >= 2;
+```
+
+输出：
+
+```sql
++---------+-----------+
+| vend_id | num_prods |
++---------+-----------+
+| BRS01   |         3 |
+| FNG01   |         2 |
++---------+-----------+
+2 rows in set (0.00 sec)
+```
+
+这条语句中，第一行是使用了聚集函数的基本 SELECT 语句，很像前面的例子。WHERE 子句过滤所有 prod_price 至少为 4 的行，然后按 vend_id 分组数据，HAVING 子句过滤计数为 2 或 2 以上的分组。如果没有 WHERE 子句，就会多检索出一行（供应商 DLL01，销售 4 个产品，价格都在 4 以下）。
+
+``` sql
+SELECT vend_id, COUNT(*) AS num_prods
+FROM Products
+GROUP BY vend_id
+HAVING COUNT(*) >= 2;
+```
+
+输出：
+
+```sql
++---------+-----------+
+| vend_id | num_prods |
++---------+-----------+
+| BRS01   |         3 |
+| DLL01   |         4 |
+| FNG01   |         2 |
++---------+-----------+
+3 rows in set (0.00 sec)
+```
+
+#### 分组和排序
+
+ORDER BY 与 GROUP BY 差别
+
+| ORDER BY                                     | GROUP BY                                               |
+| -------------------------------------------- | ------------------------------------------------------ |
+| 对产生的输出排序                             | 对行分组，但输出可能不是分组的顺序                     |
+| 任意列都可以使用（甚至非选择的列也可以使用） | 只可能使用选择列或表达式，而且必须使用每个选择列表达式 |
+| 不一定需要                                   | 如果与聚集函数一起使用列（或表达式），则必须使用       |
+
+我们经常发现，用 GROUP BY 分组的数据确实是以分组顺序输出的。但并不总是这样，这不是 SQL 规范所要求的。此外，即使特定的 DBMS 总是按给出的 GROUP BY 子句排序数据，用户也可能会要求以不同的顺序排序。就因为你以某种方式分组数据（获得特定的分组聚集值），并不表示你需要以相同的方式排序输出。<font color = orange>应该提供明确的 ORDER BY 子句，即使其效果等同于 GROUP BY 子句。</font>一般在使用 GROUP BY 子句时，应该也给出 ORDER BY 子句。这是保证数据正确排序的唯一方法。千万不要仅依赖 GROUP BY 排序数据。
+
+检索包含三个或更多物品的订单号和订购物品的数目并按订购物品的数目排序输出。
+
+```sql
+SELECT order_num, COUNT(*) AS items
+FROM OrderItems
+GROUP BY order_num
+HAVING COUNT(*) >= 3
+ORDER BY items, order_num;
+```
+
+输出：
+
+```sql
++-----------+-------+
+| order_num | items |
++-----------+-------+
+|     20006 |     3 |
+|     20009 |     3 |
+|     20007 |     5 |
+|     20008 |     5 |
++-----------+-------+
+4 rows in set (0.00 sec)
+```
+
+#### SELECT 子句顺序
+
+<font color = skyblue>SELECT 子句及其顺序：</font>
+
+| 子句     | 说明               | 是否必须使用           |
+| -------- | ------------------ | ---------------------- |
+| SELECT   | 要返回的列或表达式 | 是                     |
+| FROM     | 从中检索数据的表   | 仅在从表选择数据时使用 |
+| WHERE    | 行级过滤           | 否                     |
+| GROUP BY | 分组说明           | 仅在从表选择数据时使用 |
+| HAVING   | 组级过滤           | 否                     |
+| ORDER BY | 输出排序顺序       | 否                     |
+
+### 使用子查询
+
+SQL 允许创建子查询（subquery），即嵌套在其他查询中的查询。
+
+#### 利用子查询进行过滤
+
+订单存储在两个表中。每个订单包含订单编号、客户 ID、 订单日期，在 Orders 表中存储为一行。各订单的物品存储在相关的 OrderItems 表中。Orders 表不存储顾客信息，只存储顾客 ID。顾客的实际信息存储在 Customers 表中。假如需要列出订购物品 RGAN01 的所有顾客，需要经过以下步骤：
+
+1. 检索包含物品 RGAN01 的所有订单的编号。
+2. 检索具有前一步骤列出的订单编号的所有顾客的 ID。
+3. 检索前一步骤返回的所有顾客 ID 的顾客信息。
+
+上述每个步骤都可以单独作为一个查询来执行。可以把一条 SELECT 语句返回的结果用于另一条 SELECT 语句的 WHERE 子句。也可以使用子查询来把 3 个查询组合成一条语句。
+
+第一步：
+
+```sql
+SELECT order_num
+FROM OrderItems
+WHERE prod_id = 'RGAN01';
+```
+
+输出：
+
+```sql
++-----------+
+| order_num |
++-----------+
+|     20007 |
+|     20008 |
++-----------+
+2 rows in set (0.00 sec)
+```
+
+第二步：
+
+```sql
+SELECT cust_id
+FROM Orders
+WHERE order_num IN (20007,20008);
+```
+
+输出：
+
+```sql
++------------+
+| cust_id    |
++------------+
+| 1000000004 |
+| 1000000005 |
++------------+
+2 rows in set (0.00 sec)
+```
+
+第三步：
+
+```sql
+SELECT cust_name, cust_contact
+FROM Customers
+WHERE cust_id IN (1000000004,1000000005);
+```
+
+输出：
+
+```sql
++---------------+--------------------+
+| cust_name     | cust_contact       |
++---------------+--------------------+
+| Fun4All       | Denise L. Stephens |
+| The Toy Store | Kim Howard         |
++---------------+--------------------+
+2 rows in set (0.00 sec)
+```
+
+将第一步和第二步结合起来：
+
+```sql
+SELECT cust_id
+FROM Orders
+WHERE order_num IN (SELECT order_num
+                    FROM OrderItems
+                    WHERE prod_id = 'RGAN01');
+```
+
+在 SELECT 语句中，子查询总是从内向外处理。在处理上面的 SELECT 语句时，DBMS 实际上执行了两个操作。
+
+包含子查询的 SELECT 语句难以阅读和调试，它们在较为复杂时更是如此。如上所示，<font color = orange>把子查询分解为多行并进行适当的缩进，能极大地简化子查询的使用。</font>
+
+结合第三步：
+
+```sql
+SELECT cust_name, cust_contact
+FROM Customers
+WHERE cust_id IN (SELECT cust_id
+                  FROM Orders 
+                  WHERE order_num IN (SELECT order_num
+                                      FROM OrderItems
+                                      WHERE prod_id = 'RGAN01'));
+```
+
+对于能嵌套的子查询的数目没有限制，不过在<font color = orange>实际使用时由于性能的限制，不能嵌套太多的子查询。作为子查询的 SELECT 语句只能查询单个列。企图检索多个列将返回 错误。</font>使用子查询并不总是执行这类数据检索的最有效方法。
+
+#### 作为计算字段使用子查询
+
+使用子查询的另一方法是创建计算字段。
+
+假如需要显示 Customers 表中每个顾客的订单总数。订单与相应的顾客 ID 存储在 Orders 表中。需要执行以下步骤：
+
+1. 从 Customers 表中检索顾客列表。
+2. 对于检索出的每个顾客，统计其在 Orders 表中的订单数目。
+
+```sql
+SELECT cust_name, cust_state, (SELECT COUNT(*) 
+                               FROM Orders 
+                               WHERE Orders.cust_id = Customers.cust_id) AS orders
+FROM Customers 
+ORDER BY cust_name; 
+```
+
+输出：
+
+```sql
++---------------+------------+--------+
+| cust_name     | cust_state | orders |
++---------------+------------+--------+
+| Fun4All       | IN         |      1 |
+| Fun4All       | AZ         |      1 |
+| Kids Place    | OH         |      0 |
+| The Toy Store | IL         |      1 |
+| Village Toys  | MI         |      2 |
++---------------+------------+--------+
+5 rows in set (0.03 sec)
+```
 
