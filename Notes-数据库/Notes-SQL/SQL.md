@@ -66,7 +66,7 @@ SQL（sequel）：结构化查询语言。几乎所有重要的 DBMS 都支持 S
 
 ---
 
-别名（alias）：是一个字段或值的替换名。别名有时也称为导出列（derived column）。
+别名（alias）：是一个字段或值的替换名。<font color = skyblue>别名有时也称为导出列（derived column）。</font>
 
 ---
 
@@ -75,6 +75,10 @@ SQL（sequel）：结构化查询语言。几乎所有重要的 DBMS 都支持 S
 ---
 
 聚集函数（aggregate function）：对某些行运行的函数，计算并返回一个值。
+
+---
+
+笛卡儿积（cartesian product）：由没有联结条件的表关系返回的结果为笛卡儿积。检索出的行的数目将是第一个表中的行数乘以第二个表中的行数。第一个表中的每一行将与第二个表中的每一行配对，而不管它们 逻辑上是否能配在一起。<font color = skyblue>也称叉联结（cross join）。</font>
 
 ### 表
 
@@ -2140,4 +2144,483 @@ ORDER BY cust_name;
 +---------------+------------+--------+
 5 rows in set (0.03 sec)
 ```
+
+<font color = grass>此例子没有看懂，我寻思着可能作为计算字段使用子查询时可能最后计算。因为 `SELECT cust_name, cust_state FROM Customers ORDER BY cust_name` 的结果就是返回 5 行。</font>
+
+Orders.cust_id 和 Customers.cust_id 是完全限定列名。<font color = skyblue>当两张表有相同的列名时，需要使用完全限定列名</font>，否则 DBMS 会误解意思，返回错误结果。
+
+### 联结表
+
+#### 关系表
+
+有一个包含产品目录的数据库表，其中每类物品占一行。对于每一种物品，要存储的信息包括产品描述、价格，以及生产该产品的供应商。将供应商名、地址、联系方法等供应商信息与产品信息分开存储的理由：
+
+1. 同一供应商生产的每个产品，其供应商信息都是相同的，对每个产品重复此信息既浪费时间又浪费存储空间。
+2. 如果供应商信息发生变化，例如供应商迁址或电话号码变动，只需修改一次即可。
+3. 如果有重复数据（即每种产品都存储供应商信息），则很难保证每次输入该数据的方式都相同。不一致的数据在报表中就很难利用。
+4. 相同的数据出现多次决不是一件好事。
+
+关系表的设计就是要把信息分解成多个表，一类数据一个表。各表通过某些共同的值互相关联（所以才叫关系数据库）。
+
+在上面例子中可建立两个表：一个存储供应商信息，另一个存储产品信息。Vendors 表包含所有供应商信息，每个供应商占一行，具有唯一的标识。此标识称为主键（primary key），可以是供应商 ID 或任何其他唯一值。Products 表只存储产品信息，除了存储供应商 ID（Vendors 表的主键）外，它不存储其他有关供应商的信息。Vendors 表的主键将 Vendors 表与 Products 表关联，利用供应商 ID 能从 Vendors 表中找出相应供应商的详细信息。
+
+这样做的好处是：
+
+1. 供应商信息不重复，不会浪费时间和空间。
+2. 如果供应商信息变动，可以只更新 Vendors 表中的单个记录，相关表中的数据不用改动。
+3. 由于数据不重复，数据显然是一致的，使得处理数据和生成报表更简单。
+
+<font color = orange>设计数据库要能够适应不断增加的工作量而不失败。</font>设计良好的数据库或应用程序称为可伸缩性好（scale well）。
+
+#### 联结
+
+SQL 最强大的功能之一就是能在数据查询的执行中联结（join）表。联结是利用 SQL 的 SELECT 能执行的最重要的操作。联结是一种机制，用来在一条 SELECT 语句中关联表，因此称为联结。使用特殊的语法，可以联结多个表返回一组输出，联结在运行时关联表中正确的行。
+
+许多 DBMS 提供图形界面，用来交互式地定义表关系。这些工具极其有助于维护引用完整性。在使用关系表时，仅在关系列中插入合法数据是非常重要的。如果 Products 表中存储了无效的供应商 ID，则相应的产品不可访问，因为它们没有关联到某个供应 商。为避免这种情况发生，可指示数据库只允许在 Products 表的供应商 ID 列中出现合法值（即出现在 Vendors 表中的供应商）。引用完整性表示 DBMS 强制实施数据完整性规则。这些规则一般由提供了界 面的 DBMS 管理。
+
+#### 创建联结
+
+``` sql
+SELECT vend_name, prod_name, prod_price
+FROM Vendors, Products
+WHERE Vendors.vend_id = Products.vend_id;
+```
+
+输出：
+
+```sql
++-----------------+---------------------+------------+
+| vend_name       | prod_name           | prod_price |
++-----------------+---------------------+------------+
+| Doll House Inc. | Fish bean bag toy   |       3.49 |
+| Doll House Inc. | Bird bean bag toy   |       3.49 |
+| Doll House Inc. | Rabbit bean bag toy |       3.49 |
+| Bears R Us      | 8 inch teddy bear   |       5.99 |
+| Bears R Us      | 12 inch teddy bear  |       8.99 |
+| Bears R Us      | 18 inch teddy bear  |      11.99 |
+| Doll House Inc. | Raggedy Ann         |       4.99 |
+| Fun and Games   | King doll           |       9.49 |
+| Fun and Games   | Queen doll          |       9.49 |
++-----------------+---------------------+------------+
+9 rows in set (0.00 sec)
+```
+
+SELECT 语句与前面所有语句一样指定要检索的列。这里最大的差别是所指定的两列（prod_name 和 prod_price）在一个 表中，而第一列（vend_name）在另一个表中。现在来看 FROM 子句。与以前的 SELECT 语句不一样，这条语句的 FROM 子句列出了两个表：Vendors 和 Products。它们就是这条 SELECT 语句联结的两个表的名字。这两个表用 WHERE 子句正确地联结，WHERE 子句指示 DBMS 将 Vendors 表中的 vend_id 与 Products 表中的 vend_id 匹配起来。
+
+<font color = skyblue>这个例子又称等值联结（equijoin），基于两个表之间的相等测试。这种联结也称为内联结（inner join）。</font>
+
+#### WHERE 子句
+
+在联结两个表时，实际要做的是将第一个表中的每一行与第二个表中的每一行配对。WHERE 子句作为过滤条件，只包含那些匹配给定条件（这里是联结条件）的行。<font color = skyblue>没有 WHERE 子句，第一个表中的每一行将与第二个表中的每一行配对，而不管它们逻辑上是否能配在一起。由没有联结条件的表关系返回的结果为笛卡儿积。</font>
+
+没有 WHERE 子句联结（笛卡尔积）：
+
+``` sql
+SELECT vend_name, prod_name, prod_price
+FROM Vendors, Products;
+```
+
+输出：
+
+```sql
++-----------------+---------------------+------------+
+| vend_name       | prod_name           | prod_price |
++-----------------+---------------------+------------+
+| Jouets et ours  | Fish bean bag toy   |       3.49 |
+| Furball Inc.    | Fish bean bag toy   |       3.49 |
+| Fun and Games   | Fish bean bag toy   |       3.49 |
+| Doll House Inc. | Fish bean bag toy   |       3.49 |
+| Bears R Us      | Fish bean bag toy   |       3.49 |
+| Bear Emporium   | Fish bean bag toy   |       3.49 |
+| Jouets et ours  | Bird bean bag toy   |       3.49 |
+| Furball Inc.    | Bird bean bag toy   |       3.49 |
+| Fun and Games   | Bird bean bag toy   |       3.49 |
+| Doll House Inc. | Bird bean bag toy   |       3.49 |
+| Bears R Us      | Bird bean bag toy   |       3.49 |
+| Bear Emporium   | Bird bean bag toy   |       3.49 |
+| Jouets et ours  | Rabbit bean bag toy |       3.49 |
+| Furball Inc.    | Rabbit bean bag toy |       3.49 |
+| Fun and Games   | Rabbit bean bag toy |       3.49 |
+| Doll House Inc. | Rabbit bean bag toy |       3.49 |
+| Bears R Us      | Rabbit bean bag toy |       3.49 |
+| Bear Emporium   | Rabbit bean bag toy |       3.49 |
+| Jouets et ours  | 8 inch teddy bear   |       5.99 |
+| Furball Inc.    | 8 inch teddy bear   |       5.99 |
+| Fun and Games   | 8 inch teddy bear   |       5.99 |
+| Doll House Inc. | 8 inch teddy bear   |       5.99 |
+| Bears R Us      | 8 inch teddy bear   |       5.99 |
+| Bear Emporium   | 8 inch teddy bear   |       5.99 |
+| Jouets et ours  | 12 inch teddy bear  |       8.99 |
+| Furball Inc.    | 12 inch teddy bear  |       8.99 |
+| Fun and Games   | 12 inch teddy bear  |       8.99 |
+| Doll House Inc. | 12 inch teddy bear  |       8.99 |
+| Bears R Us      | 12 inch teddy bear  |       8.99 |
+| Bear Emporium   | 12 inch teddy bear  |       8.99 |
+| Jouets et ours  | 18 inch teddy bear  |      11.99 |
+| Furball Inc.    | 18 inch teddy bear  |      11.99 |
+| Fun and Games   | 18 inch teddy bear  |      11.99 |
+| Doll House Inc. | 18 inch teddy bear  |      11.99 |
+| Bears R Us      | 18 inch teddy bear  |      11.99 |
+| Bear Emporium   | 18 inch teddy bear  |      11.99 |
+| Jouets et ours  | Raggedy Ann         |       4.99 |
+| Furball Inc.    | Raggedy Ann         |       4.99 |
+| Fun and Games   | Raggedy Ann         |       4.99 |
+| Doll House Inc. | Raggedy Ann         |       4.99 |
+| Bears R Us      | Raggedy Ann         |       4.99 |
+| Bear Emporium   | Raggedy Ann         |       4.99 |
+| Jouets et ours  | King doll           |       9.49 |
+| Furball Inc.    | King doll           |       9.49 |
+| Fun and Games   | King doll           |       9.49 |
+| Doll House Inc. | King doll           |       9.49 |
+| Bears R Us      | King doll           |       9.49 |
+| Bear Emporium   | King doll           |       9.49 |
+| Jouets et ours  | Queen doll          |       9.49 |
+| Furball Inc.    | Queen doll          |       9.49 |
+| Fun and Games   | Queen doll          |       9.49 |
+| Doll House Inc. | Queen doll          |       9.49 |
+| Bears R Us      | Queen doll          |       9.49 |
+| Bear Emporium   | Queen doll          |       9.49 |
++-----------------+---------------------+------------+
+54 rows in set (0.00 sec)
+```
+
+#### 内联结
+
+基于两个表之间的相等测试，称为等值联结（equijoin），又称内联结（inner join）。这种联结可以使用稍微不同的语法。结果与使用 WHERE 判断相等是相同的。
+
+两个表之间的关系是以 INNER JOIN 指定的部分 FROM 子句。在使用这种语法时，联结条件用特定的 ON 子句而不是 WHERE 子句给出。传递 给 ON 的实际条件与传递给 WHERE 的相同。<font color = skyblue>INNER JOIN  接表的列是子集，也就是 Vendors 不能与 Products 互换。</font>
+
+```sql
+SELECT vend_name, prod_name, prod_price
+FROM Vendors
+INNER JOIN Products ON Vendors.vend_id = Products.vend_id;
+```
+
+输出：
+
+```sql
++-----------------+---------------------+------------+
+| vend_name       | prod_name           | prod_price |
++-----------------+---------------------+------------+
+| Doll House Inc. | Fish bean bag toy   |       3.49 |
+| Doll House Inc. | Bird bean bag toy   |       3.49 |
+| Doll House Inc. | Rabbit bean bag toy |       3.49 |
+| Bears R Us      | 8 inch teddy bear   |       5.99 |
+| Bears R Us      | 12 inch teddy bear  |       8.99 |
+| Bears R Us      | 18 inch teddy bear  |      11.99 |
+| Doll House Inc. | Raggedy Ann         |       4.99 |
+| Fun and Games   | King doll           |       9.49 |
+| Fun and Games   | Queen doll          |       9.49 |
++-----------------+---------------------+------------+
+9 rows in set (0.00 sec)
+```
+
+ANSI SQL 规范首选 INNER JOIN 语法，之前使用的是简单的等值语法。其实，<font color = orange>SQL 语言纯正论者是用鄙视的眼光看待简单语法的。</font>这就是说，DBMS 的确支持简单格式和标准格式，具体使用就看用哪个更顺手了。
+
+#### 联结多个表
+
+SQL 不限制一条 SELECT 语句中可以联结的表的数目。创建联结的基本规则也相同。首先列出所有表，然后定义表之间的关系。虽然 SQL 本身不限制每个联结约束中表的数目，但实际上许多 DBMS 都有限制。请参阅具体的 DBMS 文档以了解其限制。
+
+DBMS 在运行时关联指定的每个表，以处理联结。这种处理可能非常耗费资源，因此应该注意，<font color = orange>不要联结不必要的表。联结的表越多，性能下降越厉害。</font>
+
+显示订单 20007 中的物品。订单物品存储在 OrderItems 表中。每个产品按其产品 ID 存储，它引用 Products 表中的产品。这些产品通过供应商 ID 联结到 Vendors 表中相应的供应商，供应商 ID 存储在每个产品的记录中。这里的 FROM 子句列出三个表，WHERE 子句定义这两个联结条件，而第三个联结条件用来过滤出订单 20007 中的物品。
+
+```sql
+SELECT prod_name, vend_name, prod_price, quantity
+FROM OrderItems, Products, Vendors
+WHERE Products.vend_id = Vendors.vend_id
+      AND OrderItems.prod_id = Products.prod_id
+      AND order_num = 20007;
+```
+
+输出：
+
+```sql
++---------------------+-----------------+------------+----------+
+| prod_name           | vend_name       | prod_price | quantity |
++---------------------+-----------------+------------+----------+
+| 18 inch teddy bear  | Bears R Us      |      11.99 |       50 |
+| Fish bean bag toy   | Doll House Inc. |       3.49 |      100 |
+| Bird bean bag toy   | Doll House Inc. |       3.49 |      100 |
+| Rabbit bean bag toy | Doll House Inc. |       3.49 |      100 |
+| Raggedy Ann         | Doll House Inc. |       4.99 |       50 |
++---------------------+-----------------+------------+----------+
+5 rows in set (0.00 sec)
+```
+
+对于之前提到的例子，返回订购产品 RGAN01 的顾客列表，也可以使用联结实现查询。
+
+```sql
+SELECT cust_name, cust_contact
+FROM Customers
+WHERE cust_id IN (SELECT cust_id
+                  FROM Orders
+                  WHERE order_num IN (SELECT order_num
+                                      FROM OrderItems
+                                      WHERE prod_id = 'RGAN01'));
+```
+
+使用联结：
+
+```sql
+SELECT cust_name, cust_contact
+FROM Customers, Orders, OrderItems
+WHERE Customers.cust_id = Orders.cust_id
+      AND OrderItems.order_num = Orders.order_num
+      AND prod_id = 'RGAN01';
+```
+
+输出：
+
+```sql
++---------------+--------------------+
+| cust_name     | cust_contact       |
++---------------+--------------------+
+| Fun4All       | Denise L. Stephens |
+| The Toy Store | Kim Howard         |
++---------------+--------------------+
+2 rows in set (0.00 sec)
+```
+
+### 高级联结
+
+#### 使用表别名
+
+SQL 除了可以对列名和计算字段使用别名，还允许给表名起别名。<font color = skyblue>表别名只在查询执行中使用。与列别名不一样，表别名不返回到客户端。</font>这样做有两个主要理由：
+
+1. 缩短 SQL 语句；
+2. 允许在一条 SELECT 语句中多次使用相同的表。
+
+``` sql
+SELECT cust_name, cust_contact
+FROM Customers AS C, Orders AS O, OrderItems AS OI
+WHERE C.cust_id = O.cust_id
+      AND OI.order_num = O.order_num
+      AND prod_id = 'RGAN01';
+```
+
+输出：
+
+```sql
++---------------+--------------------+
+| cust_name     | cust_contact       |
++---------------+--------------------+
+| Fun4All       | Denise L. Stephens |
+| The Toy Store | Kim Howard         |
++---------------+--------------------+
+2 rows in set (0.00 sec)
+```
+
+Oracle 不支持 AS 关键字。<font color = orange>要在 Oracle 中使用别名，可以不用 AS，简单地指定列名即可（因此，应该是 Customers C，而不是 Customers AS C）。</font>
+
+#### 其他联结类型
+
+除内联结的其他类型联结：自联结（self-join）、自然联结（natural join）、外联结（outer join）。
+
+#### 自联结
+
+假如要给与 Jim Jones 同一公司的所有顾客发送一封信件。这个查询要求首先找出 Jim Jones 工作的公司，然后找出在该公司工作的顾客。
+
+使用子查询：
+
+```sql
+SELECT cust_id, cust_name, cust_contact
+FROM Customers
+WHERE cust_name = (SELECT cust_name
+                   FROM Customers
+                   WHERE cust_contact = 'Jim Jones');
+```
+
+输出：
+
+```sql
++------------+-----------+--------------------+
+| cust_id    | cust_name | cust_contact       |
++------------+-----------+--------------------+
+| 1000000003 | Fun4All   | Jim Jones          |
+| 1000000004 | Fun4All   | Denise L. Stephens |
++------------+-----------+--------------------+
+2 rows in set (0.00 sec)
+```
+
+使用联结查询：
+
+此查询中需要的两个表实际上是相同的表，因此 Customers 表在 FROM 子句中出现了两次。虽然这是完全合法的，但对 Customers 的引用具有歧义性，因为 DBMS 不知道引用的是哪个 Customers 表。 解决此问题，需要使用表别名。Customers 第一次出现用了别名 c1，第二次出现用了别名 c2。现在可以将这些别名用作表名。例如，SELECT 语句使用 c1 前缀明确给出所需列的全名。如果不这样，DBMS 将返回错误， 因为名为 cust_id、cust_name、cust_contact 的列各有两个。DBMS 不知道想要的是哪一列（即使它们其实是同一列）。WHERE 首先联结两个表，然后按第二个表中的 cust_contact 过滤数据，返回所需的数据。
+
+```sql
+SELECT c1.cust_id, c1.cust_name, c1.cust_contact
+FROM Customers AS c1, Customers AS c2
+WHERE c1.cust_name = c2.cust_name
+      AND c2.cust_contact = 'Jim Jones'; 
+```
+
+输出：
+
+``` sql
++------------+-----------+--------------------+
+| cust_id    | cust_name | cust_contact       |
++------------+-----------+--------------------+
+| 1000000003 | Fun4All   | Jim Jones          |
+| 1000000004 | Fun4All   | Denise L. Stephens |
++------------+-----------+--------------------+
+2 rows in set (0.00 sec)
+```
+
+自联结通常作为外部语句，用来替代从相同表中检索数据的使用子查询语句。虽然最终的结果是相同的，<font color = orange>但许多 DBMS 处理联结远比处理子查询快得多。应该试一下两种方法，以确定哪一种的性能更好。</font>
+
+<font color = orange>Oracle 用户应该去掉 AS。</font>
+
+#### 自然联结
+
+自然联结排除多次出现，使每一列只返回一次。自然联结要求只能选择那些唯一的列，一般通过对一个表使用通配符（SELECT *），而对其他表的列使用明确的子集来完成。
+
+在这个例子中，通配符只对第一个表使用。所有其他列明确列出，所以没有重复的列被检索出来。
+
+``` sql
+SELECT C.*, O.order_num, O.order_date, OI.prod_id, OI.quantity, OI.item_price
+FROM Customers AS C, Orders AS O, OrderItems AS OI
+WHERE C.cust_id = O.cust_id
+      AND OI.order_num = O.order_num
+      AND prod_id = 'RGAN01';
+```
+
+<font color = skyblue>迄今为止本笔记中建立的每个内联结都是自然联结，很可能永远都不会用到不是自然联结的内联结。</font>
+
+#### 外联结
+
+许多联结将一个表中的行与另一个表中的行相关联，但有时候需要包含 没有关联行的那些行。例如，
+
+1. 对每个顾客下的订单进行计数，包括那些至今尚未下订单的顾客。
+2. 列出所有产品以及订购数量，包括没有人订购的产品。
+3. 计算平均销售规模，包括那些至今尚未下订单的顾客。
+
+这些联结包含了那些在相关表中没有关联行的行。这种联结称为外联结。
+
+检索包括没有订单顾客在内的所有顾客。
+
+```sql
+SELECT Customers.cust_id, Orders.order_num
+FROM Customers
+LEFT OUTER JOIN Orders ON Customers.cust_id = Orders.cust_id;
+```
+
+输出：
+
+``` sql
++------------+-----------+
+| cust_id    | order_num |
++------------+-----------+
+| 1000000001 |     20005 |
+| 1000000001 |     20009 |
+| 1000000002 |      NULL |
+| 1000000003 |     20006 |
+| 1000000004 |     20007 |
+| 1000000005 |     20008 |
++------------+-----------+
+6 rows in set (0.00 sec)
+```
+
+在使用 OUTER JOIN 语法时，必须使用 RIGHT 或 LEFT 关键字指定包括其所有行的表 （RIGHT 指出的是 OUTER JOIN 右边的表，而 LEFT 指出的是 OUTER JOIN 左边的表）。上面的例子使用 LEFT OUTER JOIN 从 FROM 子句左边的表（Customers 表）中选择所有行。<font color = skyblue>FROM 后面的表名可以与 LEFT OUTER JOIN 后的表名位置互换。LEFT 指的是按 FROM 后面的表的列在 OUTER JOIN 中查找，如果有多行匹配就返回多行，如果查找不到就返回 NULL；RIGHT 指的是按 OUTER JOIN 后的表的列在 FROM 后的表中查找，如果有多行匹配就返回多行，如果查找不到就返回 NULL。</font>
+
+左外联结和右外联结之间的唯一差别是所关联表的顺序，调整 FROM 或 WHERE 子句中表的顺序，左外联结可以转换为右外联结。<font color = skyblue>这两种外联结可以互换使用。</font>
+
+使用 RIGHT OUTER JOIN：
+
+```sql
+SELECT Customers.cust_id, Orders.order_num
+FROM Customers
+RIGHT OUTER JOIN Orders ON Customers.cust_id = Orders.cust_id;
+```
+
+输出：
+
+```sql
++------------+-----------+
+| cust_id    | order_num |
++------------+-----------+
+| 1000000001 |     20005 |
+| 1000000001 |     20009 |
+| 1000000003 |     20006 |
+| 1000000004 |     20007 |
+| 1000000005 |     20008 |
++------------+-----------+
+5 rows in set (0.00 sec)
+```
+
+<font color = orange>SQLite 支持 LEFT OUTER JOIN，但不支持 RIGHT OUTER JOIN。</font>
+
+还有一种外联结叫<font color = skyblue>全外联结（full outer join）</font>。它检索两个表中的所有行并关联那些可以关联的行。全外联结包含两个表的不关联的行。
+
+```sql
+SELECT Customers.cust_id, Orders.order_num
+FROM Customers
+FULL OUTER JOIN Orders ON Customers.cust_id = Orders.cust_id;
+```
+
+<font color = orange>MariaDB、MySQL 和 SQLite 不支持 FULL OUTER JOIN 语法。</font>
+
+<font color = grass>书中没有给出全外联结的结果，我当前用的是 MySQL 所以不知道它长啥样，留个坑。</font>
+
+#### 带聚集函数的联结
+
+检索所有顾客及每个顾客所下的订单数。
+
+```sql
+SELECT Customers.cust_id, COUNT(Orders.order_num) AS num_ord
+FROM Customers
+INNER JOIN Orders ON Customers.cust_id = Orders.cust_id
+GROUP BY Customers.cust_id;
+```
+
+输出：
+
+```sql
++------------+---------+
+| cust_id    | num_ord |
++------------+---------+
+| 1000000001 |       2 |
+| 1000000003 |       1 |
+| 1000000004 |       1 |
+| 1000000005 |       1 |
++------------+---------+
+4 rows in set (0.00 sec)
+```
+
+聚集函数也可以方便地与其他联结一起使用。
+
+检索所有顾客及每个顾客所下的订单数，包括没有下订单的顾客。
+
+```sql
+SELECT Customers.cust_id, COUNT(Orders.order_num) AS num_ord
+FROM Customers
+LEFT OUTER JOIN Orders ON Customers.cust_id = Orders.cust_id
+GROUP BY Customers.cust_id;
+```
+
+输出：
+
+``` sql
++------------+---------+
+| cust_id    | num_ord |
++------------+---------+
+| 1000000001 |       2 |
+| 1000000002 |       0 |
+| 1000000003 |       1 |
+| 1000000004 |       1 |
+| 1000000005 |       1 |
++------------+---------+
+5 rows in set (0.00 sec)
+```
+
+#### 使用联结和外联结的条件
+
+<font color = orange>要点</font>：
+
+1. 注意所使用的联结类型。一般我们使用内联结，但使用外联结也有效。
+2. 关于确切的联结语法，应该查看具体的文档，看相应的 DBMS 支持何种语法。
+3. 保证使用正确的联结条件（不管采用哪种语法），否则会返回不正确的数据。
+4. 应该总是提供联结条件，否则会得出笛卡儿积。
+5. 在一个联结中可以包含多个表，甚至可以对每个联结采用不同的联结类型。虽然这样做是合法的，一般也很有用，但应该在一起测试它 前分别测试每个联结。这会使故障排除更为简单。
+
+### 组合查询
 
