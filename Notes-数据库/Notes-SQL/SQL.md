@@ -2624,3 +2624,143 @@ GROUP BY Customers.cust_id;
 
 ### 组合查询
 
+SQL 允许执行多个查询（多条 SELECT 语句），并将结果作为一个查询结果集返回。这些组合查询通常称为并（union）或复合查询 （compound query）。
+
+主要有两种情况需要使用组合查询： 
+
+1. 在一个查询中从不同的表返回结构数据；
+2. 对一个表执行多个查询，按一个查询返回数据。
+
+#### 创建组合查询
+
+使用 UNION 只需给出每条 SELECT 语句，在各条语句之间放上关键字 UNION。
+
+假如需要 Illinois、Indiana 和 Michigan 等美国几个州的所有顾客的报表，还想包括不管位于哪个州的所有的 Fun4All。
+
+使用 UNION 组合 SELECT 语句的数目，SQL 没有标准限制。但是，最好是参考一下具体的 DBMS 文档，了解它是否对 UNION 能组合的最大语句数目有限制。
+
+多数好的 DBMS 使用内部查询优化程序，在处理各条 SELECT 语句前组合它们。理论上讲，这意味着从性能上看使用多条 WHERE 子句条件还是 UNION 应该没有实际的差别。不过<font color = skyblue>实践中多数查询优化程序并不能达到理想状态，所以最好测试一下这两种方法，看哪种工作得更好。</font>
+
+```sql
+SELECT cust_name, cust_contact, cust_email
+FROM Customers
+WHERE cust_state IN ('IL','IN','MI')
+UNION
+SELECT cust_name, cust_contact, cust_email
+FROM Customers
+WHERE cust_name = 'Fun4All';
+```
+
+输出：
+
+```sql
++---------------+--------------------+-----------------------+
+| cust_name     | cust_contact       | cust_email            |
++---------------+--------------------+-----------------------+
+| Village Toys  | John Smith         | sales@villagetoys.com |
+| Fun4All       | Jim Jones          | jjones@fun4all.com    |
+| The Toy Store | Kim Howard         | NULL                  |
+| Fun4All       | Denise L. Stephens | dstephens@fun4all.com |
++---------------+--------------------+-----------------------+
+4 rows in set (0.30 sec)
+```
+
+UNION 规则：
+
+1. UNION 必须由两条或两条以上的 SELECT 语句组成，语句之间用关键字 UNION 分隔（因此，如果组合四条 SELECT 语句，将要使用三个 UNION 关键字）
+2. UNION 中的每个查询必须包含相同的列、表达式或聚集函数（不过，各个列不需要以相同的次序列出）。
+3. 列数据类型必须兼容：类型不必完全相同，但必须是 DBMS 可以隐含转换的类型（例如，不同的数值类型或不同的日期类型）。
+
+### 包含或取消重复的行
+
+UNION 能从查询结果集中自动去重。
+
+在上一个例子中的第一条 SELECT 语句单独执行返回 3 行，第二条 SELECT 语句单独执行返回 2 行，而使用 UNION 组合后只返回 4 行。
+
+如果需要返回所有的匹配行，可以使用 UNION ALL。
+
+```sql
+SELECT cust_name, cust_contact, cust_email 
+FROM Customers 
+WHERE cust_state IN ('IL','IN','MI') 
+UNION ALL
+SELECT cust_name, cust_contact, cust_email 
+FROM Customers 
+WHERE cust_name = 'Fun4All';
+```
+
+输出：
+
+``` sql
++---------------+--------------------+-----------------------+
+| cust_name     | cust_contact       | cust_email            |
++---------------+--------------------+-----------------------+
+| Village Toys  | John Smith         | sales@villagetoys.com |
+| Fun4All       | Jim Jones          | jjones@fun4all.com    |
+| The Toy Store | Kim Howard         | NULL                  |
+| Fun4All       | Jim Jones          | jjones@fun4all.com    |
+| Fun4All       | Denise L. Stephens | dstephens@fun4all.com |
++---------------+--------------------+-----------------------+
+5 rows in set (0.00 sec)
+```
+
+#### 对组合查询结果排序
+
+在用 UNION 组合查询时，只能使用一条 ORDER BY 子句，它必须位于最后一条 SELECT 语句之后。<font color = orange>对于结果集，不存在用一种方式排序一部分，而又用另一种方式排序另一部分的情况，因此不允许使用多条 ORDER BY 子句。</font>
+
+```sql
+SELECT cust_name, cust_contact, cust_email
+FROM Customers
+WHERE cust_state IN ('IL','IN','MI')
+UNION
+SELECT cust_name, cust_contact, cust_email
+FROM Customers
+WHERE cust_name = 'Fun4All'
+ORDER BY cust_name, cust_contact;
+```
+
+输出：
+
+```sql
++---------------+--------------------+-----------------------+
+| cust_name     | cust_contact       | cust_email            |
++---------------+--------------------+-----------------------+
+| Fun4All       | Denise L. Stephens | dstephens@fun4all.com |
+| Fun4All       | Jim Jones          | jjones@fun4all.com    |
+| The Toy Store | Kim Howard         | NULL                  |
+| Village Toys  | John Smith         | sales@villagetoys.com |
++---------------+--------------------+-----------------------+
+4 rows in set (0.00 sec)
+```
+
+<font color = orange>某些 DBMS 还支持另外两种 UNION：EXCEPT（有时称为 MINUS）可用来检索只在第一个表中存在而在第二个表中不存在的行；而 INTERSECT 可用来检索两个表中都存在的行。实际上，这些 UNION 很少使用，因为相同的结果可利用联结得到。</font>
+
+<font color = orange>UNION 在需要组合多个表的数据时也很有用，即使是有不匹配列名的表，在这种情况下，可以将 UNION 与别名组合，检索一个结果集。</font>
+
+### 插入数据
+
+INSERT 用来将行插入（或添加）到数据库表。插入有几种方式：
+
+1. 插入完整的行。
+2. 插入行的一部分。
+3. 插入某些查询的结果。
+
+使用 INSERT 语句可能需要客户端 / 服务器 DBMS 中的特定安全权限。在你试图使用 INSERT 前，应该保证自己有足够的安全权限。
+
+#### 插入完整的行
+
+把数据插入表中的最简单方法是使用基本的 INSERT 语法，它要求指定表名和插入到新行中的值。
+
+```sql
+INSERT INTO Customers
+VALUES(1000000006, 
+ 'Toy Land',
+ '123 Any Street',
+ 'New York',
+ 'NY',
+ '11111',
+ 'USA',
+ NULL,
+ NULL); 
+```
+
