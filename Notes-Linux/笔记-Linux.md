@@ -325,7 +325,353 @@ GNOME Terminal、Konsole Terminal 和 xterm，通常都会默认安装在 Linux 
 
 #### 使用 GNOME Terminal 仿真器
 
+GNOME Terminal 是 GNOME 桌面环境的默认终端仿真器。很多发行版，如 RHEL、Fedora 和 CentOS，默认采用的都是 GNOME 桌面环境，因此 GNOME Terminal 自然也就是默认配备了。不过其他一些桌面环境，比如 Ubuntu Unity，也采用 GNOME Terminal 作为默认的终端仿真软件包。它使用起来非常简单，是 Linux 新手的不错选择。
 
+##### 访问 GNOME Terminal
+
+每个图形化桌面环境都有不同的方式访问 GNOME 终端仿真器。GNOME 终端方正器在菜单中通常叫作 Terminal。
+
+在GNOME桌面环境中，访问 GNOME Terminal 非常直截了当。找到左上角的菜单，点击 Applications，从下拉菜单中选择 System Tools，点击 Terminal。如果写成简写法的话，这一系列操作就像这样：Applications ➪ System Tools ➪ Terminal。
+
+在 Unity 桌面环境中，访问 GNOME 终端得费点事。最简单的方法是 Dash ➪ Search，然后输入 Terminal。GNOME 终端会作为一个名为 Terminal 的应用程序显示在 Dash 区域。点击对应的图标就可以打开 GNOME 终端仿真器了。
+
+在一些Linux发行版的桌面环境中，例如 Ubuntu 的 Unity，可以使用快捷键 `Ctrl + Alt + T`快速访问 GNOME 终端。
+
+在 KDE 桌面环境中，默认的仿真器是 Konsole 终端仿真器。必须通过菜单才能访问。找到屏幕左下角名为 Kickoff Application Launcher 的图标，然后依次点击 Application ➪ Utilities ➪ Terminal。
+
+在大多数桌面环境中，可以创建一个启动器（launcher）访问 GNOME Terminal。启动器是桌面上的一个图标，可以利用它启动一个选定的应用程序。这是个很棒的特性，可以让你在桌面环境中快速访问终端仿真器。如果不想使用快捷键或是你的桌面环境中无法使用快捷键，这个特性就尤为有用。 例如，在 GNOME 桌面环境中，要创建一个启动器的话，可以在桌面中间单击右键，在出现的下拉菜单中选择 Select Create Launcher...，然后会打开一个名为 Create Launcher 的窗口。在 Type 字段中选择Application。在 Name 字段中输入图标的名称。在 Command 字段中输入gnometerminal。点击 Ok，保存为新的启动器。一个带有指定名称图标的启动器就出现在了桌面上。双击就可以打开 GNOME 终端仿真器了。
+
+在 Command 字段中输入 gnome-terminal 时，输入的实际上是用来启动 GNOME 终端仿真器的 shell 命令。
+
+##### 菜单栏
+
+GNOME Terminal 的菜单栏包含了配置选项和定制选项，可以通过它们使你的 GNOME  Terminal 符合自己的使用习惯。接下来的几张表格简要地描述了菜单栏中各种配置选项以及对应的快捷键。
+
+下表展示了了 GNOME Terminal 的 File 菜单下的配置选项。File 菜单中包含了可用于创建和管理所有 CLI 终端会话的菜单项。
+
+| 名称          | 快捷键           | 描述                                                         |
+| ------------- | ---------------- | ------------------------------------------------------------ |
+| Open Terminal | Shift + Ctrl + N | 在新的 GNOME Terminal 窗口中启动一个新的shell 会话           |
+| Open Tab      | Shift + Ctrl + T | 在现有的 GNOME Terminal 窗口的新标签中启动一个新的 shell 会话 |
+| New Profile   | 无               | 定制会话并将其保存为配置文件（profile），以备随后再次使用    |
+| Save Contents | 无               | 将回滚缓冲区（scrollback buffer）中的内容保存到文本文件中    |
+| Close Tab     | Shift + Ctrl + W | 关闭当前标签中的会话                                         |
+| Close Window  | Shift + Ctrl + Q | 关闭当前的 GNOME Terminal 会话                               |
+
+注意，和在网络浏览器中一样，你可以在 GNOME Terminal 会话中打开新的标签来启动一个全新的 CLI 会话。每个标签中的会话均被视为独立的 CLI 会话。并不是非得点击菜单项才能进入 File 菜单中的选项。大多数选项可以通过在会话区域中点击右键找到。
+
+下表所展示的 Edit 菜单中的菜单项用于处理标签内的文本内容。可以使用鼠标在会话窗口中的任意位置复制、粘贴文本。
+
+| 名称                | 快捷键           | 描述                                           |
+| ------------------- | ---------------- | ---------------------------------------------- |
+| Copy                | Shift + Ctrl + C | 将所选的文本复制到 GNOME 的剪贴板中            |
+| Paste               | Shift + Ctrl + V | 将 GNOME 剪贴板中的文本粘贴到会话中            |
+| Paste Filenames     |                  | 粘贴已复制的文件名和对应的路径                 |
+| Select All          | 无               | 选中回滚缓冲区中的全部输出                     |
+| Profiles            | 无               | 添加、删除或修改 GNOME Terminal 的配置文件     |
+| Keyboard Shortcuts  | 无               | 创建快捷键来快速访问 GNOME Terminal 的各种特性 |
+| Profile Preferences | 无               | 编辑当前会话的配置文件                         |
+
+Paste Filenames 菜单项只有在最新版的 GNOME Terminal 中才能找到，因此在你的系统中可能会看不到。 下表所展示的 View 菜单中包含用于控制 CLI 会话窗口外观的菜单项。这些选项能够为视力有缺陷的用户带来帮助。
+
+| 名称         | 快捷键   | 描述                            |
+| ------------ | -------- | ------------------------------- |
+| Show Menubar | 无       | 打开/关闭菜单栏                 |
+| Full Screen  | F11      | 打开/关闭终端窗口全桌面显示模式 |
+| Zoom In      | Ctrl + + | 逐步增大窗口显示字号            |
+| Zoom Out     | Ctrl + - | 逐步减小窗口显示字号            |
+| Normal Size  | Ctrl + 0 | 恢复默认字号                    |
+
+要注意的是，如果关闭了菜单栏显示，会话的菜单栏就会消失。不过你可以在任何一个终端会话窗口中点击右键，然后选择 Show Menubar，轻而易举地找回菜单栏。
+
+下表所展示的 Search 菜单中的菜单项用于在终端会话中进行简单的搜索。这些搜索类似于在网络浏览器或字处理软件中进行的操作。
+
+| 名称          | 快捷键           | 描述                                     |
+| ------------- | ---------------- | ---------------------------------------- |
+| Find          | Shift + Ctrl + F | 打开 Find 窗口，提供待搜索文本的搜索选项 |
+| Find Next     | Shift + Ctrl + H | 从终端会话的当前位置开始向前搜索指定文本 |
+| Find Previous | Shift + Ctrl + G | 从终端会话的当前位置开始向后搜索指定文本 |
+
+下表所展示的 Terminal 菜单中的菜单项用于控制终端仿真会话的特性。这些菜单项并没有对应的快捷键。
+
+| 名称                   | 描述                                     |
+| ---------------------- | ---------------------------------------- |
+| Change Profile         | 切换到新的配置文件                       |
+| Set Title              | 修改标签会话的标题                       |
+| Set Character Encoding | 选择用于发送和显示字符的字符集           |
+| Reset                  | 发送终端会话重置控制码                   |
+| Reset and Clear        | 发送终端会话重置控制码并清除终端会话显示 |
+| Window Size List       | 列出可用于调整当前终端窗口大小的列表     |
+
+Reset 选项非常有用。某天，你可能不小心让终端会话显示了一堆杂乱无章的字符和符号。这时候根本识别不出什么文本信息。这通常是因为在屏幕上显示了非文本文件。可以通过选择 Reset 或 Reset and Clear 让屏幕恢复正常。 
+
+下表所展示的 Tabs 菜单中的菜单项用于控制标签的位置以及活动标签的选择。这个菜单只有在打开多个标签会话时才会出现。
+
+| 名称           | 快捷键              | 描述                                                         |
+| -------------- | ------------------- | ------------------------------------------------------------ |
+| Next Tab       | Ctrl+PageDown       | 使下一个标签成为活动标签                                     |
+| Previous Tab   | Ctrl+PageUp         | 使上一个标签成为活动标签                                     |
+| Move Tab Left  | Shift+Ctrl+PageUp   | 将当前标签移动到前一个标签的前面                             |
+| Move Tab Right | Shift+Ctrl+PageDown | 将当前标签移动到下一个标签的后面                             |
+| Detach Tab     | 无                  | 删除该标签并使用该标签会话启动一个新的 GNOME Terminal 窗口   |
+| Tab List       | 无                  | 列出当前正在运行的标签（选择一个标签，转入对应的会话）       |
+| Terminal List  | 无                  | 列出当前正在运行的终端（选择一个终端，转入对应的会话。当打开 多个窗口会话的时候才会出现该菜单项） |
+
+最后，Help 菜单包含了两个菜单项。Contents 提供了一份完整的 GNOME Terminal 手册，可供你研究 GNOME Terminal 的各个菜单项和特性。About 菜单项可以告诉你当前运行的 GNOME Terminal 的版本。
+
+#### 使用 Konsole Terminal 仿真器
+
+KDE 桌面项目拥有自己的终端仿真软件包：Konsole Terminal。Konsole 软件包具备基本的终端仿真特性，另外还包含了一些更高级的图形应用程序功能。
+
+##### 访问 Konsole Terminal
+
+Konsole Terminal 是 KDE 桌面环境的默认终端仿真器，可以通过 KDE 环境的菜单系统轻而易举地访问到。在其他桌面环境中，访问 Konsole Terminal 就要麻烦一点了。 在 KDE 桌面环境中，可以通过点击屏幕左下角名为 Kickoff Application Launcher 的图标来访问 Konsole Terminal。然后点击 Applications ➪ System ➪ Terminal (Konsole)。
+
+你可能会在 KDE 菜单环境中看到两个终端菜单项。如果是这样的话，下方包含文字 Konsole 的 Terminal 菜单项就是 Konsole 终端。
+
+在 GNOME 桌面环境中，通常并没有默认安装 Konsole 终端。如果已经安装过的话，你可以通过 GNOME 的菜单系统进行访问。在屏幕左上角点击 Applications ➪ System Tools ➪ Konsole。
+
+如果在 Unity 桌面环境中安装了 Konsole，可以通过 Dash ➪ Search，然后输入Konsole 进行访问。Konsole Terminal 会作为一个名为 Konsole 的应用程序显示在Dash 区域。点击对应的图标打开 Konsole 终端仿真器。 下图展示了在 CentOS Linux 发行版的 KDE 桌面环境中访问 Konsole Terminal。 记住，在大多数桌面环境中，可以创建一个启动器来访问如 Konsole Terminal 这样的应用程序。 需要用于启动器启动 Konsole 终端仿真器的命令是 konsole。另外，如果已经安装过 Konsole  Terminal 的话，可以在其他的终端模拟器中输入 konsole，然后按回车键来启动。 和 GNOME Terminal 类似，Konsole Terminal 也通过菜单提供了一些配置选项和快捷键。
+
+![](图片\Konsole Terminal.png)
+
+##### 菜单栏
+
+Konsole Terminal 的菜单栏包含了查看和更改终端仿真会话特性所需的配置及定制化选项。下面的几张表格简要描述了菜单选项及其快捷键。
+
+下表中所展示的 File 菜单提供了可用于在当前窗口或新窗口中打开新标签的选项。
+
+| 名称              | 快捷键           | 描述                                                         |
+| ----------------- | ---------------- | ------------------------------------------------------------ |
+| New Tab           | Ctrl + Shift + N | 在现有的 Konsole Terminal 窗口的新标签中启动一个新的 shell 会话 |
+| New Window        | Ctrl + Shift + M | 在新的 Konsole Terminal 窗口中启动一个新的 shell 会话        |
+| shell             | 无               | 打开采用默认配置文件的 shell                                 |
+| Open Browser Here | 无               | 打开默认的文件浏览器应用                                     |
+| Close Tab         | Ctrl + Shift + W | 关闭当前标签中的会话                                         |
+| Quit              | Ctrl + Shift + Q | 退出 Konsole Terminal 仿真应用                               |
+
+在首次启动 Konsole Terminal 时，菜单中唯一列出的配置文件就是 shell。随着越来越多的配置文件被创建及保存，它们的名字都会出现在菜单中。
+
+下表中所展示的 Edit 菜单提供了可用于处理会话中的文本内容的选项。除此之外，可以管理标签名称的选项也在此列。
+
+| 名称          | 快捷键           | 描述                                         |
+| ------------- | ---------------- | -------------------------------------------- |
+| Copy          | Ctrl + Shift + C | 将选择的文本复制到 Konsole 的剪贴板中        |
+| Paste         | Ctrl + Shift + V | 将 Konsole 剪贴板中的文本粘贴到会话中        |
+| Rename Tab    | Ctrl + Alt + S   | 修改标签会话的标题                           |
+| Copy Input To | 无               | 开始/停止将会话输入复制到所选的其他会话中    |
+| Clear Display | 无               | 清除终端会话中的内容                         |
+| Clear & Reset | 无               | 清除终端会话中的内容并发送终端会话重置控制码 |
+
+Konsole 有一种很好的方法来跟踪每个标签会话中正在进行的活动。你可以使用 Rename Tab 菜单项对标签进行命名，使其符合当前执行的任务。这可以帮助我们知道那些打开的标签究竟是干什么的。
+
+下表所展示的 View 菜单中的菜单项用于控制 Konsole Terminal 窗口中单个会话的视图。除此之外，可监视终端会话活动的选项也在此列。
+
+| 名称                 | 快捷键             | 描述                                                         |
+| -------------------- | ------------------ | ------------------------------------------------------------ |
+| Split View           | 无                 | 控制显示在 Konsole Terminal 窗口中的多个标签会话             |
+| Detach View          | Ctrl + Shift + H   | 删除一个标签会话并使用该标签中的会话启动一个新的 Konsole  Terminal 窗口 |
+| Show Menu Bar        | 无                 | 打开/关闭菜单栏                                              |
+| Full Screen Mode     | Ctrl + Shift + F11 | 打开/关闭终端窗口的全屏模式                                  |
+| Monitor for Silence  | Ctrl + Shift + I   | 打开/关闭无活动标签（tab silence）的特殊消息                 |
+| Monitor for Activity | Ctrl + Shift + A   | 打开/关闭活动标签（tab activity）的特殊消息                  |
+| Character Encoding   | 无                 | 选择用于发送和显示字符的字符集                               |
+| Increase Text Size   | Ctrl + +           | 逐步增大窗口显示字号                                         |
+| Decrease Text Size   | Ctrl + -           | 逐步减小窗口显示字号                                         |
+
+菜单项 Monitor for Silence 用于指明无活动标签。如果在当前标签会话内超过 10 秒钟没有出现新的文本内容，那该标签就成了无活动标签。这允许你在等待应用程序输出时切换到另一个标签。由菜单项 Monitor for Activity 所打开的活动标签功能会在标签会话中出现新的文本内容时发出一条消息。这一选项能让你注意到应用程序产生了新的输出。
+
+Konsole 为每个标签保存了一个叫作回滚缓冲区的历史记录。这个历史记录中包含了已经不在当前终端可视区域中的文本内容。默认的是在回滚缓冲区内保存最近的 1000 行文本。下表展示的 Scrollback 菜单中的菜单项可用于查看该缓冲区。
+
+|                          |                  |                                                              |
+| ------------------------ | ---------------- | ------------------------------------------------------------ |
+| Search Output            | Ctrl + Shift + F | 打开 Konsole Terminal 窗口底部的 Find 窗口，提供回滚文本搜索选项 |
+| Find Next                | F3               | 在回滚缓冲区历史记录中查找下一个匹配的文本                   |
+| Find Previous            | Shift + F3       | 在回滚缓冲区历史记录中查找上一个匹配的文本                   |
+| Save Output              | 无               | 将回滚缓冲区中的内容保存在一个文本文件或 HTML 文件中         |
+| Scrollback Options       | 无               | 打开 Scrollback Options 窗口来配置回滚缓冲区选项             |
+| Clear Scrollback         | 无               | 删除回滚缓冲区中的内容                                       |
+| Clear Scrollback & Reset | Ctrl + Shift + X | 删除回滚缓冲区中的内容并重置终端窗口                         |
+
+你也可以使用窗口可视区域中的滚动条向后翻看回滚缓冲区中的内容。另外，也可以使用 Shift + UpArrow 逐行向后翻看，或是使用 Shift + PageUp 逐页（24 行）向后翻看。
+
+下表中所展示的 Bookmarks 菜单中的菜单项可用于管理 Konsole Terminal 窗口中的书签。书签能够保存活动会话的目录位置，让你随后可以在相同会话或新的会话中轻松返回之前的位置。
+
+| 名称                    | 快捷键           | 描述                                     |
+| ----------------------- | ---------------- | ---------------------------------------- |
+| Add Bookmark            | Ctrl + Shift + B | 在当前目录位置上创建新的书签             |
+| Bookmark Tabs as Folder | 无               | 为当前所有的终端标签会话创建一个新的书签 |
+| New Bookmark Folder     | 无               | 创建新的书签文件夹                       |
+| Edit Bookmarks          | 无               | 编辑已有的书签                           |
+
+下表所展示的 Settings 菜单中的菜单项可用于定制和管理配置文件。另外，你还可以为当前的标签会话再添加些许功能。这些菜单项并没有对应的快捷键。
+
+| 名称                    | 描述                                           |
+| ----------------------- | ---------------------------------------------- |
+| Change Profile          | 将所选的配置文件应用于当前标签                 |
+| Edit Current Profile    | 打开 Edit Profile 窗口，提供配置文件配置选项   |
+| Manage Profiles         | 打开 Manage Profile 窗口，提供配置文件管理选项 |
+| Configure Shortcuts     | 创建 Konsole Terminal 命令快捷键               |
+| Configure Notifications | 创建定制化的 Konsole Terminal 方案及会话       |
+
+Configure Notifications 项允许将会话中发生的特定事件与不同的行为关联起来。当出现某个事件时，就会触发指定的行为（或一系列行为）。
+
+下表所展示的 Help 菜单中的菜单项给出了完整的 Konsole 手册（如果你的 Linux 发行版中已经安装了KDE手册）以及标准的 About Konsole 对话框。
+
+| 名称                        | 快捷键     | 描述                                                       |
+| --------------------------- | ---------- | ---------------------------------------------------------- |
+| Konsole Handbook            | 无         | 包含了完整的Konsole手册                                    |
+| What’s This?                | Shift + F1 | 包含了终端部件的帮助信息                                   |
+| Report Bug                  | 无         | 打开 Submit Bug Report（提交bug报告）表单                  |
+| Switch Application Language | 无         | 打开 Switch Application’s Language（切换应用程序语言）表单 |
+| About Konsole               | 无         | 显示当前Konsole Terminal的版本                             |
+| About KDE                   | 无         | 显示当前KDE桌面环境的版本                                  |
+
+有一份相当全面的文档可以帮助你使用 Konsole 终端仿真器软件包。除此之外，在你碰到程序故障的时候，还可以使用 Bug Report 表单向 Konsole Terminal 开发人员提交问题。 相较于另一个流行的软件包 xterm，Konsole 终端仿真器软件包算是年轻一代了。
+
+#### 使用 xterm 终端仿真器
+
+最古老也是最基础的终端仿真软件包是 xterm。xterm 软件包在 X Window 出现之前就有了，通常默认包含在发行版中。 尽管 xterm 是功能完善的仿真软件包，但是它并不需要太多的资源（如内存）来运行。正因为如此，在专门为老旧硬件设计的 Linux 发行版中，xterm 非常流行。有些图形化桌面环境就用它作为默认终端仿真器软件包。 xterm 软件包尽管没有提供太多炫目的特性，但是却把一件事做到了极致：它能够仿真旧式终端，如 DEC 公司的 VT102、VT220 以及 Tektronix 4014 终端。对于 VT102 和 VT220 终端，xterm 甚至能够仿真 VT 序列色彩控制码，让你可以在脚本中使用色彩。
+
+DEC VT102 及 VT220 盛行于 20 世纪 80 年代和 90 年代初期，用于连接 Unix 系统的哑文本终端。VT102 / VT220 不仅能显示文本，还能够使用块模式图形显示基本的图形结构。由于在很多商业环境中这种终端访问方式仍在使用，因而使得 VT102 / VT220 仿真依然流行。
+
+下图展示了运行在图形化 Linux 桌面中的 xterm。可以看出，它非常朴素。如今得花点心思才能把 xterm 终端仿真器找出来。它常常并没有被包含在桌面环境的菜单中。
+
+![](图片\xterm 终端.png)
+
+##### 访问 xterm
+
+在 Ubuntu 的 Unity 桌面中，xterm 是默认安装的。可以通过 Dash ➪ Search，然后输入 xterm 进行访问。xterm 会作为一个名为 XTerm 的应用出现在 Dash 区域。点击对应的图标就可以打开 xterm 终端仿真器。在 Ubuntu 中搜索 xterm 时，你可能会看到另一个叫作 UXTerm 的终端。这只不过是加入了 Unicode 支持的 xterm 仿真器软件包而已。
+
+GNOME 和 KDE 桌面环境中并没有默认安装 xterm。你得先安装它。安装完成之后，你必须从另一个终端仿真器中启动 xterm。打开一个终端仿真器进入 CLI， 输入 xterm并按回车键。记住，也可以创建桌面启动器来启动 xterm。xterm 包让你可以使用命令行参数设置自己的特性。下面的内容将讨论这些特性以及如何进行修改。
+
+##### 命令行参数
+
+xterm 的命令行参数非常多。你可以控制大量的特性来对终端仿真实施定制，例如允许或禁止某种VT仿真。xterm 包含数量众多的配置选项，在此无法一一列举。在 bash 手册中有大量的文档可供参考。xterm 开发团队也在其网站上提供了很好的帮助：http://invisible-island.net/xterm/。
+
+可以通过向 xterm 命令加入参数来调用某些配置选项。例如，要想让 xterm 仿真 DEC VT100 终端，可以输入命令 xterm -ti vt100，然后按回车键。下表给出了一些可以配合xterm 终端仿真器使用的参数。
+
+| 参数         | 描述                       |
+| ------------ | -------------------------- |
+| -bg color    | 指定终端背景色             |
+| -fb font     | 指定粗体文本所使用的字体   |
+| -fg color    | 指定文本颜色               |
+| -fn font     | 指定文本字体               |
+| -fw font     | 指定宽文本字体             |
+| -lf filename | 指定用于屏幕日志的文件名   |
+| -ms color    | 指定文本光标颜色           |
+| -name name   | 指定标题栏中的应用程序名称 |
+| -ti terminal | 指定要仿真的终端类型       |
+
+一些 xterm 命令行参数使用加号（+）或减号（-）来指明如何设置某种特性。加号表示启用某种特性，减号表示关闭某种特性。不过反过来也行。加号可以表示禁止某种特性，减号可以表示允许某种特性，例如在使用 bc 参数的时候。下表中列出了可以使用 +/- 命令行参数设置的一些常用特性。
+
+| 参数       | 描述                              |
+| ---------- | --------------------------------- |
+| ah         | 启用/禁止文本光标高亮             |
+| aw         | 启用/禁止文本行自动环绕           |
+| bc         | 启用/禁止文本光标闪烁             |
+| cm         | 启用/禁止识别 ANSI 色彩更改控制码 |
+| fullscreen | 启用/禁止全屏模式                 |
+| j          | 启用/禁止跳跃式滚动               |
+| l          | 启用/禁止将屏幕数据记录进日志文件 |
+| mb         | 启用/禁止边缘响铃                 |
+| rv         | 启用/禁止图像反转                 |
+| t          | 启用/禁止 Tektronix 模式          |
+
+要注意，不是所有的 xterm 实现都支持这些命令行参数。你可以在 xterm 启动后，使用 -help 参数来确定你所使用的 xterm 实现支持哪些参数。现在已经了解了三种终端仿真器软件包，重要的问题是：哪个是最好的终端仿真器。对于这个问题，并没有权威的答案。要使用哪个仿真器软件包取决于个人需求。不过，能有这么多选择总是好事。
+
+#### bash shell
+
+大多数 Linux 发行版的默认 shell 都是 GNU bash shell。
+
+##### 启动 shell
+
+GNU bash shell 能提供对 Linux 系统的交互式访问。它是作为普通程序运行的，通常是在用户登录终端时启动。登录时系统启动的 shell 依赖于用户账户的配置。 /etc/passwd 文件包含了所有系统用户账户列表以及每个用户的基本配置信息。以下是从 /etc/passwd 文件中取出的样例条目：
+
+```shell
+christine:x:501:501:Christine Bresnahan:/home/christine:/bin/bash
+```
+
+每个条目有七个字段，字段之间用冒号分隔。系统使用字段中的数据来赋予用户账户某些特定特性。现在先将注意力放在最后一个字段上，该字段指定了用户使用的 shell 程序。在前面的 /etc/passwd 样例条目中，用户 christine 使用 /bin/bash 作为自己的默认 shell程序。这意味着当 christine 登录 Linux 系统后，bash shell 会自动启动。 尽管 bash shell 会在登录时自动启动，但是，是否会出现 shell 命令行界面（CLI）则依赖于使用的登录方式。如果采用虚拟控制台终端登录，CLI 提示符会自动出现，你可以输入 shell 命令。但如果是通过图形化桌面环境登录 Linux 系统，你就需要启动一个图形化终端仿真器来访问 shell  CLI 提示符。
+
+##### shell 提示符
+
+一旦启动了终端仿真软件包或者登录 Linux 虚拟控制台，你就会看到 shell CLI 提示符。提示符就是进入shell 世界的大门，是你输入 shell 命令的地方。默认 bash shell 提示符是美元符号（$），这个符号表明 shell 在等待用户输入。不同的 Linux 发行版采用不同格式的提示符。在 Ubuntu Linux 系统上，shell 提示符看起来是这样的：
+
+```shell
+christine@server01:~$
+```
+
+在 CentOS 系统上是这样的：
+
+``` shell
+[christine@server01 ~]$
+```
+
+除了作为 shell 的入口，提示符还能够提供其他的辅助信息。在上面的两个例子中，提示符中显示了当前用户 ID 名 christine。另外还包括系统名 server01。
+
+如果你还是 CLI 新手，请记住，在输入 shell 命令之后，需要按回车键才能让 shell 执行你输入的命令。
+
+shell 提示符并非一成不变。可根据自己的需要改变它。可以把 shell CLI 提示符想象成一名助手，它帮助你使用 Linux 系统，给你有益的提示，告诉你什么时候 shell 可以接受新的命令。shell 中另一个大有帮助的东西是 bash 手册。
+
+##### bash 手册
+
+大多数 Linux 发行版自带用以查找 shell 命令及其他 GNU 工具信息的在线手册。熟悉手册对使用各种 Linux 工具大有裨益，尤其是在你要弄清各种命令行参数的时候。
+
+man 命令用来访问存储在 Linux 系统上的手册页面。在想要查找的工具的名称前面输入 man 命令，就可以找到那个工具相应的手册条目。下图展示了查找 xterm 命令的手册页面的例子。输入命令 man xterm 就可以进入该页面。
+
+![](图片\xterm 命令的手册页面.png)
+
+注意上图中 xterm 命令的 DESCRIPTION 段落。这些段落排列的并不紧密，字里行间全是技术行话。bash 手册并不是按部就班的学习指南，而是作为快速参考来使用的。
+
+如果你是新接触 bash shell，可能一开始会觉得手册页并不太有用。但是，如果养成了阅读手册的习惯，尤其是阅读第一段或是 DESCRIPTION 部分的前两段，最终你会学到各种技术行话，手册页也会变得越来越有用。
+
+当使用 man 命令查看命令手册页的时候，这些手册页是由分页程序（pager）来显示的。分页程序是一种实用工具，能够逐页显示文本。可以通过点击<font color = skyblue>空格</font>键进行<font color = skyblue>翻页</font>，或是使用<font color = skyblue>回车键逐行查看</font>。另外还可以使用<font color = skyblue>箭头键向前向后滚动手册页的内容</font>（假设你用的终端仿真软件包支持箭头键功能）。 读完了手册页，可以<font color = skyblue>点击 q 键退出</font>。退出手册页之后，你会重新获得 shell CLI 提示符，这表示 shell 正在等待接受下一条命令。
+
+bash 手册甚至包含了一份有关其自身的参考信息。输入 man man 来查看与手册页相关的手册页。手册页将与命令相关的信息分成了不同的节。每一节惯用的命名标准如下表所示。
+
+| 节             | 描述                       |
+| -------------- | -------------------------- |
+| Name           | 显示命令名和一段简短的描述 |
+| Synopsis       | 命令的语法                 |
+| Confi guration | 命令配置信息               |
+| Description    | 命令的一般性描述           |
+| Options        | 命令选项描述               |
+| Exit Status    | 命令的退出状态指示         |
+| Return Value   | 命令的返回值               |
+| Errors         | 命令的错误消息             |
+| Environment    | 描述所使用的环境变量       |
+| Files          | 命令用到的文件             |
+| Versions       | 命令的版本信息             |
+| Versions       | 命名所遵从的标准           |
+| Notes          | 其他有帮助的资料           |
+| Bugs           | 提供提交bug的途径          |
+| Example        | 展示命令的用法             |
+| Authors        | 命令开发人员的信息         |
+| Copyright      | 命令源代码的版权状况       |
+| See Also       | 与该命令类型的其他命令     |
+
+并不是每一个命令的手册页都包含上表中列出的所有节。还有一些命令的节名并没有在上面的节名惯用标准中列出。
+
+<font color = skyblue>如果不记得命令名怎么办？可以使用关键字搜索手册页。语法是：man -k 关键字。例 如，要查找与终端相关的命令，可以输入 man -k terminal。</font>
+
+除了对节按照惯例进行命名，手册页还有对应的内容区域。每个内容区域都分配了一个数字， 从 1 开始，一直到 9，如下表所示。
+
+| 区域号 | 所涵盖的内容             |
+| ------ | ------------------------ |
+| 1      | 可执行程序或shell命令    |
+| 2      | 系统调用                 |
+| 3      | 库调用                   |
+| 4      | 特殊文件                 |
+| 5      | 文件格式与约定           |
+| 6      | 游戏                     |
+| 7      | 概览、约定及杂项         |
+| 8      | 超级用户和系统管理员命令 |
+| 9      | 内核例程                 |
+
+man 工具通常提供的是命令所对应的最低编号的内容。例如，下图中，我们输入的是命令 man xterm，请注意，在现实内容的左上角和右上角，单词 XTERM 后的括号中有一个数字：(1)。 这表示所显示的手册页来自内容区域1（可执行程序或 shell 命令）。 一个命令偶尔会在多个内容区域都有对应的手册页。比如说，有个叫作 hostname 的命令。 手册页中既包括该命令的相关信息，也包括对系统主机名的概述。要想查看所需要的页面，可以 输入 `man section# topic`。对手册页中的第 1 部分而言，就是输入 `man 1 hostname`。对于手 册页中的第 7 部分，就是输入 `man 7 hostname`。你也可以只看各部分内容的简介：输入 `man 1 intro` 阅读第1部分，输入 `man 2 intro` 阅读第 2 部分，输入 `man 3 intro` 阅读第 3 部分，等等。 手册页不是唯一的参考资料。还有另一种叫作 info 页面的信息。可以输入 `info info` 来了解 info 页面的相关内容。 另外，大多数命令都可以接受 -help 或 --help 选项。例如你可以输入 `hostname -help` 来查看帮助。关于帮助的更多信息，可以输入 `help help`。（看出这里面的门道没？） 显然有不少有用的资源可供参考。不过，很多基本的 shell 概念还是需要详细的解释。
+
+![](图片\xterm 命令的手册页面.png)
 
 ## 常识
 
@@ -360,6 +706,58 @@ shell 提示符：`[username@machinename 路径]$`，示例：`[me@linuxbox ~]$`
 Windows 与 Linux 文件系统的区别：
 
 Windows 中，每一个存储设备都有一个独立的文件系统树。而类 UNIX 系统中，如 Linux，无论多少驱动器或存储设备与计算机相连，通常只有一个文件系统树。根据系统管理员的设置，存储设备将会连接（或者说 挂载）到文件系统树的不同位置。系统管理员要负责系统的维护。
+
+### 文件系统
+
+#### Linux 文件系统
+
+如果你刚接触 Linux 系统，可能就很难弄清楚 Linux如何引用文件和目录，对已经习惯 Microsoft Windows 操作系统方式的人来说更是如此。在继续探索 Linux 系统之前，先了解一下它的布局是有好处的。 你将注意到的第一个不同点是，Linux 在路径名中不使用驱动器盘符。在 Windows 中，PC 上安装的物理驱动器决定了文件的路径名。Windows 会为每个物理磁盘驱动器分配一个盘符，每个驱动器都会有自己的目录结构，以便访问存储其中的文件。
+
+举个例子，在 Windows 中经常看到这样的文件路径：
+
+``` shell
+c:\Users\Rich\Documents\test.doc
+```
+
+这种 Windows 文件路径表明了文件 test.doc 究竟位于哪个磁盘分区中。如果你将 test.doc 保存在闪存上，该闪存由 J 来标识，那么文件的路径就是 J:\test.doc。该路径表明文件位于 J 盘的根目录下。 Linux 则采用了一种不同的方式。Linux 将文件存储在单个目录结构中，这个目录被称为虚拟目录（virtual directory）。虚拟目录将安装在 PC 上的所有存储设备的文件路径纳入单个目录结构中。Linux 虚拟目录结构只包含一个称为根（root）目录的基础目录。根目录下的目录和文件会按照访问它们的目录路径一一列出，这点跟 Windows 类似。
+
+在 Linux 中，你会看到下面这种路径：
+
+``` shell
+/home/Rich/Documents/test.doc
+```
+
+你将会发现 Linux 使用正斜线（/）而不是反斜线（\）在文件路径中划分目录。在 Linux 中，反斜线用来标识转义字符，要是用在文件路径中的话会导致各种各样的问题。如果你之前用的是Windows环境，就需要一点时间来适应。
+
+上面 Linux 下的路径表明文件 test.doc 位于 Documents 目录，Documents 又位于 Rich 目录中，Rich 则在 home 目录中。 要注意的是，路径本身并没有提供任何有关文件究竟存放在哪个物理磁盘上的信息。 Linux 虚拟目录中比较复杂的部分是它如何协调管理各个存储设备。在 Linux PC 上安装的第一块硬盘称为根驱动器。根驱动器包含了虚拟目录的核心，其他目录都是从那里开始构建的。 Linux 会在根驱动器上创建一些特别的目录，我们称之为挂载点（mount point）。挂载点是虚拟目录中用于分配额外存储设备的目录。虚拟目录会让文件和目录出现在这些挂载点目录中，然而实际上它们却存储在另外一个驱动器中。 通常系统文件会存储在根驱动器中，而用户文件则存储在另一驱动器中，如下图所示。
+
+![](图片\Linux 文件结构.png)
+
+上图展示了计算机中的两块硬盘。一块硬盘和虚拟目录的根目录（由正斜线 / 表示）关联起来。剩下的硬盘就可以挂载到虚拟目录结构中的任何地方。在这个例子中，第二块硬盘被挂载到了 /home 位置，用户目录都位于这个位置。Linux 文件系统结构是从 Unix 文件结构演进过来的。在 Linux 文件系统中，通用的目录名用于表示一些常见的功能。下表列出了一些较常见的 Linux 顶层虚拟目录名及其内容。
+
+| 目录   | 用途                                                        |
+| ------ | ----------------------------------------------------------- |
+| /      | 虚拟目录的根目录，通常不会在这里存储文件                    |
+| /bin   | 二进制目录，存放许多用户级的 GNU 工具                       |
+| /boot  | 启动目录，存放启动文件                                      |
+| /dev   | 设备目录，Linux 在这里创建设备节点                          |
+| /etc   | 系统配置文件目录                                            |
+| /home  | 主目录，Linux 在这里创建用户目录                            |
+| /lib   | 库目录，存放系统和应用程序的库文件                          |
+| /media | 媒体目录，可移动媒体设备的常用挂载点                        |
+| /mnt   | 挂载目录，另一个可移动媒体设备的常用挂载点                  |
+| /opt   | 可选目录，常用于存放第三方软件包和数据文件                  |
+| /proc  | 进程目录，存放现有硬件及当前进程的相关信息                  |
+| /root  | root 用户的主目录                                           |
+| /sbin  | 系统二进制目录，存放许多 GNU 管理员级工具                   |
+| /run   | 运行目录，存放系统运作时的运行时数据                        |
+| /srv   | 服务目录，存放本地服务的相关文件                            |
+| /sys   | 系统目录，存放系统硬件信息的相关文件                        |
+| /tmp   | 临时目录，可以在该目录中创建和删除临时工作文件              |
+| /usr   | 用户二进制目录，大量用户级的 GNU 工具和数据文件都存储在这里 |
+| /var   | 可变目录，用以存放经常变化的文件，比如日志文件              |
+
+常见的目录名均基于文件系统层级标准（filesystem hierarchy standard，FHS）。很多Linux 发行版都遵循了 FHS。这样一来，你就能够在任何兼容 FHS 的 Linux 系统中轻而易举地查找文件。要想保持与 FHS 标准同步，请访问其官方主页：http://www.pathname.com/fhs。
 
 ## 简单的命令
 
