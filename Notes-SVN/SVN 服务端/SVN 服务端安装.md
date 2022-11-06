@@ -16,8 +16,13 @@ https://www.visualsvn.com/server/download/
 ![](安装步骤2.png)
 
 - Location：SVN 安装位置<font color = skyblue>（不能出现中文、空格或特殊字符）</font>
+
 - Repositories：SVN 仓库位置
+
 - Sever Port：端口号，可以自定义，<font color = skyblue>自定义一般使用 8000 之后的端口号，防止重复</font>
+
+  新电脑端口号：8001
+
 - Backups：备份地址
 
 ![](D:\笔记\Notes-SVN\SVN服务端\安装步骤3.png)
