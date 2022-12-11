@@ -178,9 +178,9 @@ reset 的三个参数对比:
 
   soft 参数版本移动效果图
 
-  ![soft 参数版本移动图](soft 参数版本移动图.png)
+  ![soft 参数版本移动图](图片/soft 参数版本移动图.png)
 
-  ![soft 参数版本移动实际图](soft 参数版本移动实际图.png)
+  ![soft 参数版本移动实际图](图片/soft 参数版本移动实际图.png)
 
 - --mixed 参数
 
@@ -194,9 +194,9 @@ reset 的三个参数对比:
 
    mixed 参数版本移动效果图
 
-  ![mixed 参数版本移动图](mixed 参数版本移动图.png)
+  ![mixed 参数版本移动图](图片/mixed 参数版本移动图.png)
 
-  ![mixed 参数版本移动实际图](mixed 参数版本移动实际图.png)
+  ![mixed 参数版本移动实际图](图片/mixed 参数版本移动实际图.png)
 
 - --hard 参数
 
@@ -212,9 +212,9 @@ reset 的三个参数对比:
   
   hard 参数版本移动效果图
   
-  ![hard 参数版本移动图](hard 参数版本移动图.png)
+  ![hard 参数版本移动图](图片/hard 参数版本移动图.png)
   
-  ![hard 参数版本移动实际图](hard 参数版本移动实际图.png)
+  ![hard 参数版本移动实际图](图片/hard 参数版本移动实际图.png)
 
 # 删除文件
 
@@ -369,7 +369,7 @@ ssh-keygen -t rsa -C "config中配置的邮箱"
 
 然后会询问设置密码，一般直接回车。
 
-![](设置 ssh key.png)
+![](图片/设置 ssh key.png)
 
 然后前往默认路径或者刚刚自己设置的路径，找到 id_rsa.pub 文件复制全部。
 
@@ -400,7 +400,7 @@ ssh -T git@github.com
 
 成功会出现：
 
-![](ssh验证成功.png)
+![](图片/ssh验证成功.png)
 
 警告的翻译：
 
@@ -476,7 +476,7 @@ git push origin main
 
 下载大文件失败如下图所示，会卡在红框那停住，Ctrl + C 终止会出下面这段提示。
 
-![](下载含大文件仓库失败.png)
+![](图片/下载含大文件仓库失败.png)
 
 使用 lfs 下载仓库：
 
