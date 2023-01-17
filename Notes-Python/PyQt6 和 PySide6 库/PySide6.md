@@ -595,6 +595,52 @@ app.exec()
 
 ![](图片\PySide6\重新设置 label.png)
 
+### 显示图片
+
+此方法不支持 jpg 格式的图片，不能直接修改后缀名，需要使用专业软件将 jpg 格式转为 png 格式，路径支持中文。
+
+Widget.py
+
+``` python
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
+
+
+class Widget(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("QLabel Image")
+
+        image_label = QLabel()
+        # 可以使用中文路径，但不能使用 jpg
+        image_label.setPixmap(QPixmap("图片\皮卡丘.png"))
+
+        layout = QVBoxLayout()
+        layout.addWidget(image_label)
+
+        self.setLayout(layout)
+```
+
+main.py
+
+``` python
+from PySide6.QtWidgets import QApplication
+from Widget import Widget
+import sys
+
+app = QApplication(sys.argv)
+
+widget = Widget()
+widget.show()
+
+app.exec()
+```
+
+输出：
+
+![](图片\PySide6\QLabel 显示图片.png)
+
 ## QtWidgets.QEditLine
 
 QEditLine 官方文档：https://doc.qt.io/qtforpython/PySide6/QtWidgets/QLineEdit.html
@@ -831,7 +877,6 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-
 class Widget(QWidget):
     def __init__(self):
         super().__init__()
@@ -845,6 +890,7 @@ class Widget(QWidget):
 
         copy_button = QPushButton("复制")
         # 在官网的文档中 Slots 代表内置的事件，可以直接拿来用
+        # 复制文本编辑器中选中的文本
         copy_button.clicked.connect(self.text_edit.copy)
 
         cut_button = QPushButton("剪切")
@@ -923,9 +969,23 @@ app.exec()
 
 输出：
 
-复制、粘贴:
+复制、粘贴、剪切:
 
+![](动图\QTextEdit-复制粘贴剪切.gif)
 
+撤销与恢复：
 
-设置纯文本、html：
+![](动图\QTextEdit-撤销恢复.gif)
+
+设置纯文本：
+
+![](图片\PySide6\QTextEdit-设置纯文本.png)
+
+设置 html：
+
+![](图片\PySide6\QTextEdit-设置html.png)
+
+清空：
+
+![](动图\QTextEdit-清空.gif)
 

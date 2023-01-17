@@ -665,3 +665,172 @@ textEdited：
 
 ![](D:\Git 仓库\笔记\StudyNotes\Notes-Python\PyQt6 和 PySide6 库\动图\QLineEdit-textEdited 事件.gif)
 
+## 使用标签显示图片
+
+Widget.py
+
+``` python
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
+
+
+class Widget(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("QLabel Image")
+
+        image_label = QLabel()
+        # 可以使用中文路径，但不能使用 jpg
+        image_label.setPixmap(QPixmap("图片\皮卡丘.png"))
+
+        layout = QVBoxLayout()
+        layout.addWidget(image_label)
+
+        self.setLayout(layout)
+```
+
+main.py
+
+``` python
+from PySide6.QtWidgets import QApplication
+from Widget import Widget
+import sys
+
+app = QApplication(sys.argv)
+
+widget = Widget()
+widget.show()
+
+app.exec()
+```
+
+输出：
+
+![](图片\PySide6\QLabel 显示图片.png)
+
+## 自制文本编辑器
+
+Widget.py
+
+``` python
+from PySide6.QtWidgets import (
+    QWidget,
+    QTextEdit,
+    QPushButton,
+    QHBoxLayout,
+    QVBoxLayout,
+)
+
+class Widget(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("QTextEdit")
+
+        self.text_edit = QTextEdit()
+
+        current_text_button = QPushButton("当前文本")
+        current_text_button.clicked.connect(self.current_text_button_clicked)
+
+        copy_button = QPushButton("复制")
+        # 在官网的文档中 Slots 代表内置的事件，可以直接拿来用
+        # 复制文本编辑器中选中的文本
+        copy_button.clicked.connect(self.text_edit.copy)
+
+        cut_button = QPushButton("剪切")
+        cut_button.clicked.connect(self.text_edit.cut)
+
+        paste_button = QPushButton("粘贴")
+        paste_button.clicked.connect(self.text_edit.paste)
+
+        undo_button = QPushButton("撤销")
+        undo_button.clicked.connect(self.text_edit.undo)
+
+        redo_button = QPushButton("恢复")
+        redo_button.clicked.connect(self.text_edit.redo)
+
+        # 显示自定义的纯文本内容
+        set_plain_text_button = QPushButton("设置纯文本")
+        set_plain_text_button.clicked.connect(self.set_plain_text)
+
+        # 显示自定义的 html 格式内容
+        set_html_button = QPushButton("设置 html")
+        set_html_button.clicked.connect(self.set_html)
+
+        clear_button = QPushButton("清空")
+        # 删除文本编辑器中的所有文本，撤销于恢复操作的历史记录也会被删除
+        clear_button.clicked.connect(self.text_edit.clear)
+
+        h_layout = QHBoxLayout()
+        h_layout.addWidget(current_text_button)
+        h_layout.addWidget(copy_button)
+        h_layout.addWidget(cut_button)
+        h_layout.addWidget(paste_button)
+        h_layout.addWidget(undo_button)
+        h_layout.addWidget(redo_button)
+        h_layout.addWidget(set_plain_text_button)
+        h_layout.addWidget(set_html_button)
+        h_layout.addWidget(clear_button)
+
+        v_layout = QVBoxLayout()
+        v_layout.addLayout(h_layout)
+        v_layout.addWidget(self.text_edit)
+
+        self.setLayout(v_layout)
+
+    def current_text_button_clicked(self):
+        # 将文本编辑器的内容作为纯文本保存
+        # 当该属性被设置时，以前的内容被删除，撤销/重做历史被重置。
+        # currentCharFormat() 也被重置，除非 textCursor() 已经在文档的开头。
+        # 如果文本编辑有其他内容类型，如果你调用 toPlainText()，它将不会被替换成纯文本。
+        # 唯一的例外是非断裂空间，nbsp;，它将被转换为标准空间。
+        # 默认情况下，对于一个没有内容的编辑器，这个属性包含一个空字符串。
+        print(self.text_edit.toPlainText())
+
+    def set_plain_text(self):
+        self.text_edit.setPlainText("Today is a nice day.\nI'm so happy.")
+
+    def set_html(self):
+        self.text_edit.setHtml(
+            "<h1>daily</h1><p>Today is a nice day.\nI'm so happy.</p><ul><li>happy</li><li>wonderful</li></ul>"
+        )
+```
+
+main.py
+
+``` python
+from PySide6.QtWidgets import QApplication
+from Widget import Widget
+import sys
+
+app = QApplication(sys.argv)
+
+widget = Widget()
+widget.show()
+
+app.exec()
+```
+
+输出：
+
+复制、粘贴、剪切:
+
+![](D:/Git 仓库/笔记/StudyNotes/Notes-Python/PyQt6 和 PySide6 库/动图/QTextEdit-复制粘贴剪切.gif)
+
+撤销与恢复：
+
+![](D:/Git 仓库/笔记/StudyNotes/Notes-Python/PyQt6 和 PySide6 库/动图/QTextEdit-撤销恢复.gif)
+
+设置纯文本：
+
+![](D:/Git 仓库/笔记/StudyNotes/Notes-Python/PyQt6 和 PySide6 库/图片/PySide6/QTextEdit-设置纯文本.png)
+
+设置 html：
+
+![](D:/Git 仓库/笔记/StudyNotes/Notes-Python/PyQt6 和 PySide6 库/图片/PySide6/QTextEdit-设置html.png)
+
+清空：
+
+![](D:/Git 仓库/笔记/StudyNotes/Notes-Python/PyQt6 和 PySide6 库/动图/QTextEdit-清空.gif)
+
