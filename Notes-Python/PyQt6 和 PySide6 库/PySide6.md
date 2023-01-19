@@ -313,6 +313,56 @@ button.show()
 app.exec()
 ```
 
+### 设置按钮拉伸后长度倍数
+
+Widget.py
+
+```python
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import (
+    QWidget,
+    QPushButton,
+    QHBoxLayout
+)
+
+class Widget(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Size policies and stretches"
+        
+        button_1 = QPushButton("One")
+        button_2 = QPushButton("Two")
+        button_3 = QPushButton("Three")
+
+        h_layout = QHBoxLayout()
+        # 设置拉伸后按钮长度为 2 倍
+        h_layout.addWidget(button_1, 2)
+        h_layout.addWidget(button_2, 1)
+        h_layout.addWidget(button_3, 1)
+
+        self.setLayout(v_layout)
+```
+
+main.py
+
+``` python
+from PySide6.QtWidgets import QApplication
+from Widget import Widget
+import sys
+
+app = QApplication(sys.argv)
+
+widget = Widget()
+widget.show()
+
+app.exec()
+```
+
+输出：
+
+![](D:\Git 仓库\笔记\StudyNotes\Notes-Python\PyQt6 和 PySide6 库\图片\PySide6\QPushButton-设置按钮拉伸后长度倍数.png)
+
 ## QtWidgets.QMessageBox
 
 弹出消息框，消息框的类型可以分为：critical、question、information、warning、about。
@@ -641,6 +691,71 @@ app.exec()
 
 ![](图片\PySide6\QLabel 显示图片.png)
 
+### 设置拓展模式
+
+通过 `label.setSizePolicy()` 方法设置 label 横向或纵向的拓展。`QSizePolicy.Fixed` 代表不随窗口拉伸变化大小。`QSizePolicy.Expanding` 代表跟随窗口拉伸变化大小。
+
+`label.setSizePolicy()` 方法的默认值为 QSizePolicy.Fixed, QSizePolicy.Fixed。
+
+Widget.py
+
+```python
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import (
+    QWidget,
+    QLabel,
+    QLineEdit,
+    QHBoxLayout,
+    QSizePolicy,
+)
+
+class Widget(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Size policies and stretches")
+
+        label = QLabel("Some text: ")
+        line_edit = QLineEdit()
+
+        # QSizePolicy.Fixed 代表固定长度，不会跟随窗口大小变化
+        # QSizePolicy.Expanding 代表跟随窗口大小变化
+        # label.setSizePolicy 默认设置为 QSizePolicy.Fixed, QSizePolicy.Fixed
+        # label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        h_layout_1 = QHBoxLayout()
+        h_layout_1.addWidget(label)
+        h_layout_1.addWidget(line_edit)
+
+        self.setLayout(h_layout_1)
+```
+
+main.py
+
+``` python
+from PySide6.QtWidgets import QApplication
+from Widget import Widget
+import sys
+
+app = QApplication(sys.argv)
+
+widget = Widget()
+widget.show()
+
+app.exec()
+```
+
+输出：
+
+默认：
+
+![](图片\PySide6\QLabel-默认拓展.png)
+
+水平拓展：
+
+![](图片\PySide6\QLabel-水平拓展.png)
+
 ## QtWidgets.QEditLine
 
 QEditLine 官方文档：https://doc.qt.io/qtforpython/PySide6/QtWidgets/QLineEdit.html
@@ -826,6 +941,73 @@ selectionChanged：
 textEdited：
 
 ![](动图\QLineEdit-textEdited 事件.gif)
+
+### 设置拓展模式
+
+Widget.py
+
+```python
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import (
+    QWidget,
+    QLabel,
+    QLineEdit,
+    QHBoxLayout,
+    QSizePolicy
+)
+
+class Widget(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Size policies and stretches")
+
+        label = QLabel("Some text: ")
+        line_edit = QLineEdit()
+        # line_edit.setSizePolicy 默认设置为 QSizePolicy.Expanding, QSizePolicy.Fixed
+        # QSizePolicy.Fixed 代表固定长度，不会跟随窗口大小变化
+        # QSizePolicy.Expanding 代表跟随窗口大小变化
+        # line_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        # 水平与纵向都固定长度
+        line_edit.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # 水平与纵向都拓展
+        # line_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        h_layout_1 = QHBoxLayout()
+        h_layout_1.addWidget(label)
+        h_layout_1.addWidget(line_edit)
+
+        self.setLayout(h_layout_1)
+```
+
+mian.py
+
+```python
+from PySide6.QtWidgets import QApplication
+from Widget import Widget
+import sys
+
+app = QApplication(sys.argv)
+
+widget = Widget()
+widget.show()
+
+app.exec()
+```
+
+输出：
+
+默认：
+
+![](图片\PySide6\QLineEdit-默认拓展.png)
+
+固定长度：
+
+![](图片\PySide6\QLineEdit-固定长度.png)
+
+全拓展：
+
+![](图片\PySide6\QLineEdit-全拓展.png)
 
 ## QtWidgets.QTextEdit
 

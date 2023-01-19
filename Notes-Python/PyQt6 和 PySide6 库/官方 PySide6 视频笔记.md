@@ -834,3 +834,78 @@ app.exec()
 
 ![](D:/Git 仓库/笔记/StudyNotes/Notes-Python/PyQt6 和 PySide6 库/动图/QTextEdit-清空.gif)
 
+## 标签、单行输入框、按钮的拓展
+
+Widget.py
+
+```python
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import (
+    QWidget,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QHBoxLayout,
+    QVBoxLayout,
+    QSizePolicy,
+)
+
+class Widget(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Size policies and stretches")
+
+        label = QLabel("Some text: ")
+        line_edit = QLineEdit()
+        # line_edit.setSizePolicy 默认设置为 QSizePolicy.Expanding, QSizePolicy.Fixed
+        # QSizePolicy.Fixed 代表固定长度，不会跟随窗口大小变化
+        # QSizePolicy.Expanding 代表跟随窗口大小变化
+        # line_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        # line_edit.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # 单行文本框在水平和纵向上都拓展
+        line_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # label.setSizePolicy 默认设置为 QSizePolicy.Fixed, QSizePolicy.Fixed
+        # label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # 标签仅在水平方向拓展
+        label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        h_layout_1 = QHBoxLayout()
+        h_layout_1.addWidget(label)
+        h_layout_1.addWidget(line_edit)
+
+        button_1 = QPushButton("One")
+        button_2 = QPushButton("Two")
+        button_3 = QPushButton("Three")
+
+        h_layout_2 = QHBoxLayout()
+        # 窗口被拉伸后，button_1 的长度是 button2 的长度的 2 倍
+        h_layout_2.addWidget(button_1, 2)
+        h_layout_2.addWidget(button_2, 1)
+        h_layout_2.addWidget(button_3, 1)
+
+        v_layout = QVBoxLayout()
+        v_layout.addLayout(h_layout_1)
+        v_layout.addLayout(h_layout_2)
+
+        self.setLayout(v_layout)
+```
+
+main.py
+
+``` python
+from PySide6.QtWidgets import QApplication
+from Widget import Widget
+import sys
+
+app = QApplication(sys.argv)
+
+widget = Widget()
+widget.show()
+
+app.exec()
+```
+
+输出：
+
+![](图片\PySide6\标签 单行文本框 按钮的拓展.png)
