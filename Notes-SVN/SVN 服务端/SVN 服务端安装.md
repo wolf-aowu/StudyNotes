@@ -110,7 +110,7 @@ https://www.visualsvn.com/server/download/
 
 #### 修改日志信息时出错
 
-![](D:\笔记\Notes-SVN\SVN服务端\修改日志时报错.png)
+![](修改日志时报错.png)
 
 打开 VisualSVN Sever.msc -> 找到对应仓库 -> 右键 -> Proterties… -> 选中 Hooks 页签 -> 选中 Pre-revision property change hook -> 点击左下角 Edit ->
 
