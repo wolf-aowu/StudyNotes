@@ -1,3 +1,808 @@
+### 数学符号
+
+#### LaTex 语法
+
+##### 换行
+
+``` latex
+% \\ 与 \newline 效果相同，都为换行
+\\
+\newline
+```
+
+##### 加减乘除
+
+``` latex
++
+-
+*
+\div
+% 点乘
+\cdot
+% 叉乘
+\times
+```
+
+输出：
+$$
++
+\\
+-
+\\
+*
+\\
+\div
+\\
+% 点乘
+\cdot
+\\
+% 叉乘
+\times
+$$
+
+##### 分式
+
+``` latex
+\frac{a}{b}
+```
+
+输出：
+$$
+\frac{a}{b}
+$$
+
+##### 根号
+
+``` latex
+\sqrt{a}
+```
+
+输出：
+$$
+\sqrt{a}
+$$
+
+##### 上下标
+
+``` latex
+% 上标
+x^2
+% 下标
+x_1
+```
+
+输出：
+$$
+% 上标
+x^2
+\\
+% 下标
+x_1
+$$
+
+##### 无穷
+
+``` latex
+% 正无穷
+\infty
+% 负无穷
+-\infty
+```
+
+输出：
+$$
+% 正无穷
+\infty
+\\
+% 负无穷
+-\infty
+$$
+
+##### 大于等于、小于等于、不等于
+
+``` latex
+% 小于等于
+\leq
+% 大于等于
+\geq
+% 不等于
+\neq
+```
+
+输出：
+$$
+% 小于等于
+a \leq b
+\\
+% 大于等于
+b \geq a
+\\
+% 不等于
+b \neq a
+$$
+
+##### 集合相关
+
+``` latex
+% 包含于
+A \subseteq B
+% 真子集
+A \subsetneqq B
+A \subset B
+% 包含
+A \supset B
+A \supseteq B
+A \supsetneqq B
+% 属于
+\in
+% 不属于
+\notin
+% 交集
+A\cap B
+% 并集
+A\cup B
+% 空集
+\varnothing
+% 描述法中的 |
+\mid
+% 补集
+\complement_UA
+```
+
+$$
+% 包含于
+A \subseteq B
+\\
+% 真子集
+A \subsetneqq B
+\\
+A \subset B
+\\
+% 包含
+A \supset B
+\\
+A \supseteq B
+\\
+A \supsetneqq B
+\\
+% 属于
+\in
+\\
+% 不属于
+\notin
+\\
+% 交集
+A\cap B
+\\
+% 并集
+A\cup B
+\\
+% 空集
+\varnothing
+\\
+% 描述法中的 |
+\mid
+\\
+% 补集
+\complement_UA
+$$
+
+##### 任意存在
+
+``` latex
+% 任意
+\forall
+% 存在
+\exists
+```
+
+输出：
+$$
+% 任意
+\forall
+\\
+% 存在
+\exists
+$$
+
+##### 希腊字母
+
+| latex 代码    | 显示          |
+| ------------- | ------------- |
+| `\alpha`      | $\alpha$      |
+| `\beta`       | $\beta$       |
+| `\gamma`      | $\gamma$      |
+| `\delta`      | $\delta$      |
+| `\epsilon`    | $\epsilon$    |
+| `\varepsilon` | $\varepsilon$ |
+| `\eta`        | $\eta$        |
+| `\theta`      | $\theta$      |
+| `\kappa`      | $\kappa$      |
+| `\iota`       | $\iota$       |
+| `\zeta`       | $\zeta$       |
+| `\lambda`     | $\lambda$     |
+| `\mu`         | $\mu$         |
+| `\phi`        | $\phi$        |
+| `\pi`         | $\pi$         |
+| `\rho`        | $\rho$        |
+| `\xi`         | $\xi$         |
+| `\nu`         | $\nu$         |
+| `\upsilon`    | $\upsilon$    |
+| `\varphi`     | $\varphi$     |
+| `\chi`        | $\chi$        |
+| `\psi`        | $\psi$        |
+| `\omega`      | $\omega$      |
+
+##### 省略号
+
+``` latex
+% 行省略号
+\cdots
+% 列省略号
+\vdots
+% 斜向省略号，左上至右下
+\ddots
+```
+
+输出：
+$$
+% 行省略号
+\cdots
+\\
+% 列省略号
+\vdots
+\\
+% 斜向省略号，左上至右下
+\ddots
+$$
+
+##### 空格
+
+``` latex
+% 紧贴
+a\!b
+% 小空格
+a\,b
+% 中空格
+a\;b
+% 大空格
+a\ b
+% 真空格
+a\quad b
+% 双真空格
+a\qquad b
+```
+
+
+$$
+% 紧贴
+a\!b
+\\
+% 小空格
+a\,b
+\\
+% 中空格
+a\;b
+\\
+% 大空格
+a\ b
+\\
+% 真空格
+a\quad b
+\\
+% 双真空格
+a\qquad b
+$$
+
+##### 函数
+
+``` latex
+\sin{\theta}
+\cos{\theta}
+\tan{\theta}
+\cot{\theta}
+```
+
+输出：
+$$
+\sin{\theta}
+\\
+\cos{\theta}
+\\
+\tan{\theta}
+\\
+\cot{\theta}
+$$
+
+##### 矢量
+
+``` latex
+\vec{a}
+```
+
+输出：
+$$
+\vec{a}
+$$
+
+##### 累加累乘
+
+``` latex
+% 累加
+\sum_{i=1}^{n}{a_i}
+% 累乘
+\prod_{i=1}^{n}{a_i}
+```
+
+输出：
+$$
+% 累加
+\sum_{i=1}^{n}{a_i}
+\\
+% 累乘
+\prod_{i=1}^{n}{a_i}
+$$
+
+##### 极限
+
+```latex
+\lim_{a\rightarrow+\infty}{a+b}
+```
+
+输出：
+$$
+\lim_{a\rightarrow+\infty}{a+b}
+$$
+
+##### 矩阵
+
+使用 `\begin{matrix} ... \end{matrix}` 生成矩阵，元素使用 `&` 分开。使用 `\tag{序号}` 设置右侧序号。
+
+###### 普通矩阵
+
+``` latex
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix} \tag{1}
+```
+
+输出：
+$$
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix} \tag{1}
+$$
+
+###### 带左右大括号的矩阵
+
+方法一：
+
+```latex
+\left\{
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix}
+\right\} \tag{2}
+```
+
+输出：
+$$
+\left\{
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix}
+\right\} \tag{2}
+$$
+方法二：
+
+``` latex
+\begin{Bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{Bmatrix} \tag{3}
+```
+
+输出：
+$$
+\begin{Bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{Bmatrix} \tag{3}
+$$
+
+###### 带左右中括号的矩阵
+
+方法一：
+
+``` latex
+\left[
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix}
+\right] \tag{4}
+```
+
+输出：
+$$
+\left[
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix}
+\right] \tag{4}
+$$
+方法二：
+
+``` latex
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{bmatrix} \tag{5}
+```
+
+输出：
+$$
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{bmatrix} \tag{5}
+$$
+
+###### 带左右小括号的矩阵
+
+``` latex
+\left(
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix}
+\right) \tag{6}
+```
+
+输出：
+$$
+\left(
+\begin{matrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{matrix}
+\right) \tag{6}
+$$
+
+##### 行列式
+
+``` latex
+\begin{vmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{vmatrix}
+```
+
+输出：
+$$
+\begin{vmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9
+\end{vmatrix}
+$$
+
+##### 真值表
+
+``` latex
+\begin{array}{cc|c}
+A & B & F \\
+\hline 0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 1 \\
+\end{array}
+```
+
+输出：
+$$
+\begin{array}{cc|c}
+A & B & F \\
+\hline 0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 1 \\
+\end{array}
+$$
+
+##### 多行等式对齐
+
+``` latex
+\begin{aligned}
+a &= b + c \\
+&= d + e + f
+\end{aligned}
+```
+
+输出：
+$$
+\begin{aligned}
+a &= b + c \\
+&= d + e + f
+\end{aligned}
+$$
+
+##### 方程组
+
+``` latex
+\begin{cases}
+3x + 5y + z = 0 \\
+7x - 2y + 4z = 0 \\
+-6x + 3y + 2z = 0
+\end{cases}
+```
+
+输出：
+$$
+\begin{cases}
+3x + 5y + z = 0 \\
+7x - 2y + 4z = 0 \\
+-6x + 3y + 2z = 0
+\end{cases}
+$$
+
+##### 条件表达式
+
+``` latex
+f(n) = 
+\begin{cases}
+n/2, & \text{if} n \text{is even}
+3n+1, & \text{if} n \text{is odd}
+\end{cases}
+```
+
+输出：
+$$
+f(n) = 
+\begin{cases}
+n/2, & \text{if } n \text{ is even} \\
+3n+1, & \text{if } n \text{ is odd}
+\end{cases}
+$$
+
+##### 箭头
+
+###### 上下左右
+
+``` latex
+\uparrow
+\downarrow
+\leftarrow
+\rightarrow
+\Uparrow
+\Downarrow
+\Leftarrow
+\Rightarrow
+```
+
+$$
+\uparrow
+\\
+\downarrow
+\\
+\leftarrow
+\\
+\rightarrow
+\\
+\Uparrow
+\\
+\Downarrow
+\\
+\Leftarrow
+\\
+\Rightarrow
+$$
+
+###### 双向
+
+``` latex
+\updownarrow
+\leftrightarrow
+\Updownarrow
+\Leftrightarrow
+```
+
+$$
+\updownarrow
+\\
+\leftrightarrow
+\\
+\Updownarrow
+\\
+\Leftrightarrow
+$$
+
+###### 长箭头
+
+``` latex
+\longleftarrow
+\longrightarrow
+\Longleftarrow
+\Longrightarrow
+\longleftrightarrow
+\Longleftrightarrow
+```
+
+$$
+\longleftarrow
+\\
+\longrightarrow
+\\
+\Longleftarrow
+\\
+\Longrightarrow
+\\
+\longleftrightarrow
+\\
+\Longleftrightarrow
+$$
+
+###### 半箭头
+
+``` latex
+\upharpoonleft
+\downharpoonleft
+\leftharpoonup
+\rightharpoonup
+\upharpoonright
+\downharpoonright
+\leftharpoondown
+\rightharpoondown
+\rightleftharpoons
+```
+
+$$
+\upharpoonleft
+\\
+\downharpoonleft
+\\
+\leftharpoonup
+\\
+\rightharpoonup
+\\
+\upharpoonright
+\\
+\downharpoonright
+\\
+\leftharpoondown
+\\
+\rightharpoondown
+\\
+\rightleftharpoons
+$$
+
+###### 斜箭头
+
+``` latex
+\nearrow
+\searrow
+\swarrow
+\nwarrow
+```
+
+$$
+\nearrow
+\\
+\searrow
+\\
+\swarrow
+\\
+\nwarrow
+$$
+
+###### 其他
+
+```latex
+\mapsto
+\longmapsto
+\hookleftarrow
+\hookrightarrow
+\leadsto
+\nleftarrow
+\nrightarrow
+\nLeftarrow
+\nRightarrow
+\nleftrightarrow
+\nLeftrightarrow
+\dashrightarrow
+\dashleftarrow
+\leftleftarrows
+\rightrightarrows
+\leftrightarrows
+\Lleftarrow
+\twoheadleftarrow
+\twoheadrightarrow
+\leftarrowtail
+\rightarrowtail
+\looparrowleft
+\looparrowright
+\curvearrowleft
+\curvearrowright
+\circlearrowleft
+\circlearrowright
+\Lsh
+\Rsh
+\upuparrows
+\downdownarrows
+\multimap
+\leftrightsquigarrow
+\rightsquigarrow
+```
+
+$$
+\mapsto
+\longmapsto
+\\
+\hookleftarrow
+\hookrightarrow
+\\
+\leadsto
+\leftrightsquigarrow
+\rightsquigarrow
+\\
+\nleftarrow
+\nrightarrow
+\nLeftarrow
+\nRightarrow
+\nleftrightarrow
+\nLeftrightarrow
+\\
+\dashrightarrow
+\dashleftarrow
+\\
+\leftleftarrows
+\rightrightarrows
+\leftrightarrows
+\\
+\Lleftarrow
+\\
+\twoheadleftarrow
+\twoheadrightarrow
+\\
+\leftarrowtail
+\rightarrowtail
+\\
+\looparrowleft
+\looparrowright
+\\
+\curvearrowleft
+\curvearrowright
+\\
+\circlearrowleft
+\circlearrowright
+\\
+\Lsh
+\Rsh
+\\
+\upuparrows
+\downdownarrows
+\\
+\multimap
+$$
+
 ### 图的画法
 
 有 3 种语法可以画图，分别是：mermaid、flow、sequence
