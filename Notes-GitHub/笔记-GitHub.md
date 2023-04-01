@@ -137,6 +137,18 @@ git log --oneline
 git reflog
 ```
 
+# 查看版本修改的文件
+
+``` shell
+git log --stat
+# 查看某一版本的修改
+git show 版本号 --stat
+# 显示最近的几次修改
+git log -数字 -stat
+# 查看某一版本具体修改了文件的哪些内容
+git show 版本号
+```
+
 # 版本前进后退
 
 - 基于索引值操作（推荐）
@@ -498,3 +510,6 @@ git config http.postBuffer 524288000
 git config -l
 ```
 
+## Git Gui 查看文件内容中文乱码
+
+右键 -> Encoding -> Unicode (UTF-8)
