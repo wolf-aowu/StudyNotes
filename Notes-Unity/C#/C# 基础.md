@@ -788,3 +788,76 @@ public class MyClass<T> where T : class, IEnemy, new() {
 }
 ```
 
+## 宏
+
+### 自定义宏
+
+如果有需求在条件 A 情况下执行代码端 m，在条件 B 情况下执行代码端 n，那么可以定义一个宏来代表条件，在代码中判断条件是否满足。常用于有多个渠道且需求不同时使用。
+
+设置使用的宏 Project Settings -> Player -> Other Settings -> Configuration -> Scriptiong Define Symbols 中输入定义的宏，如果有多个宏，需要用分号隔开。
+
+定义宏：
+
+```c#
+public class Test : MonoBehaviour {
+    string str = "";  
+    void Start()
+    {
+    #if CONDITION_1
+        str = "Hello";
+    #elif CONDITION_2
+        str = "Hello world";
+    #endif
+        Debug.Log(str);
+    }
+}
+```
+
+``` c#
+// 宏文本文档路径
+private readonly string DEFINES_TXT_PATH = Application.dataPath + "/defines.txt";
+
+// 方法
+public TemporaryRegexReplaceInDefinesTxt(string pattern, string replacement, bool rebuild = true) {
+    // System.IO.File.ReadAllText 打开一个文本文件，将文件中的所有文本读取到一个字符串中，然后关闭此文件。
+	m_old_defines_txt = System.IO.File.ReadAllText(DEFINES_TXT_PATH);
+	var defines_txt = m_old_defines_txt;
+    // System.Text.RegularExpressions.Regex.Replace 在指定的输入字符串内，使用指定的替换字符串替换与指定正则表达式匹配的所有字符串。
+    // input 要搜索匹配项的字符串。
+    // pattern 要匹配的正则表达式模式。
+    // replacement 替换字符串。
+	defines_txt = System.Text.RegularExpressions.Regex.Replace(defines_txt, pattern, replacement);
+    // 创建一个新文件，在其中写入指定的字符串，然后关闭文件。 如果目标文件已存在，则覆盖该文件。
+	System.IO.File.WriteAllText(DEFINES_TXT_PATH, defines_txt, System.Text.Encoding.Unicode);
+	if (rebuild) {
+        // EditorApplication.ExecuteMenuItem 调用指定路径的菜单项。
+		EditorApplication.ExecuteMenuItem("DeveloperTools/BuildTools/RebuildScripts/Development");
+	}
+}
+
+public void Dispose() {
+	System.IO.File.WriteAllText(DEFINES_TXT_PATH, m_old_defines_txt, System.Text.Encoding.Unicode);
+}
+```
+
+```c#
+private class TemporaryAddScriptingDefineSymbols : System.IDisposable 
+{
+	public TemporaryAddScriptingDefineSymbols(BuildTargetGroup target_group, string define_symbol) 
+	{
+		m_target_group = target_group;
+        // 为给定构建目标组获取用户指定的脚本编译符号。每个平台可以都以一个目标组，例如：BuildTargetGroup.Android
+		m_old_scripting_define_symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(m_target_group);
+		PlayerSettings.SetScriptingDefineSymbolsForGroup(m_target_group, m_old_scripting_define_symbols + " " + define_symbol);
+	}
+    
+	public void Dispose() 
+	{
+		PlayerSettings.SetScriptingDefineSymbolsForGroup(m_target_group, m_old_scripting_define_symbols);
+	}
+    
+	private BuildTargetGroup m_target_group;
+	private string m_old_scripting_define_symbols;
+}
+```
+
