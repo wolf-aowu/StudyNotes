@@ -349,6 +349,197 @@ Student:Talk()
 Student.Talk(Student)
 ```
 
+#### 元表
+
+任何表变量都可以作为另一个表变量的元表。任何表变量都可以由自己的元表。元表相当于另一个表的父亲。当在子表中进行一些特定操作时，会执行元表中的内容。
+
+##### 设置元表
+
+```lua
+father = {}
+son = {}
+--设置元表，第一个参数为子表，第二个参数为元表
+setmetatable(son, father)
+```
+
+##### 获取元表
+
+通过 `getmetatable(子表)` 获取元表。
+
+##### __tostring
+
+当子表被当作字符串使用时，会默认调用该方法。第一个参数默认子表自己。
+
+```lua
+father = {
+    __tostring = function(t)
+        return t.name
+    end
+}
+son = {
+    name = "son"
+}
+setmetatable(son, father)
+nofather = {}
+print(son)      --son
+print(nofather) --table: 00629E70
+setmetatable(nofather, father)
+print(nofather) --报错
+```
+
+##### __call
+
+当子表被作为函数使用时，会默认调用该方法。第一个参数默认子表转成字符串方法，第二个参数为传入的参数。
+
+```lua
+father = {
+    __call = function(a, b)
+        print(a) --table: 00D69F10
+        print(b) --1
+        print("This is __call")
+    end
+}
+son = {}
+setmetatable(son, father)
+son(1) --This is __call
+```
+
+##### __index
+
+当子表中找不到某一个属性时，会去找元表中 __index 指定的表去找属性。
+
+```lua
+father = {
+    age = 1
+}
+son = {}
+setmetatable(son, father)
+print(son.age) --nil
+father.__index = father
+print(son.age) --1
+--也可以指定一张新表
+father.__index = { age = 2 }
+print(son.age) --2
+```
+
+在元表中设置 __index 是不能设置为自己，因为结果为 nil。我的理解是：此时元表还未完成创建，所以为空。
+
+```lua
+father = {
+    age = 1,
+    __index = father
+}
+son = {}
+setmetatable(son, father)
+print(son.age) --nil
+```
+
+`__index` 会根据设置的 `__index` 会一层一层地往上查找，如果有一层没有设置 `__index` 就会断掉。
+
+```lua
+grandpa = {
+    age = 1
+}
+
+father = {}
+son = {}
+
+setmetatable(father, grandpa)
+setmetatable(son, father)
+father.__index = father
+print(son.age) --nil
+grandpa.__index = grandpa
+print(son.age) --1
+```
+
+##### __newindex
+
+当赋值时，如果赋值一个表中不存在的索引，将会赋值给 __newindex 指定的表，而不会修改表自己。同样支持一层一层向上查找索引。同样的不要指定表自己和父表。
+
+```lua
+grandpa = {
+    age = 1
+}
+
+father = {}
+son = {}
+
+setmetatable(father, grandpa)
+setmetatable(son, father)
+father.__newindex = father
+son.age = 1
+print(son.age)
+son = {}
+print(son.age)
+print(father.age)
+```
+
+##### 运算符重载
+
+```lua
+father = {
+    --算数运算符
+    __add = function(t1, t2)
+        return "+ 重载"
+    end,
+    __sub = function(t1, t2)
+        return "- 重载"
+    end,
+    __mul = function(t1, t2)
+        return "* 重载"
+    end,
+    __div = function(t1, t2)
+        return "/ 重载"
+    end,
+    __mod = function(t1, t2)
+        return "% 重载"
+    end,
+    __pow = function(t1, t2)
+        return "^ 重载"
+    end,
+    --条件运算符，必须返回 boolean 值
+    __lt = function(t1, t2)
+        return false
+    end,
+    __le = function(t1, t2)
+        return false
+    end,
+    __eq = function(t1, t2)
+        return false
+    end,
+    __concat = function(t1, t2)
+        return ".. 重载"
+    end
+}
+son = {}
+setmetatable(son, father)
+table = {}
+print(table + son) --+ 重载
+print(table - son) --- 重载
+print(table * son) --* 重载
+print(table / son) --/ 重载
+print(table % son) --% 重载
+print(table ^ son) --^ 重载
+--使用条件运算符必须确保两个表的元表是同一个元表，否则会报错
+setmetatable(table, father)
+print(table < son)  --false
+print(table <= son) --false
+print(table == son) --false
+print(table .. son) --+ 重载
+--不重载 +
+table1 = {}
+table2 = {}
+print(table1 + table2)
+```
+
+##### rawget
+
+`rawget(表名, 变量名)` 只在表的自身中找变量，忽略 __index。
+
+##### rawset
+
+`rawset(表名, 变量名, 变量的值)` 只在表的自身中设置变量，忽略 __newindex。
+
 #### 表的插入
 
 ``` lua
@@ -468,8 +659,8 @@ end
 --这种方法的创建协程，第一个返回值是协程是否启动成功，第二个将 i 作为返回值返回
 co1 = coroutine.create(fun)
 --只有每次是用 resume 执行才会执行下一次
-coroutine.resume(co) --1
-coroutine.resume(co) --2
+coroutine.resume(co1) --1
+coroutine.resume(co1) --2
 
 --这种方法的创建协程有返回值，但是没有协程是否启动成功的返回值了
 co2 = coroutine.wrap(fun)
@@ -799,3 +990,227 @@ end
 使用 `require(脚本名字字符串)` 执行脚本。执行后不会再次执行。可以通过 `package.loaded[脚本名字字符串]` 获取脚本是否被执行过，还可以通过为它赋值为 nil，使脚本可以再次通过 require 执行。
 
 对于脚本中的局部变量，也可以在脚本最后使用 return 返回局部变量，在其他脚本中使用一个变量接收 require 返回的值。
+
+## 面向对象
+
+### 封装
+
+```lua
+Object = {}
+Object.id = 1
+
+function Object:Test()
+    print(self.id)
+end
+
+--本质是一个方法，使用 : 会自动将调用这个函数的对象作为第一个参数传入
+function Object:new()
+    --self 代表默认传入的第一个参数
+    --对象就是变量，返回一个新的变量
+    --返回本质就是表对象
+    local obj = {}
+    setmetatable(obj, self)
+    self.__index = self
+    return obj
+end
+
+local myObject = Object:new()
+print(myObject)    --table: 00DC9CB8
+--由于此时 myObject 中没有 id 变量，并且设置的 __index，所以回去 Object 中寻找 id 的值
+print(myObject.id) --1
+myObject:Test()    --1
+--这里相当于为 myObject 创建了一个 id 变量，所以 Object 中的值并没有改变
+myObject.id = 2
+print(Object.id)           --1
+--现在 myObject 中已经有了 id 变量，所以现在直接获取 myObject 中的值
+print(myObject.id)         --2
+myObject:Test()            --2
+print(myObject.__index.id) --1
+```
+
+### 继承
+
+```lua
+Object = {}
+Object.id = 1
+
+function Object:Test()
+    print(self.id)
+end
+
+--本质是一个方法，使用 : 会自动将调用这个函数的对象作为第一个参数传入
+function Object:new()
+    --self 代表默认传入的第一个参数
+    --对象就是变量，返回一个新的变量
+    --返回本质就是表对象
+    local obj = {}
+    setmetatable(obj, self)
+    self.__index = self
+    return obj
+end
+
+function Object:subClass(className)
+    --使用大 G 表创建类
+    _G[className] = {}
+    local obj = _G[className]
+    setmetatable(obj, self)
+    self.__index = self
+end
+```
+
+### 重写
+
+```lua
+Object = {}
+Object.id = 1
+
+function Object:Test()
+    print(self.id)
+end
+
+--本质是一个方法，使用 : 会自动将调用这个函数的对象作为第一个参数传入
+function Object:new()
+    --self 代表默认传入的第一个参数
+    --对象就是变量，返回一个新的变量
+    --返回本质就是表对象
+    local obj = {}
+    setmetatable(obj, self)
+    self.__index = self
+    return obj
+end
+
+function Object:subClass(className)
+    --使用大 G 表创建类
+    _G[className] = {}
+    local obj = _G[className]
+    setmetatable(obj, self)
+    self.__index = self
+    --创建 base，使子类可以调用父类的方法
+    obj.base = self
+end
+
+Object:subClass("GameObject")
+GameObject.posX = 0
+GameObject.posY = 0
+
+function GameObject:Move()
+    self.posX = self.posX + 1
+    self.posY = self.posY + 1
+    print(self.posX)
+    print(self.posY)
+end
+
+GameObject:subClass("Player")
+
+--重写父类的方法
+function Player:Move()
+    print("重写 Move 方法")
+    --如果要调用父类方法，不要直接使用 : 调用，而是使用 . 调用，手动传入第一个参数
+    --以 base 为例，此处 base 指的是 GameObject，调用 Move 传入的 self 始终为 GameObject 自己，
+    --所以 Move 作用于 GameObject 中自身的数据
+    --而我们希望的是执行 GameObject 中的方法但作用于 GameObject 子类中的数据
+    --调用父类 GameObject 的 Move 方法
+    --self.base:Move() --没调用一次，GameOjbect 的 posX、posY +1
+    --只改变创建的 Player 中的 posX、posY
+    self.base.Move(self)
+end
+
+local player1 = Player:new()
+player1:Move()                          --1 1
+print(GameObject.posX, GameObject.posY) --0 0
+local player2 = Player:new()
+player2:Move()                          --1 1
+print(GameObject.posX, GameObject.posY) --0 0
+```
+
+## 自带库
+
+### 时间相关
+
+```lua
+--获取时间戳，以秒为单位
+print(os.time())                                     --1683445121
+print(os.time({ year = 2014, month = 8, day = 14 })) --1407988800
+
+--返回一张表
+nowTime = os.date("*t")
+print(nowTime) --table: 00D69E20
+--[[
+hour	15
+min	38
+wday	1
+day	7
+month	5
+year	2023
+sec	41
+yday	127
+isdst	false
+]]
+for k, v in pairs(nowTime) do
+    print(k, v)
+end
+print(nowTime.hour) --15
+```
+
+### 数学运算
+
+```lua
+--获取绝对值
+print(math.abs(-11))      --11
+--开方
+print(math.sqrt(4))       --2
+--弧度制转角度
+print(math.deg(math.pi))  --180
+--三角函数
+print(math.cos(math.pi))  ---1
+--向上向下取整
+print(math.floor(2.5))    --2
+print(math.ceil(5.5))     --6
+--最大最小值
+print(math.max(1.3, 2.5)) --2.5
+print(math.min(4.1, 5))   --4.1
+--小数分离
+print(math.modf(1.2))     --1	0.2
+--随机种子
+math.randomseed(tostring(os.time()):reverse():sub(1.7))
+--随机整数
+print(math.random(100))
+```
+
+### 路径相关
+
+```lua
+--lua 脚本加载路径
+print(package.path)
+```
+
+## 垃圾回收
+
+```lua
+--[[
+这个函数是垃圾收集器的通用接口。 通过参数 opt 它提供了一组不同的功能。
+opt:
+   -> "collect" -- 做一次完整的垃圾收集循环。
+    | "stop" -- 停止垃圾收集器的运行。
+    | "restart" -- 重启垃圾收集器的自动运行。
+    | "count" -- 以 K 字节数为单位返回 Lua 使用的总内存数。
+    | "step" -- 单步运行垃圾收集器。 步长“大小”由 `arg` 控制。
+    | "isrunning" -- 返回表示收集器是否在工作的布尔值。
+    | "incremental" -- 改变收集器模式为增量模式。
+    | "generational" -- 改变收集器模式为分代模式。
+]]
+print(collectgarbage("count")) --20.623046875
+
+--垃圾回收
+test = { id = 1, name = "123" }
+print("创建 test", collectgarbage("count")) --创建 test	20.7451171875
+--释放空间
+test = nil
+print("释放 test", collectgarbage("count")) --释放 test	20.7744140625
+--进行垃圾回收
+collectgarbage("collect")
+print("垃圾回收后", collectgarbage("count")) --垃圾回收后	19.5380859375
+--lua 中有自动定时进行 GC 方法
+--Unity 中热更新开发尽量不要等自动垃圾回收，例如切场景时，常进行垃圾回收一次
+```
+
