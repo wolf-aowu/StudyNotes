@@ -1,6 +1,6 @@
 ## Events（事件）
 
-事件分成两部分：发布者（publisher）和订阅者（subscribers）。发布者拥有一个事件，订阅者订阅事件。多个订阅者可以订阅同一个事件。当某些事发生时，发布者触发该事件并且所有订阅该事件的订阅者会受到通知该事件已被触发。关键是发布者不知道订阅该事件的订阅者有谁，可能有很多订阅者也可能没有。订阅者可能会处理该事件或者完全忽略该事件。发布者不知道且不关心谁在监听该事件，也不关心他们对该事件做了什么。因此，者允许你在发布者中编写代码，该代码与您还还想运行的任何其他代码分离，而这些代码不是必需的。
+事件分成两部分：发布者（publisher）和订阅者（subscribers）。发布者拥有一个事件，订阅者订阅事件。多个订阅者可以订阅同一个事件。当某些事发生时，发布者触发该事件并且所有订阅该事件的订阅者会受到通知该事件已被触发。关键是发布者不知道订阅该事件的订阅者有谁，可能有很多订阅者也可能没有。订阅者可能会处理该事件或者完全忽略该事件。发布者不知道且不关心谁在监听该事件，也不关心他们对该事件做了什么。因此，这允许你在发布者中编写代码，该代码与您还想运行的任何其他代码分离，而这些代码不是必需的。
 
 例子：
 
@@ -792,7 +792,7 @@ public class MyClass<T> where T : class, IEnemy, new() {
 
 ### 自定义宏
 
-如果有需求在条件 A 情况下执行代码端 m，在条件 B 情况下执行代码端 n，那么可以定义一个宏来代表条件，在代码中判断条件是否满足。常用于有多个渠道且需求不同时使用。
+如果有需求在条件 A 情况下执行代码段 m，在条件 B 情况下执行代码段 n，那么可以定义一个宏来代表条件，在代码中判断条件是否满足。常用于有多个渠道且需求不同时使用。
 
 设置使用的宏 Project Settings -> Player -> Other Settings -> Configuration -> Scriptiong Define Symbols 中输入定义的宏，如果有多个宏，需要用分号隔开。
 
@@ -861,4 +861,208 @@ private class TemporaryAddScriptingDefineSymbols : System.IDisposable
 }
 ```
 
-## 反射
+## Reflection（反射）
+
+反射是可以在不知道程序集中定义的类型的信息（如[类](https://learn.microsoft.com/zh-cn/dotnet/standard/base-types/common-type-system#classes)、[接口](https://learn.microsoft.com/zh-cn/dotnet/standard/base-types/common-type-system#interfaces)和值类型（即[结构](https://learn.microsoft.com/zh-cn/dotnet/standard/base-types/common-type-system#structures)和[枚举](https://learn.microsoft.com/zh-cn/dotnet/standard/base-types/common-type-system#enumerations)））的情况下获取它们并使用它们。 可以使用反射在运行时创建、调用和访问类型实例。
+
+在 Unity 官方文档中写明了 C# 反射的开销，不建议在游戏运行时使用它：
+
+Mono 和 IL2CPP 在内部缓存所有 C# 反射 （System.Reflection） 对象，并且根据设计，Unity 不会对它们进行垃圾回收。此行为的结果是垃圾回收器在应用程序的生存期内持续扫描缓存的 C# 反射对象，这会导致不必要且可能显著的垃圾回收器开销。
+
+要最大程度减少垃圾回收器开销，请在应用程序中避免使用诸如 Assembly.GetTypes 和 Type.GetMethods() 等方法，这些方法会在运行时创建许多 C# 反射对象。 而是应该在编辑器中扫描程序集以获取所需数据，并进行序列化和/或代码生成以在运行时使用。
+
+<font color = skyblue>反射的效率远小于直接写代码，所以一般用在拓展编辑器上而不是用在游戏中。</font>
+
+### 原理
+
+每一个类的中的成员变量、方法是不同的，反射的功能却是要能够适应任何一种类，所以有了 TypeInfo 这个类，它能够描述任何一种类。对于成员变量它们的声明特征是作用域、类型、变量名以及地址偏移等，所以有了 FieldInfo 这个类用于存储这些信息。同理成员方法使用 MethodInfo 存储关于成员方法相关的信息。那么一个类中不可能只有一个成员变量或方法，所以在 TypeInfo 中使用 IEnumerable 存储多个成员变量或方法。IEnumerable 是公开枚举数，它支持在指定类型的集合上进行简单的迭代。
+
+上面提到的信息是指类尚未实例化的信息，也就是定义类时所具有的信息。比如场景中有许多树，对于树有一个 Tree 的类型，但是每一棵树都有自己的一个 Tree 脚本，每棵树上的 Tree 脚本就是 Tree 的实例化。每棵树上的 Tree 脚本中的值是互不影响的。上面的信息存储的不是每棵上 Tree 脚本中保存的值，而是 Tree 这个类型声明本身的内容。所以，在使用 `FieldInfo.GetValue()` 这种方法时需要传入实例化的对象。即便 FieldInfo 中存储的是 Tree 类中所有的字段，但是通过 `GetValue` 获取的值是对于实例化出来的对象而言的。一个场景有十棵树，那么就有十个树的成长进度
+
+TypeInfo 类结构如下所示：
+
+![](图片\TypeInfo 结构1.png)
+
+Main.cs
+
+```c#
+using System;
+using System.Reflection;
+using UnityEngine;
+
+public class Main : MonoBehaviour {
+    void Start() {
+        Type t = Type.GetType("Student");
+        var student1 = Activator.CreateInstance(t);
+
+        FieldInfo[] fields = t.GetFields();
+        FieldInfo fieldInfo = t.GetField("age");
+        fieldInfo.SetValue(student1, 20);
+
+        Debug.Log((student1 as Student).age);
+    }
+}
+```
+
+Student.cs
+
+```c#
+using UnityEngine;
+
+public class Student {
+    public string name;
+    public int age;
+    public Id id;
+
+    public void ShowInfo() {
+        Debug.Log($"{name}\t{age}\t{id}");
+    }
+}
+
+public class Id {
+    public int id;
+}
+```
+
+![](D:\Git 仓库\笔记\StudyNotes\Notes-Unity\C#\图片\TypeInfo 结构2.png)
+
+TypeInfo 表示类型定义本身，而 Type 表示对类型定义的引用。TypeInfo 获取对象会强制加载包含该类型的程序集。 相比之下，可以操作 Type 对象，而无需运行时加载它们引用的程序集。
+
+Type 与 TypeInfo 的区别：https://devblogs.microsoft.com/dotnet/evolving-the-reflection-api/
+
+### 使用
+
+由于反射不常用且内容过多，直接查看官方文档即可。
+
+官方文档：https://learn.microsoft.com/zh-cn/dotnet/framework/reflection-and-codedom/reflection
+
+### 应用场景
+
+需要对多种类型进行某种操作，这些类型用不同点但也有相同点，而需要操作的对象是它们的相同点，此时可以使用反射。
+
+例 1：游戏中有多个英雄，每个英雄都有一个类，他们有相同的字段也有不同的字段，想要为他们相同的字段进行批量赋值，如在 Unity 中可以 Copy Component，但是由于他们的类型不同，不能对他们相同字段使用 Copy Component，此时就可以写一个类似 Copy Component 的方法，使用反射获取一个类型的所有字段，再用反射获取另一个类型的所有字段并进行一一比较，相同字段进行赋值。
+
+例 2：用于存档方法，比如想要保存英雄的数据，随着开发的推进，英雄拥有的字段可能不断增多，而在写存档方法时不可能预知未来会出现的字段，此时就可以使用反射遍历类的所有字段进行保存。
+
+例 3：在为某些程序写插件时，可能无法得知程序内部具体由什么类、类中又有什么字段、方法等，此时可以先通过反射对程序代码有一个初步的了解。
+
+例 4：Unity 扩展的组件在 Inspector 窗口中可以动态编辑、显示就是使用了反射。当脚本被挂载到场景的某个物体上时，Unity 会根据脚本名称在项目的程序集中查找对应的类型，并使用反射的方法判断此类型是否继承于 Monobehaviour。如果是，则通过反射方法创建这个类型的实例并加入到该场景物体的组件列表中。脚本中的变量在 Inspector 窗口中显示也是同样的道理，通过反射扫描类的所有成员，得到可编辑的成员，将他们显示在窗口中，当值发生改变时，通过反射将值设置到组件实例上。
+
+例 1：
+
+Hero.cs
+
+```C#
+using System.Reflection;
+using UnityEngine;
+
+public class Hero : MonoBehaviour {
+    public string name;
+    public int hp;
+    public float moveSpeed;
+
+    private static FieldInfo[] copyFieldInfos;
+    private static System.Object copyObject;
+
+    [ContextMenu("Copy By Reflection")]
+    public void CopyByReflection() {
+        copyObject = this;
+        //Object.GetType() 当前实例的准确运行时类型。如果时 HouYi 组件调用，它就会返回 HouYi 类型
+        //Debug.Log($"this type is: {this.GetType()}");
+        copyFieldInfos = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+    }
+
+    [ContextMenu("Paste By Reflection")]
+    public void PasteByReflection() {
+        //先判断是否使用了 Copye By Reflection 功能，如果没有使用过会报错，所以需要先判断一下
+        if (copyFieldInfos == null) {
+            Debug.LogWarning("请先 Copy！！！");
+            return;
+        }
+
+        foreach (FieldInfo field in copyFieldInfos) {
+            //获取粘贴的对象与复制对象字段同名的字段
+            var pasteFieldInfo = GetType().GetField(field.Name);
+            if (pasteFieldInfo != null) {
+                //获取复制对象的字段的值
+                var value = field.GetValue(copyObject);
+                pasteFieldInfo.SetValue(this, value);
+            }
+        }
+    }
+}
+```
+
+HouYi.cs
+
+```c#
+public class HouYi : Hero {
+    public float coinCount;
+}
+```
+
+BaiLi.cs
+
+```c#
+using System.Collections.Generic;
+
+public class BaiLi : Hero {
+    public List<Skill> skills;
+    public float coinCount;
+}
+
+public class Skill {
+    public float damage;
+    public float cd;
+}
+```
+
+## Attribute（特性）
+
+使用特性，可以声明的方式将信息与代码相关联。特性还可以提供能够应用于各种目标的可重用元素。它可以应用于程序集、类、构造函数、委托、枚举、事件、字段、接口、方法、可移植可执行文件模块、参数、属性、返回值、结构或其他特性。例如 ObsoleteAttribute，它声明该元素已过时，然后由 C# 编译器查找此属性，并执行一些操作作为响应。
+
+特性提供的信息也称为元数据。应用程序可以在运行时检查元数据以控制程序处理数据的方式，或者在运行时由外部工具在运行时检查元数据，以控制应用程序本身的处理或维护方式。例如，.NET 预定义和使用特性类型来控制运行时行为，而某些编程语言使用特性类型来表示 .NET 通用类型系统不直接支持的语言功能。
+
+特性需要继承 Attribute 类，将特性应用于类需使用方括号。类名为 ObsoleteAttribute，只需在代码中使用 [Obsolete]，也就是可以省略 Attribute 后缀，当然写全也是可以的。特性可以应用于任何目标元素；多个特性可以应用于同一目标元素；特性可由派生自目标元素的元素继承。使用 AttributeTargets 类指定要应用特性的目标元素。只能向特性构造函数传递以下简单类型/文本类型参数：`bool, int, double, string, Type, enums, etc` 和这些类型的数组。不能使用表达式或变量。可以使用任何位置参数或已命名参数。在创建特性类型时，C# 编译器不会阻止创建错误的参数，但是将错误的构造函数与特性结合，这会导致报错：`Attribute constructor parameter 'myClass' has type 'Foo', which is not a valid attribute parameter type`。
+
+```c#
+//不会报错
+public class GotchaAttribute : Attribute
+{
+    public GotchaAttribute(Foo myClass, string str)
+    {
+    }
+}
+//会报错
+[Gotcha(new Foo(), "test")] // does not compile
+public class AttributeFail
+{
+}
+```
+
+创建特性类时，C# 默认允许对所有可能的特性目标使用此特性。如果要将特性限制为只能用于特定目标，可以对特性类使用 `AttributeUsageAttribute` 来实现。没错，就是将特性应用于特性！如果尝试将特性应用到错误的对象时，会得到类似 `Attribute 'MyAttributeForClassAndStructOnly' is not valid on this declaration type. It is only valid on 'class, struct' declarations` 的报错。
+
+```
+//限制特性作用对象
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+public class MyAttributeForClassAndStructOnly : Attribute
+{
+}
+```
+
+特性通常与反射一起使用。
+
+官方文档：
+
+1. https://learn.microsoft.com/zh-cn/dotnet/csharp/advanced-topics/reflection-and-attributes/attribute-tutorial
+2. https://learn.microsoft.com/zh-cn/dotnet/csharp/advanced-topics/reflection-and-attributes/
+
+<font color = orange>注意：</font>.NET 库中 ThreadStatic 特性将其添加至 Unity 脚本会导致崩溃。Unity 也提供了大量特性。
+
+对于 UnityEngine 特性，可参阅脚本 API -> UnityEngine -> Attributes
+
+对于 UnityEditor 特性，可参阅脚本 API -> UnityEditor -> Attributes
+
+### 应用场景
+
+检查资源编号与路径映射是否由同名存在。可以定义一个特性，存储资源编号和资源路径，然后通过反射获取程序集中代码拥有该特性的类，对特性中的字段值进行比对，如果存在相同的进行提示等操作。
