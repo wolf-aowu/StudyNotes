@@ -565,7 +565,7 @@ class Widget(QWidget):
             print("User chose Cancel")
 
     def button_clicked_question(self):
-        # 创建重要级别的消息框
+        # 创建询问消息框
         ret = QMessageBox.question(
             self,
             "Message Title",
@@ -578,7 +578,7 @@ class Widget(QWidget):
             print("User chose Cancel")
 
     def button_clicked_information(self):
-        # 创建重要级别的消息框
+        # 创建信息消息框
         ret = QMessageBox.information(
             self,
             "Message Title",
@@ -591,7 +591,7 @@ class Widget(QWidget):
             print("User chose Cancel")
 
     def button_clicked_warning(self):
-        # 创建重要级别的消息框
+        # 创建警告消息框
         ret = QMessageBox.warning(
             self,
             "Message Title",
@@ -604,7 +604,7 @@ class Widget(QWidget):
             print("User chose Cancel")
 
     def button_clicked_about(self):
-        # 创建重要级别的消息框
+        # 创建关于消息框
         ret = QMessageBox.about(self, "Message Title", "Some about message!")
         if ret == QMessageBox.Ok:
             print("User chose OK")
@@ -878,9 +878,9 @@ app.exec()
 
 ![](图片\PySide6\QLabel-水平拓展.png)
 
-### QtWidgets.QEditLine
+### QtWidgets.QLineEdit
 
-QEditLine 官方文档：https://doc.qt.io/qtforpython/PySide6/QtWidgets/QLineEdit.html
+QLineEdit 官方文档：https://doc.qt.io/qtforpython/PySide6/QtWidgets/QLineEdit.html
 
 #### 创建单行输入框
 

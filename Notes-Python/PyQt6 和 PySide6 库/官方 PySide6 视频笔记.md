@@ -401,7 +401,7 @@ class Widget(QWidget):
             print("User chose Cancel")
 
     def button_clicked_question(self):
-        # 创建重要级别的消息框
+        # 创建询问消息框
         ret = QMessageBox.question(
             self,
             "Message Title",
@@ -414,7 +414,7 @@ class Widget(QWidget):
             print("User chose Cancel")
 
     def button_clicked_information(self):
-        # 创建重要级别的消息框
+        # 创建信息消息框
         ret = QMessageBox.information(
             self,
             "Message Title",
@@ -427,7 +427,7 @@ class Widget(QWidget):
             print("User chose Cancel")
 
     def button_clicked_warning(self):
-        # 创建重要级别的消息框
+        # 创建警告消息框
         ret = QMessageBox.warning(
             self,
             "Message Title",
@@ -440,7 +440,7 @@ class Widget(QWidget):
             print("User chose Cancel")
 
     def button_clicked_about(self):
-        # 创建重要级别的消息框
+        # 创建关于消息框
         ret = QMessageBox.about(self, "Message Title", "Some about message!")
         if ret == QMessageBox.Ok:
             print("User chose OK")
@@ -816,7 +816,7 @@ app.exec()
 
 复制、粘贴、剪切:
 
-![](D:/Git 仓库/笔记/StudyNotes/Notes-Python/PyQt6 和 PySide6 库/动图/QTextEdit-复制粘贴剪切.gif)
+![](动图/QTextEdit-复制粘贴剪切.gif)
 
 撤销与恢复：
 
