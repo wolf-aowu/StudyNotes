@@ -100,7 +100,7 @@ print(d)
 
 #### 通过字典创建 DataFrame
 
-通过字典创建 DataFrame，默认以字典的键名作为列索引。可以使用 `from_dict()` 设置参数 orient 的值为 'index'，以字典键名作为行索引。参数 orient 用于指定以字典的键名作为列索引还是行索引，默认值为 'columns'，即以字典的键名作为列索引，如果设置成 'index'，则表示以字典的键名作为行索引。
+通过字典创建 DataFrame，默认以字典的键名作为列索引。可以使用 `from_dict()` 设置参数 orient 的值为 'index'，以字典键名作为行索引。参数 orient 用于指定以字典的键名作为列索引还是行索引，默认值为 'columns'，即以字典的键名作为列索引，如果设置成 'index'，则表示以字典的键名作为行索引。字典的每一列都是一个 Series。
 
 ```python
 import pandas as pd
@@ -124,7 +124,7 @@ a  1  3  5
 b  2  4  6
 ```
 
-#### 通过二位数组创建 DataFrame
+#### 通过二维数组创建 DataFrame
 
 ```python
 import numpy as np
@@ -666,6 +666,38 @@ print(data)
 r1   1   2   1
 r2   3   4   1
 r3   5   6   1
+```
+
+### 数据分组
+
+参考网址：https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html?highlight=groupby#pandas.DataFrame.groupby
+
+```python
+import pandas as pd
+df = pd.DataFrame(
+    [
+        ("bird", "Falconiformes", 389.0),
+        ("bird", "Psittaciformes", 24.0),
+        ("mammal", "Carnivora", 80.2),
+        ("mammal", "Carnivora", 58),
+    ],
+    index=["falcon", "parrot", "lion", "leopard"],
+    columns=("class", "order", "max_speed"),
+)
+print(df)
+grouped = df.groupby("class")
+print(grouped.groups)
+```
+
+输出：
+
+```python
+          class           order  max_speed
+falcon     bird   Falconiformes      389.0
+parrot     bird  Psittaciformes       24.0
+lion     mammal       Carnivora       80.2
+leopard  mammal       Carnivora       58.0
+{'bird': ['falcon', 'parrot'], 'mammal': ['lion', 'leopard']}
 ```
 
 ### 数据删除
