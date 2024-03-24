@@ -1,3 +1,7 @@
+# Chrome 键盘快捷键
+
+官方网址：https://support.google.com/chrome/answer/157179?hl=zh-Hans&co=GENIE.Platform%3DDesktop
+
 # JavaScript 基础
 
 ## Html 文件中添加 JavaScript 代码
@@ -69,6 +73,8 @@ javascriptIsFun = "YES!"
 
 常量的命名规则为全部字母大写。
 
+可以使用 `const` 申明常量，申明时必须初始化。
+
 ``` javascript
 let PI = 3.1415926;
 ```
@@ -101,6 +107,73 @@ Symbol：ES2015 时定义的。它的值是唯一的且不可被改变的。
 
 BigInt：很大的整数。
 
+### 字符串
+
+字符串可以使用 `""` 表示或者使用模板字符串（Template Literals，推荐使用模板字符串）表示。
+
+模板字符串使用 `` ` `` 将字符串括起来，使用 `${}` 将变量括起来表示占位符（placehold）。当模板字符串中包含 `` ` `` 时，需要使用 `` \` `` 表示 `` ` ``；当模板字符串中包含 `${}` 时需要使用 `\${}` 表示占位符。
+
+``` javascript
+const firstName = "Jhon"
+const jhonSay = `I'm ${firstName}`
+```
+
+#### 多行字符串
+
+一般使用 `\n\` 表示换行。
+
+```javascript
+console.log('String with \n\
+multiple \n\
+lines');
+```
+
+模板字符串：
+
+```javascript
+console.log(`String
+multible
+lines`);
+```
+
+## 类型转换
+
+控制台打印结果的颜色会不同用来区分不同的数据类型。
+
+### 字符串数字互相转换
+
+字符串强转数字
+
+``` javascript
+const inputYear = '1991';
+console.log(Number(inputYear));
+```
+
+数字强转字符串
+
+``` javascript
+const inputYear = 1991;
+console.log(String(inputYear))
+```
+
+`-`、`*`、`/` 会自动将字符串转换成数字，`+` 则会自动将数字转换成字符串。
+
+``` javascript
+const inputYear = '1991'
+console.log(inputYear + 18)  //199118
+console.log(inputYear - 18)  //1973
+console.log(inputYear * 2)  //3982
+console.log(inputYear / 2)  //995.5
+```
+
+例子：
+
+``` javascript
+console.log(2 + 3 + 4 + '5')  //95
+console.log('10' - '3' - '4' - '2' + '5')  //15
+console.log('10' - '3' - '4' - '2' + 5)  //6
+```
+
 ## 注释
 
 单行注释可以使用 `//`，多行注释使用 `/*...*/`
@@ -115,5 +188,33 @@ BigInt：很大的整数。
 console.log(typeof true);
 console.log(typeof 23);
 console.log(typeof 'Jonas')
+```
+
+## if
+
+具有作用域，不能写成如下所示：
+
+``` javascript
+// 会出现 century is not defined 的报错
+const birthYear = 1991;
+if (birthYear <= 2000) {
+    let century = 20;
+} else {
+    let century = 21;
+}
+console.log(century)
+```
+
+正确写法：
+
+```javascript
+let century;
+const birthYear = 1991;
+if (birthYear <= 2000) {
+    century = 20;
+} else {
+    century = 21;
+}
+console.log(century)
 ```
 
