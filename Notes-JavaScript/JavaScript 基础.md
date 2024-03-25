@@ -136,6 +136,12 @@ multible
 lines`);
 ```
 
+### 布尔值
+
+只有 5 种值会被转换成 false，其他的值都会被转换成 true。这 5 种会被转换成 false 的值：
+
+`0`、`''`、`undefined`、`null`、`NaN`
+
 ## 类型转换
 
 控制台打印结果的颜色会不同用来区分不同的数据类型。
@@ -147,6 +153,13 @@ lines`);
 ``` javascript
 const inputYear = '1991';
 console.log(Number(inputYear));
+```
+
+如果传入强转的参数是非法的则会得到 `NaN` 代表不是一个数字。但 `typeof NaN`，会得到 `number`。
+
+``` javascript
+Number('hello')  //NaN
+typeof NaN  //number
 ```
 
 数字强转字符串
@@ -173,6 +186,17 @@ console.log(2 + 3 + 4 + '5')  //95
 console.log('10' - '3' - '4' - '2' + '5')  //15
 console.log('10' - '3' - '4' - '2' + 5)  //6
 ```
+
+### 布尔值强转
+
+``` javascript
+console.log(Boolean(0));  //false
+console.log(Boolean(undefined));  //false
+console.log(Boolean(''));  //false
+console.log(Boolean({}));  //true
+```
+
+
 
 ## 注释
 
