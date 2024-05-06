@@ -196,8 +196,6 @@ console.log(Boolean(''));  //false
 console.log(Boolean({}));  //true
 ```
 
-
-
 ## 注释
 
 单行注释可以使用 `//`，多行注释使用 `/*...*/`
@@ -214,6 +212,26 @@ console.log(typeof 23);
 console.log(typeof 'Jonas')
 ```
 
+### 相等
+
+判断相等的符号有两种 `==` 和 `===`。`===` 是严格意义上的相等，`==` 会对两边数据类型进行强制转换。
+
+``` javascript
+let favourite = 23;
+console.log(favourite === '23');  // false
+console.log(favourite == '23');  // true
+```
+
+### 不相等
+
+不相等的符号也有两种 `!=` 和 `!==`。`!==` 是严格意义上的不相等，`!=` 会将两边数据类型进行强制转换。
+
+``` javascript
+let favourite = 23;
+console.log(favourite !== '23');  // true
+console.log(favourite != '23');  // false
+```
+
 ## if
 
 具有作用域，不能写成如下所示：
@@ -223,6 +241,8 @@ console.log(typeof 'Jonas')
 const birthYear = 1991;
 if (birthYear <= 2000) {
     let century = 20;
+} else if (birthYear === 2001) {
+    let century = 21;
 } else {
     let century = 21;
 }
@@ -236,6 +256,8 @@ let century;
 const birthYear = 1991;
 if (birthYear <= 2000) {
     century = 20;
+} else if (birthYear === 2001) {
+	century = 21;
 } else {
     century = 21;
 }
