@@ -69,6 +69,13 @@ let javascriptIsFun = true;
 javascriptIsFun = "YES!"
 ```
 
+允许一行同时申明多个变量：
+
+``` javascript
+let a, b, c;
+const d = 20, e = 30, f = 40;
+```
+
 ## 常量
 
 常量的命名规则为全部字母大写。
@@ -76,7 +83,26 @@ javascriptIsFun = "YES!"
 可以使用 `const` 申明常量，申明时必须初始化。
 
 ``` javascript
-let PI = 3.1415926;
+const PI = 3.1415926;
+```
+
+可以使用 const 初始化一个数组或者对象，虽热不能改变给const重新赋值，但依然可以改变数组或对象中的内容。
+```javascript
+const arr = [1, 2, 3, 4];
+// 不可以这样做，会报错
+arr = [1, 2, 3, 4, 5];
+console.log(arr);
+// 可以这样做
+arr.push(5);
+console.log(arr);
+
+const person = {
+    name: 'Brad'
+};
+// 可以这样做
+person.name = 'John';
+person.email = 'brad@gmail.com';
+console.log(person);
 ```
 
 ## 数据类型
@@ -264,3 +290,30 @@ if (birthYear <= 2000) {
 console.log(century)
 ```
 
+# console 打日志方法
+
+```javascript
+const x=100;
+console.log(x);
+console.warn('Warning');
+console.error('Alert');
+
+console.table({ name: 'Brad', email: 'brad@gmail.com'});
+
+console.group('sample');
+console.log(x);
+console.warning('Warning');
+console.error('Alert');
+console.groupEnd();
+```
+
+![](图片\console 打日志方法.png)
+
+打印带 css 样式的日志
+
+```javascript
+const styles = 'padding 10px; background-color: black; color: skyblue';
+console.log('%cHello World', styles);
+```
+
+![](图片\console 打印带 css 样式的日志.png)
