@@ -4,6 +4,8 @@
 
 # JavaScript 基础
 
+JavaScript 是一种动态语言，这意味着它不需要定义变量的类型。
+
 ## Html 文件中添加 JavaScript 代码
 
 在 Html 文件的 style 标签下方添加 script 标签及代码
@@ -107,31 +109,68 @@ console.log(person);
 
 ## 数据类型
 
+原始类型和引用类型都是对象。
+
+参考链接：https://262.ecma-international.org/5.1/#sec-11.4.3
+
 有七种原始类型（primitive data type）：Number、String、Boolean、Undefined、Null、Symbol、BigInt。
 
-Number：浮点数，所有数字都是 Number 类型。`let age = 23;`
+**Number**：浮点数，所有数字都是 Number 类型。`let age = 23;`
 
-String：字符序列，双引号、单引号都支持。`let firstName = "Jonas";`
+**String**：字符序列，双引号、单引号都支持。`let firstName = "Jonas";`
 
-Boolean：逻辑类型，只能是 `true` 或 `false`。`let fullAge = true;`
+**Boolean**：逻辑类型，只能是 `true` 或 `false`。`let fullAge = true;`
 
-Undefined：当变量的值还未定义时（空值）。 `let children; `
+**Undefined**：当变量的值还未定义时（空值）。 `let children; `
 
 ```javascript
 let children;
-console.log(children)  //undefined
-console.log(typeof children)  //undefined
+console.log(children);  //undefined
+console.log(typeof children);  //undefined
 ```
 
-Null：空值。
+**Null**：空值。
 
 ``` javascript
-console.log(typeof null)  //object
+console.log(typeof null);  //object
 ```
 
-Symbol：ES2015 时定义的。它的值是唯一的且不可被改变的。
+返回值为 object 的原因：
 
-BigInt：很大的整数。
+在 JavaScript 最初的实现中，JavaScript 中的值是由一个表示类型的标签和实际数据值表示的。对象的类型标签是 0。由于 `null` 代表的是空指针（大多数平台下值为 0x00），因此，null 的类型标签是 0，`typeof null` 也因此返回 `"object"`。
+
+参考链接：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/typeof#typeof_null
+
+**Symbol**：ES2015 时定义的。它的值是唯一的且不可被改变的。
+
+``` javascript
+const id = Symbol('id');
+console.log(typeof id);  //symbol
+```
+
+**BigInt**：很大的整数。
+
+``` javascript
+const n = 9007199254740991n;
+console.log(typeof n);  //bigint
+```
+
+引用类型
+
+``` javascript
+const numbers = [1, 2, 3, 4];
+console.log(typeof numbers);  //object
+
+const person = {
+    name: 'Brad'
+};
+console.log(typeof person);  //object
+
+function sayHello() {
+    console.log('Hello');
+}
+console.log(typeof sayHello);  //function
+```
 
 ### 字符串
 
