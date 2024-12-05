@@ -216,22 +216,37 @@ lines`);
 字符串强转数字
 
 ``` javascript
+// 整型
 const inputYear = '1991';
-console.log(Number(inputYear));
+console.log(Number(inputYear), typeof Number(inputYear));
+console.log(+inputYear, typeof +inputYear);
+console.log(parseInt(inputYear), typeof parseInt(inputYear));
+
+// 小数
+const inputYear = '1991.5';
+console.log(Number(inputYear), typeof Number(inputYear));
+console.log(+inputYear, typeof +inputYear);
+console.log(parseFloat(inputYear), typeof parseFloat(inputYear));
 ```
 
-如果传入强转的参数是非法的则会得到 `NaN` 代表不是一个数字。但 `typeof NaN`，会得到 `number`。
+如果传入强转的参数是非法的则会得到 `NaN` 代表不是一个数字，`not a number`。但 `typeof NaN`，会得到 `number`。
 
 ``` javascript
 Number('hello')  //NaN
 typeof NaN  //number
+console.log(Math.sqrt(-1), typeof Math.sqrt(-1));  //NaN number
+console.log(1 + NaN, typeof (1 + NaN));  //NaN number
+console.log(undefined + undefined, typeof (undefined + undefined));  //NaN number
+console.log('food' / 3, typeof ('food' / 3));  //NaN number
 ```
 
 数字强转字符串
 
 ``` javascript
 const inputYear = 1991;
-console.log(String(inputYear))
+console.log(String(inputYear), typeof String(inputYear));
+// 虽然 inputYear 是原始类型，不是一个 object，但当我们使用 toString 时，JavaScript 会创建适当对象类型的临时包装器。
+console.log(inputYear.toString(), typeof inputYear.toString());
 ```
 
 `-`、`*`、`/` 会自动将字符串转换成数字，`+` 则会自动将数字转换成字符串。
