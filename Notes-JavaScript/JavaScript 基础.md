@@ -183,6 +183,129 @@ const firstName = "Jhon"
 const jhonSay = `I'm ${firstName}`
 ```
 
+#### 属性
+
+虽然字符串是原始类型，但 JavaScript 会为字符串创建临时的包装器，所以字符串会有属性和方法。当我们调用 `s.length` 时，JavaScript 会 `const s = new String('Hello World');`。此时类型会变成 object。
+
+##### 字符串长度（`s.length`）
+
+``` javascript
+const s = 'Hello World';
+console.log(s.length); 11
+```
+
+##### 根据下标访问字符串的字符（s[0]）
+
+从 0 开始。
+
+``` javascript
+const s = 'Hello World';
+console.log(s[0]);  //H
+```
+
+##### 获取字符串内置属性和方法（s.proto）
+
+与 `console.log(new String('Hello World'));` 中的 [[Prototype]] 是一样的。
+
+``` javascript
+const s = 'Hello World';
+console.log(s.__proto__);
+```
+
+#### 方法
+
+##### 字符串全部大写（s.toUpperCase）
+
+``` javascript
+const s = 'Hello World';
+console.log(s.toUpperCase());
+```
+
+##### 字符串全部小写（s.toLowerCase）
+
+``` javascript
+const s = 'Hello World';
+console.log(s.toLowerCase());
+```
+
+##### 返回指定索引处字符（s.charAt）
+
+``` javascript
+const s = 'Hello World';
+console.log(s.charAt(0));  //H
+```
+
+##### 返回第一个指定字符索引（s.indexOf）
+
+```javascript
+const s = 'Hello World';
+console.log(s.indexOf('o'));  //4
+```
+
+##### 获取子字符串（s.substring）
+
+``` javascript
+const s = 'Hello World';
+console.log(s.substring(0, 2));  //He
+// 从下标 7 开始到字符串结尾
+console.log(s.substring(7));  //orld
+// 不支持负索引
+console.log(s.substring(-1));  //Hello World
+console.log(s.substring(0, -1));  //''
+```
+
+##### 字符串切片（s.slice）
+
+支持负索引
+
+``` javascript
+const s = 'Hello World';
+console.log(s.slice(0, 2));  //He
+// 从下标 7 开始到字符串结尾
+console.log(s.slice(7));  //orld
+console.log(s.slice(-1));  //d
+console.log(s.slice(-11, -1));  //Hello Worl
+```
+
+##### 字符串分割（s.split）
+
+``` javascript
+const s = 'Hello World';
+console.log(s.split());  //['Hello World']
+console.log(s.split(' '));  //['Hello', 'World']
+// 分割字符串的每个字符
+console.log(s.split(''));  //['H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd']
+```
+
+##### 去除开头空白字符串（s.trim）
+
+``` javascript
+const s = '     Hello World';
+console.log(s.trim());  //Hello World
+```
+
+##### 字符串替换（s.replace）
+
+``` javascript
+const s = 'Hello World';
+console.log(s.replace('World', 'Bob'));  //Hello Bob
+```
+
+##### 判断字符串包含（s.includes）
+
+``` javascript
+const s = 'Hello World';
+console.log(s.includes('Hell'));  //true
+console.log(s.includes('Hi'));  //false
+```
+
+##### 获取变量原始值（s.valueOf）
+
+``` javascript
+const s = new String('Hello World');
+console.log(s.valueOf(), typeof s.valueOf());  //Hello World string
+```
+
 #### 多行字符串
 
 一般使用 `\n\` 表示换行。
@@ -249,11 +372,15 @@ console.log(String(inputYear), typeof String(inputYear));
 console.log(inputYear.toString(), typeof inputYear.toString());
 ```
 
-`-`、`*`、`/` 会自动将字符串转换成数字，`+` 则会自动将数字转换成字符串。
+`-`、`*`、`/` 会自动将字符串转换成数字，`+` 则会自动将数字转换成字符串。但如果 `+` 两侧都不是字符串时，不会将数字转换成字符串。
 
 ``` javascript
 const inputYear = '1991'
 console.log(inputYear + 18)  //199118
+console.log(1991 + null)  //1991，null 会被自动强转成 number，即 0
+console.log(1991 + true)  //1992，true 会被自动强转成 number，即 1
+console.log(1991 + false)  //1992
+console.log(1991 + undefined)  //NaN
 console.log(inputYear - 18)  //1973
 console.log(inputYear * 2)  //3982
 console.log(inputYear / 2)  //995.5
@@ -281,6 +408,8 @@ console.log(Boolean({}));  //true
 单行注释可以使用 `//`，多行注释使用 `/*...*/`
 
 ## 运算符
+
+支持的运算符：`+`、`-`、`*`、`/`、`%`、`++`、`--`、`**`（`2 ** 3`，2 的 3 次方）、`+=`、`-=`、`*=`、`/=`、`%=`、`%=`、`**=`、`==`（不会判断类型是否相等，只检查值）、`===`（类型和值都相等才为 true）、`!=`（不会判断类型是否相等，只检查值）、`!==`（类型和值都相等才为 false）、`>`、`<`、`>=`、`<=`
 
 ### typeof
 
