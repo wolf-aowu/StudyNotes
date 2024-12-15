@@ -172,6 +172,81 @@ function sayHello() {
 console.log(typeof sayHello);  //function
 ```
 
+### 数字
+
+虽然数字是原始类型，但 JavaScript 会为数字创建临时的包装器，所以数字会有属性和方法。可以通过 `new Number(5)` 将数字变成 object 类型。
+
+#### 属性
+
+##### 数字的最大值（Number.MAX_VALUE）
+
+``` javascript
+console.log(Number.MAX_VALUE);  //1.7976931348623157e+308
+```
+
+##### 数字的最小值（Number.MIN_VALUE）
+
+``` javascript
+console.log(Number.MIN_VALUE);  //5e-324
+```
+
+#### 方法
+
+##### 数字转换成字符串（num.toString）
+
+``` javascript
+const num = 5;
+console.log(num.toString(), typeof num.toString());
+```
+
+##### 指定小数位数（num.toFixed）
+
+四舍五入。
+
+``` javascript
+const num = 5;
+console.log(num.toSFixed(2));  //5.00
+```
+
+##### 指定数字总数（num.toPrecision）
+
+四舍五入。
+
+``` javascript
+const num = 55.4567;
+console.log(num.toPrecision(4)); //55.46
+```
+
+##### 转成科学计数显示（num.toExponential）
+
+指定保留几位小数，四舍五入。
+
+``` javascript
+const num = 55.4567;
+console.log(num.toExponential(3));  //5.546e+1
+```
+
+##### 将数字转换成国家语言（num.toLocaleString）
+
+``` javascript
+const num = 55.4567;
+console.log(num.toLocaleString('en-US'));  //55.457
+//中文简体
+console.log(num.toLocaleString('zh-CN'));  //55.457
+//中文繁体
+console.log(num.toLocaleString('zh-TW'));  //55.457
+//阿拉伯语在埃及
+console.log(num.toLocaleString('ar-EG'));  //٥٥٫٤٥٧
+```
+
+##### 获取变量原始值（num.valueOf）
+
+``` javascript
+const num = new Number(55.4567);
+console.log(typeof num);  //object
+console.log(num.valueOf(), typeof num.valueOf());  //55.4567 'number'
+```
+
 ### 字符串
 
 字符串可以使用 `""` 表示或者使用模板字符串（Template Literals，推荐使用模板字符串）表示。
@@ -471,6 +546,69 @@ if (birthYear <= 2000) {
     century = 21;
 }
 console.log(century)
+```
+
+## 内置对象
+
+### Math
+
+`console.log(Math);` 可以打印出 `Math` 对象，查看它的属性和方法。
+
+#### 平方根（sqrt）
+
+``` javascript
+console.log(Math.sqrt(9));  //3
+```
+
+#### 绝对值（abs）
+
+``` javascript
+console.log(Math.abs(-5));  //5
+```
+
+#### 四舍五入（round）
+
+``` javascript
+console.log(Math.round(0.333));  //0
+```
+
+#### 向上取整（ceil）
+
+``` javascript
+console.log(Math.ceil(4.2));  //5
+```
+
+#### 向下取整（floor）
+
+``` javascript
+console.log(Math.floor(4.9));  //4
+```
+
+#### 幂值（pow）
+
+``` javascript
+//2 的 3 次方
+console.log(Math.pow(2, 3));  //8
+```
+
+#### 最小值（min）
+
+``` javascript
+console.log(Math.min(4, 5, 3));  //3
+```
+
+#### 最大值（max）
+
+``` javascript
+console.log(Math.max(4, 5, 3));  //5
+```
+
+#### 随机数（random）
+
+随机 0 到 1 之间包含 0 但不包含 1 的小数。
+
+``` javascript
+console.log(Math.random());  //0.23900904985398075
 ```
 
 # console 打日志方法
