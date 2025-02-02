@@ -611,6 +611,71 @@ console.log(Math.max(4, 5, 3));  //5
 console.log(Math.random());  //0.23900904985398075
 ```
 
+### Date（日期时间）
+
+`console.log(new Date())` 能够得到当前日期时间和所在的时区 `Fri Jan 31 2025 19:04:35 GMT+0800 (GMT+08:00)`。
+
+#### 转成字符串（toString）
+
+```javascript
+let d = new Date();
+console.log(d.toString());
+```
+
+#### 得到指定日期时间对象（new Date）
+
+月份是从 0 开始的。
+
+``` javascript
+let d = new Date(2025, 0, 1);
+console.log(d);  //Wed Jan 01 2025 00:00:00 GMT+0800 (GMT+08:00)
+d = new Date(2025, 0, 1, 12, 30, 1);
+console.log(d);  //Wed Jan 01 2025 12:30:01 GMT+0800 (GMT+08:00)
+// 也可以传入字符串
+d = new Date('2025-1-1');
+console.log(d);  //Wed Jan 01 2025 00:00:00 GMT+0800 (GMT+08:00)
+d = new Date('2025-1-1 12:30:1');
+console.log(d);  //Wed Jan 01 2025 12:30:01 GMT+0800 (GMT+08:00)
+d = new Date('2025-01-01T12:30:01');
+console.log(d);  //Wed Jan 01 2025 12:30:01 GMT+0800 (GMT+08:00)
+d = new Date('2025/01/01 12:30:01');
+console.log(d);  //Wed Jan 01 2025 12:30:01 GMT+0800 (GMT+08:00)
+d = new Date('01/01/2025 12:30:01');
+console.log(d);  //Wed Jan 01 2025 12:30:01 GMT+0800 (GMT+08:00)
+// 获取当前日期时间对象
+d = new Date();
+console.log(d);  //Sun Feb 02 2025 22:11:53 GMT+0800 (GMT+08:00)
+// 也可以传入时间戳
+d = new Date(1735705801000);
+console.log(d);  //Wed Jan 01 2025 12:30:01 GMT+0800 (GMT+08:00)
+```
+
+#### 获取当前时间戳（now）
+
+单位是毫秒。
+
+``` javascript
+let d = Date.now();
+console.log(d);  //1738503576206
+```
+
+#### 获取指定日期时间戳（getTime 或 valueOf）
+
+``` javascript
+let d = new Date('2025/01/01 12:30:01');
+d = d.getTime();
+console.log(d);  //1735705801000
+d = d.valueOf();
+console.log(d);  //1735705801000
+```
+
+#### 时间戳转换为秒为单位
+
+``` javascript
+let d = Math.floor(Date.now() / 1000);
+console.log(d);  //1738505790
+```
+
 # console 打日志方法
 
 ```javascript
