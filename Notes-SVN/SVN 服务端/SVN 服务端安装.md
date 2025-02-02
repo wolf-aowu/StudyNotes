@@ -25,7 +25,7 @@ https://www.visualsvn.com/server/download/
 
 - Backups：备份地址
 
-![](D:\笔记\Notes-SVN\SVN服务端\安装步骤3.png)
+![](安装步骤3.png)
 
 身份验证模式<font color = skyblue>（默认即可，该项可以通过 SVN 服务器管理器重新配置）</font>
 
