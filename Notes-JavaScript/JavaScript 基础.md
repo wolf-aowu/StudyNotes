@@ -676,6 +676,153 @@ let d = Math.floor(Date.now() / 1000);
 console.log(d);  //1738505790
 ```
 
+#### 获取日期时间对象年份（getFullYear）
+
+``` javascript
+let d = new Date();
+d = d.getFullYear();
+console.log(d);  //2025
+```
+
+#### 获取日期时间对象月份（getMonth）
+
+获取的月份是实际月份 - 1，也就是从 0 开始算月份。
+
+``` javascript
+let d = new Date();
+console.log(d);  //Mon Feb 03 2025 23:14:44 GMT+0800 (GMT+08:00)
+d = d.getMonth();
+console.log(d);  //1
+```
+
+#### 获取日期时间对象的日（getDate）
+
+``` javascript
+let d = new Date();
+console.log(d);  //Mon Feb 03 2025 23:18:42 GMT+0800 (GMT+08:00)
+d = d.getDate();
+console.log(d);  //3
+```
+
+#### 获取日期时间对象几点（getHours）
+
+``` javascript
+let d = new Date();
+console.log(d);  //Mon Feb 03 2025 23:24:59 GMT+0800 (GMT+08:00)
+d = d.getHours();
+console.log(d);  //23
+```
+
+#### 获取日期时间对象几分（getMinutes）
+
+``` javascript
+let d = new Date();
+console.log(d);  //Mon Feb 03 2025 23:27:16 GMT+0800 (GMT+08:00)
+d = d.getMinutes();
+console.log(d);  //16
+```
+
+#### 获取日期时间对象几毫秒（getMilliseconds）
+
+``` javascript
+let d = new Date();
+console.log(d);  //Mon Feb 03 2025 23:28:41 GMT+0800 (GMT+08:00)
+d = d.getMinutes();
+console.log(d);  //28
+```
+
+#### 获取日期时间对象几秒（getSeconds）
+
+``` javascript
+let d = new Date();
+console.log(d);  //Mon Feb 03 2025 23:26:08 GMT+0800 (GMT+08:00)
+d = d.getSeconds();
+console.log(d);  //26
+```
+
+#### 获取日期时间对象是周几（getDay）
+
+周日返回 0。
+
+``` javascript
+let d = new Date();
+console.log(d);  //Mon Feb 03 2025 23:21:30 GMT+0800 (GMT+08:00)
+d = d.getDay();
+console.log(d);  //1
+d = new Date('2025/2/2');
+console.log(d);  //Sun Feb 02 2025 00:00:00 GMT+0800 (GMT+08:00)
+d = d.getDay();
+console.log(d);  //0
+```
+
+#### 根据地区格式化日期时间对象（toLocaleString 或 Intl.DateTimeFormat）
+
+toLocaleString：
+
+``` javascript
+let d = new Date();
+console.log(d);  //Tue Feb 04 2025 00:03:24 GMT+0800 (GMT+08:00)
+x = d.toLocaleString('default', { year: "2-digit", month: "2-digit", day: "2-digit" });
+console.log(x);  //25/02/04
+x = d.toLocaleString('default', { year: "numeric", month: "numeric", day: "numeric" });
+console.log(x);  //2025/2/4
+x = d.toLocaleString('default', { month: "narrow" });
+console.log(x);  //2
+x = d.toLocaleString('default', { month: "long" });
+console.log(x);  //二月
+x = d.toLocaleString('default', { month: "short" });
+console.log(x);  //2月
+x = d.toLocaleString('default', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    timeZone: 'America/New_York',
+});
+// 设置了 timeZone 的原因，当前时间在美国的时间
+console.log(x);  //2025年2月3日星期一 11:03:24
+// 不设置 timeZone 后
+x = d.toLocaleString('default', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+});
+console.log(x);  //2025年2月4日星期二 00:03:24
+```
+
+Intl.DateTimeFormat：
+
+``` javascript
+let d = new Date();
+console.log(d);  //Tue Feb 04 2025 00:03:24 GMT+0800 (GMT+08:00)
+// 美国
+x = Intl.DateTimeFormat('en-US').format(d);
+console.log(x);  //2/4/2025
+// 英国
+x = Intl.DateTimeFormat('en-GB').format(d);
+console.log(x)  //04/02/2025
+x = Intl.DateTimeFormat('default').format(d);
+console.log(x)  //2025/2/4
+// 修改格式，也可以得到一部分
+x = Intl.DateTimeFormat('default', { year: "2-digit", month: "2-digit", day: "2-digit" }).format(d);
+console.log(x);  //25/02/04
+x = Intl.DateTimeFormat('default', { year: "numeric", month: "numeric", day: "numeric" }).format(d);
+console.log(x);  //2025/2/4
+x = Intl.DateTimeFormat('default', { month: "narrow" }).format(d);
+console.log(x);  //2
+x = Intl.DateTimeFormat('default', { month: "long" }).format(d);
+console.log(x);  //二月
+x = Intl.DateTimeFormat('default', { month: "short" }).format(d);
+console.log(x);  //2月
+```
+
 # console 打日志方法
 
 ```javascript
