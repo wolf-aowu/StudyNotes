@@ -405,6 +405,45 @@ lines`);
 
 `0`、`''`、`undefined`、`null`、`NaN`
 
+### 引用类型
+
+#### 数组
+
+索引从 0 开始。一个数组中可以同时存在不通类型的元素。
+
+``` javascript
+// Array Literal
+const numbers = [12, 45, 33, 29, 39];
+console.log(numbers);
+const mixed = [12, 'Hello', true, null];
+console.log(mixed);
+// Array Constructor
+const fruits = new Array('apple', 'grape', 'orange');
+console.log(fruits);
+console.log(numbers[0]);
+fruits[2] = 'pear';
+console.log(fruits);
+```
+
+##### 获取数组长度
+
+``` javascript
+const numbers = [12, 45, 33, 29, 39];
+console.log(numbers.length);  //5
+numbers.length = 2
+console.log(numbers);  //[12, 45]
+```
+
+##### 添加元素
+
+``` javascript
+const numbers = [12, 45, 33, 29, 39];
+numbers[5] = 40;
+console.log(numbers);  //[12, 45, 33, 29, 39, 40]
+numbers[numbers.length] = 89;
+console.log(numbers);  //[12, 45, 33, 29, 39, 40, 89]
+```
+
 ## 类型转换
 
 控制台打印结果的颜色会不同用来区分不同的数据类型。
