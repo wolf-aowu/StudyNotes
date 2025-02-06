@@ -438,10 +438,76 @@ console.log(numbers);  //[12, 45]
 
 ``` javascript
 const numbers = [12, 45, 33, 29, 39];
+// 向末尾添加元素
 numbers[5] = 40;
 console.log(numbers);  //[12, 45, 33, 29, 39, 40]
 numbers[numbers.length] = 89;
 console.log(numbers);  //[12, 45, 33, 29, 39, 40, 89]
+numbers.push(100);
+console.log(numbers);  //[12, 45, 33, 29, 39, 40, 89, 100]
+// 向首位添加元素
+numbers.unshift(1);
+console.log(numbers);  //[1, 12, 45, 33, 29, 39, 40, 89, 100]
+```
+
+##### 移除元素
+
+``` javascript
+const numbers = [12, 45, 33, 29, 39];
+// 移除末尾元素
+numbers.pop();
+console.log(numbers);  //[12, 45, 33, 29]
+// 移除首位元素
+numbers.shift();
+console.log(numbers);  //[45, 33, 29]
+```
+
+##### 反转数组（reverse）
+
+``` javascript
+const numbers = [12, 45, 33, 29, 39];
+numbers.reverse();
+console.log(numbers);  //[39, 29, 33, 45, 12]
+```
+
+##### 数组是否包含指定元素（includes）
+
+``` javascript
+const numbers = [12, 45, 33, 29, 39];
+console.log(numbers.includes(1));  //false
+```
+
+##### 获取数组指定元素索引（indexOf）
+
+如果指定元素不存在，则返回 -1。
+
+``` javascript
+const numbers = [12, 45, 33, 29, 39];
+console.log(numbers.indexOf(12));  //0
+console.log(numbers.indexOf(1));  //-1
+```
+
+##### 数组切片（slice）
+
+不会改变数组本身。
+
+``` javascript
+const numbers = [12, 45, 33, 29, 39];
+console.log(numbers.slice(1));  //[45, 33, 29, 39]
+// [startIndex, endIndex)
+console.log(numbers.slice(1,3));  //[45, 33]
+```
+
+##### 数组拼接（splice）
+
+会改变数组本身。从数组中取出指定长度的元素。
+
+``` javascript
+const numbers = [12, 45, 33, 29, 39];
+// startIndex, deleteCount
+x = numbers.splice(1, 3);
+console.log(x);  //[45, 33, 29]
+console.log(numbers);  //[12, 39]
 ```
 
 ## 类型转换
