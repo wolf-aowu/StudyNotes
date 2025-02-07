@@ -409,7 +409,7 @@ lines`);
 
 #### 数组
 
-索引从 0 开始。一个数组中可以同时存在不通类型的元素。
+索引从 0 开始。一个数组中可以同时存在不通类型的元素。<font color=skyblue>注意：</font>当使用构造函数构造数组，只传入 1 个参数且该参数为整型时，此参数会被视作数组长度，从而创建 n 个元素为空的数组。
 
 ``` javascript
 // Array Literal
@@ -417,15 +417,31 @@ const numbers = [12, 45, 33, 29, 39];
 console.log(numbers);
 const mixed = [12, 'Hello', true, null];
 console.log(mixed);
-// Array Constructor
+// Array Constructor 构造函数
 const fruits = new Array('apple', 'grape', 'orange');
 console.log(fruits);
-console.log(numbers[0]);
+console.log(numbers[0]);  //12
 fruits[2] = 'pear';
 console.log(fruits);
+// 构造函数入参为 1 个时
+const words = new Array('hello');
+console.log(words);  //['hello']
+let guess = new Array(1);
+console.log(guess);  //[undefined]
+guess = new Array(3);
+console.log(guess);  //[undefined, undefined, undefined]
+const record = new Array(1, 'hello');
+console.log(record);  //[1, 'hello']
+const count = new Array(1.2);
+console.log(count);  //报错，Invalid array length
+// Nesting Array 嵌套数组
+const foods = ['apple', 'pear', 'orange', ['strawberry', 'blueberry', 'rasberry']];
+console.log(foods[3][1]);  //blueberry
 ```
 
-##### 获取数组长度
+##### 属性
+
+###### 数组长度
 
 ``` javascript
 const numbers = [12, 45, 33, 29, 39];
@@ -434,7 +450,9 @@ numbers.length = 2
 console.log(numbers);  //[12, 45]
 ```
 
-##### 添加元素
+##### 方法
+
+###### 添加元素（索引 或 push 或 unshift）
 
 ``` javascript
 const numbers = [12, 45, 33, 29, 39];
@@ -450,7 +468,7 @@ numbers.unshift(1);
 console.log(numbers);  //[1, 12, 45, 33, 29, 39, 40, 89, 100]
 ```
 
-##### 移除元素
+###### 移除元素（pop 或 shift）
 
 ``` javascript
 const numbers = [12, 45, 33, 29, 39];
@@ -462,7 +480,7 @@ numbers.shift();
 console.log(numbers);  //[45, 33, 29]
 ```
 
-##### 反转数组（reverse）
+###### 反转数组（reverse）
 
 ``` javascript
 const numbers = [12, 45, 33, 29, 39];
@@ -470,14 +488,14 @@ numbers.reverse();
 console.log(numbers);  //[39, 29, 33, 45, 12]
 ```
 
-##### 数组是否包含指定元素（includes）
+###### 数组是否包含指定元素（includes）
 
 ``` javascript
 const numbers = [12, 45, 33, 29, 39];
 console.log(numbers.includes(1));  //false
 ```
 
-##### 获取数组指定元素索引（indexOf）
+###### 获取数组指定元素索引（indexOf）
 
 如果指定元素不存在，则返回 -1。
 
@@ -487,7 +505,7 @@ console.log(numbers.indexOf(12));  //0
 console.log(numbers.indexOf(1));  //-1
 ```
 
-##### 数组切片（slice）
+###### 数组切片（slice）
 
 不会改变数组本身。
 
@@ -498,7 +516,7 @@ console.log(numbers.slice(1));  //[45, 33, 29, 39]
 console.log(numbers.slice(1,3));  //[45, 33]
 ```
 
-##### 数组拼接（splice）
+###### 数组拼接（splice）
 
 会改变数组本身。从数组中取出指定长度的元素。
 
@@ -508,6 +526,58 @@ const numbers = [12, 45, 33, 29, 39];
 x = numbers.splice(1, 3);
 console.log(x);  //[45, 33, 29]
 console.log(numbers);  //[12, 39]
+```
+
+###### 数组连接（concat 或 ...）
+
+不会改变数组本身。
+
+``` javascript
+const fruits = ['apple', 'pear', 'orange'];
+const berries = ['strawberry', 'blueberry', 'rasberry'];
+console.log(fruits);  //['apple', 'pear', 'orange']
+console.log(berries);  //['strawberry', 'blueberry', 'rasberry']
+console.log(fruits.concat(berries));  //['apple', 'pear', 'orange', 'strawberry', 'blueberry', 'rasberry']
+// ... 是扩展运算符
+let x = [...fruits, berries];
+console.log(x);  //['apple', 'pear', 'orange', ['strawberry', 'blueberry', 'rasberry']]
+x = [...fruits, ...berries];
+console.log(x);  //['apple', 'pear', 'orange', 'strawberry', 'blueberry', 'rasberry']
+```
+
+###### 展平数组（flat）
+
+不会改变数组本身。
+
+``` javascript
+// Flatten Arrays 展平数组
+const arr = [1, 2, [3, 4], 5, [6, 7], 8];
+let x = arr.flat();
+console.log(arr);  //[1, 2, [3, 4], 5, [6, 7], 8]
+console.log(x);  //[1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+###### 是否是数组（Array.isArray）
+
+``` javascript
+const fruits = ['apple', 'pear', 'orange'];
+console.log(Array.isArray(fruits));  //true
+console.log(Array.isArray('Hello'));  //false
+```
+
+###### 可迭代对象转换成数组（Array.from）
+
+``` javascript
+console.log(Array.from('Hello'));  //['H', 'e', 'l', 'l', 'o']
+```
+
+###### 创建一个新的数组实例（Array.of）
+
+``` javascript
+const a = 1;
+const b = 2;
+const c = 3;
+console.log(Array.of(a, b, c));  //[1, 2, 3]
 ```
 
 ## 类型转换
