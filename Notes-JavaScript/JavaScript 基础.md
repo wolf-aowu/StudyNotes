@@ -538,7 +538,7 @@ const berries = ['strawberry', 'blueberry', 'rasberry'];
 console.log(fruits);  //['apple', 'pear', 'orange']
 console.log(berries);  //['strawberry', 'blueberry', 'rasberry']
 console.log(fruits.concat(berries));  //['apple', 'pear', 'orange', 'strawberry', 'blueberry', 'rasberry']
-// ... 是扩展运算符
+// ... 是扩展运算符（spread operator）
 let x = [...fruits, berries];
 console.log(x);  //['apple', 'pear', 'orange', ['strawberry', 'blueberry', 'rasberry']]
 x = [...fruits, ...berries];
@@ -579,6 +579,55 @@ const b = 2;
 const c = 3;
 console.log(Array.of(a, b, c));  //[1, 2, 3]
 ```
+
+#### 对象
+
+对象可以嵌套对象，函数也可以作为对象的属性。如下所示，name、age、isAdmin、address、hobbies 都是 person 对象的属性。
+
+``` javascript
+const person = {
+    name: 'John',
+    age: 30,
+    isAdmin: true,
+    address: {
+        street: '123 Main st',
+        city: 'Boston',
+        state: 'MA',
+    },
+    hobbies: ['music', 'sports'],
+    'first name': 'Brad',  //这样写也可以但不推荐
+    'last name': 'Traversy',
+};
+console.log(person);
+console.log(person.name);
+console.log(person['age']);
+console.log(person.address.state);
+console.log(person.hobbies[0]);
+console.log(person['first name']);  //Brad
+console.log(person.first name);  //会报错，missing ) after argument list
+
+person.name = 'Jane';
+console.log(person.name);
+person['isAdmin'] = false;
+console.log(person.isAdmin);
+
+// 函数作为对象的属性
+person.greet = function () {
+    console.log(`Hello, my name is ${this.name}`)
+}
+
+person.greet();
+
+// 删除属性
+delete person.age;
+console.log(person);
+
+// 添加属性
+person.hasChildren = true;
+console.log(person);
+```
+
+
 
 ## 类型转换
 
