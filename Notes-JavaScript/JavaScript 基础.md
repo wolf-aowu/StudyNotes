@@ -611,6 +611,13 @@ console.log(person.name);
 person['isAdmin'] = false;
 console.log(person.isAdmin);
 
+// 也可以这样创建一个对象
+const todo = new Object();
+todo.id = 1;
+todo.name = 'Buy Milk';
+todo.completed = false;
+console.log(todo); 
+
 // 函数作为对象的属性
 person.greet = function () {
     console.log(`Hello, my name is ${this.name}`)
@@ -627,7 +634,75 @@ person.hasChildren = true;
 console.log(person);
 ```
 
+##### 方法
 
+###### 对象连接（... 或 Object.assign）
+
+`Object.assign` 用于将一个或多个源对象的可枚举自有属性复制到目标对象中，会自动跳过 null 和 undefined，是浅复制。
+
+``` javascript
+const obj1 = { a: 1, b: 2 };
+const obj2 = { c: 3, d: 4 };
+const obj3 = { ...obj1, ...obj2 };
+console.log(obj3);  //{a: 1, b: 2, c: 3, d: 4}
+
+const obj4 = Object.assign({}, obj1, obj2);
+console.log(obj4);  //{a: 1, b: 2, c: 3, d: 4}
+// Object.assign 是浅复制
+const obj5 = Object.assign({}, {...obj1, obj2});
+console.log(obj5);  //{a: 1, b: 2, obj2: {c: 3, d: 4}}
+obj5.obj2.d = 5;
+console.log(obj5);  //{a: 1, b: 2, obj2: {c: 3, d: 5}}
+console.log(obj2);  //{c: 3, d: 5}
+```
+
+###### 获取对象所有的属性名数组（Object.keys）
+
+``` javascript
+const todo = new Object();
+todo.id = 1;
+todo.name = 'Buy Milk';
+todo.completed = false;
+console.log(todo); 
+console.log(Object.keys(todo));  //['id', 'name', 'completed']
+
+// 获取对象的属性个数
+console.log(Object.keys(todo).length);  //3
+```
+
+###### 获取对象所有属性值数组（Object.values）
+
+``` javascript
+const todo = new Object();
+todo.id = 1;
+todo.name = 'Buy Milk';
+todo.completed = false;
+console.log(todo); 
+console.log(Object.values(todo));  //[1, 'Buy Milk', false]
+```
+
+###### 获取对象所有属性键值对数组（Object.entries）
+
+``` javascript
+const todo = new Object();
+todo.id = 1;
+todo.name = 'Buy Milk';
+todo.completed = false;
+console.log(todo); 
+console.log(Object.entries(todo));  //[['id', 1], ['name', 'Buy Milk'], ['completed', false]]
+```
+
+###### 对象是否包含指定属性（hasOwnProperty）
+
+``` javascript
+const todo = new Object();
+todo.id = 1;
+todo.name = 'Buy Milk';
+todo.completed = false;
+
+console.log(todo.hasOwnProperty('name'));  //true
+console.log(todo.hasOwnProperty('age'));  //false
+```
 
 ## 类型转换
 
