@@ -437,6 +437,10 @@ console.log(count);  //报错，Invalid array length
 // Nesting Array 嵌套数组
 const foods = ['apple', 'pear', 'orange', ['strawberry', 'blueberry', 'rasberry']];
 console.log(foods[3][1]);  //blueberry
+
+// Destructure arrays 解构数组
+const [first, second, ...rest] = numbers;
+console.log(first, second, rest);  //12 45 [33, 29, 39]
 ```
 
 ##### 属性
@@ -582,7 +586,7 @@ console.log(Array.of(a, b, c));  //[1, 2, 3]
 
 #### 对象
 
-对象可以嵌套对象，函数也可以作为对象的属性。如下所示，name、age、isAdmin、address、hobbies 都是 person 对象的属性。
+对象可以嵌套对象，函数也可以作为对象的属性。如下所示，name、age、isAdmin、address、hobbies 都是 person 对象的属性。创建对象时，变量名与对象的属性名相同，可以只传入变量而不写出属性名。
 
 ``` javascript
 const person = {
@@ -605,6 +609,12 @@ console.log(person.address.state);
 console.log(person.hobbies[0]);
 console.log(person['first name']);  //Brad
 console.log(person.first name);  //会报错，missing ) after argument list
+// Destructuring 解构
+const { address: { street }, isAdmin } = person;
+console.log(street, isAdmin);  //123 Main st true
+// 也可以为取出的值的变量名重命名
+const { name: alias } = person;
+console.log(alias);  //John
 
 person.name = 'Jane';
 console.log(person.name);
@@ -632,6 +642,18 @@ console.log(person);
 // 添加属性
 person.hasChildren = true;
 console.log(person);
+
+const firstName = 'John';
+const lastName = 'Doe';
+const age = 30;
+
+// 创建对象时，变量名与对象的属性名相同，可以只传入变量而不写出属性名
+const customer = {
+    firstName,
+    lastName,
+    age,
+};
+console.log(customer.age);
 ```
 
 ##### 方法
