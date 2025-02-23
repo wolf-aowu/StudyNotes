@@ -609,6 +609,7 @@ console.log(person.address.state);
 console.log(person.hobbies[0]);
 console.log(person['first name']);  //Brad
 console.log(person.first name);  //会报错，missing ) after argument list
+
 // Destructuring 解构
 const { address: { street }, isAdmin } = person;
 console.log(street, isAdmin);  //123 Main st true
@@ -797,6 +798,41 @@ console.log(Boolean(0));  //false
 console.log(Boolean(undefined));  //false
 console.log(Boolean(''));  //false
 console.log(Boolean({}));  //true
+```
+
+### 对象 JSON 互相转换
+
+#### 对象转字符串类型的 JSON
+
+``` javascript
+const post = {
+    id: 1,
+    title: 'Post One',
+    body: 'This is the body',
+};
+
+const str = JSON.stringify(post);
+console.log(str);  //{"id":1,"title":"Post One","body":"This is the body"}
+console.log(typeof(str));  //string
+```
+
+#### 字符串类型的 JSON 转对象
+
+``` javascript
+const str = '{"id":1,"title":"Post One","body":"This is the body"}';
+const obj = JSON.parse(str);
+console.log(obj);  //{id: 1, title: 'Post One', body: 'This is the body'}
+console.log(typeof (obj));  //object
+```
+
+## 方法
+
+``` javascript
+function subtract(num1, num2) {
+    return num1 - num2;
+}
+const result = subtract(10, 2);
+console.log(result, subtract(20, 5));  //8 15
 ```
 
 ## 注释
