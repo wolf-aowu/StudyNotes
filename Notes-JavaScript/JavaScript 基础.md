@@ -825,14 +825,116 @@ console.log(obj);  //{id: 1, title: 'Post One', body: 'This is the body'}
 console.log(typeof (obj));  //object
 ```
 
-## 方法
+## 作用域
+
+作用域可分为：全局和块级（block）。在 `if`、`for`、`function` 中使用 `let`、`const` 创建的变量都是块级变量。在 `if`、`for` 中使用 `var` 创建的变量是全局变量，在 `function` 中使用 `var` 创建的变量是块级变量。
+
+在全局中使用 `var` 创建的变量，会作为 `Window` 对象的属性。
 
 ``` javascript
-function subtract(num1, num2) {
+if (true) {
+    const x = 100;
+    let y = 200;
+    var z = 300;
+}
+console.log(x);  //会报错，Uncaught ReferenceError: x is not defined
+console.log(y);  //会报错，Uncaught ReferenceError: y is not defined
+console.log(z);  //300
+
+for (let i = 0; i <= 3; i++) {
+    console.log(`i: ${i} in for`);
+}
+console.log(`i: ${i} out for`);  //会报错，Uncaught ReferenceError: i is not defined
+
+for (var j = 0; j <= 3; j++) {
+    console.log(`j: ${j} in for`)
+}
+console.log(`j: ${j} out for`);  //j: 4 out for
+
+const a = 1;
+let b = 2;
+var c = 3;
+console.log(window.a);  //undefined
+console.log(window.b);  //undefined
+console.log(window.c);  //3
+```
+
+嵌套：
+
+``` javascript
+function first() {
+    const x = 100;
+    function second() {
+        const y = 200;
+        console.log(x + y);  //300
+    }
+    second();
+    console.log(y);  //会报错，Uncaught ReferenceError: y is not defined
+}
+first();
+
+if(true) {
+    const x = 100;
+    if(x === 100) {
+        const y = 200;
+        cosole.log(x + y);  //300
+    }
+    console.log(y);  //会报错，Uncaught ReferenceError: y is not defined
+}
+```
+
+## 方法
+
+如果入参没有设置默认值，且调用方法时没有传入参数时参数会被赋值为 `undefined`。
+
+`...` 可以接收无数个入参，以数组形式传入。
+
+``` javascript
+// Function Declaration 方法声明
+function subtract(num1 = 2, num2 = 1) {  //设置了默认值
     return num1 - num2;
 }
 const result = subtract(10, 2);
 console.log(result, subtract(20, 5));  //8 15
+
+function printNum(num1) {
+    console.log(num1);
+}
+printNum();  //undefined
+
+// Rest Params 自动获取余下的参数，以数组形式传入
+function sum(...numbers) {
+    console.log(numbers, typeof numbers);  //[1, 2, 3, 4, 5] 'object'
+    let total = 0;
+    
+    for (const num of numbers) {
+        total += num;
+    }
+    
+    return total;
+}
+console.log(sum(1, 2, 3, 4, 5));  //15
+```
+
+#### 方法声明和方法表达式
+
+声明和调用方法有两种写法：方法声明和方法表达式。
+
+调用方法可以在方法声明之前，而调用不能在方法表达式之前。
+
+``` javascript
+// Function Declaration
+console.log(addDollarSign(100));  //$100
+function addDollarSign(value) {
+    return '$' + value;
+}
+
+// Function Expression
+console.log(addPlusSign(200));  //会报错，Uncaught ReferenceError: Cannot access 'addPlusSign' before initialization
+const addPlusSign = function (value) {
+    return '+' + value;
+}
+console.log(addPlusSign(200));  //+200
 ```
 
 ## 注释
