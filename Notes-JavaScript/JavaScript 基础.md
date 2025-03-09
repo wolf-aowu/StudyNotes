@@ -916,7 +916,7 @@ function sum(...numbers) {
 console.log(sum(1, 2, 3, 4, 5));  //15
 ```
 
-#### 方法声明和方法表达式
+### 方法声明和方法表达式
 
 声明和调用方法有两种写法：方法声明和方法表达式。
 
@@ -933,8 +933,47 @@ function addDollarSign(value) {
 console.log(addPlusSign(200));  //会报错，Uncaught ReferenceError: Cannot access 'addPlusSign' before initialization
 const addPlusSign = function (value) {
     return '+' + value;
-}
+};
 console.log(addPlusSign(200));  //+200
+```
+
+### 箭头方法（Arrow Function）
+
+``` javascript
+// function add(a, b) {
+//     return a + b;
+// }
+
+// Arrow function syntax
+// 可以把上面的方法写成
+const add = (a, b) => {
+    return a + b;
+};
+
+// Implicit Return
+// 当方法体只有一行时，可以写成
+const subtract = (a, b) => a - b;
+
+// 当只有一个入参时，可以写成
+const double = a => a * 2;
+
+// 当想要返回一个对象时，需要用 () 括起来
+const createObj = () => ({
+    name: 'Brad',
+});
+
+console.log(add(2, 3));
+console.log(subtract(10, 5));
+console.log(double(a));
+console.log(createObj());
+
+// Arrow function in a callback
+const numbers = [1, 2, 3]
+// numbers.forEach(function (n) {
+// 	console.log(n);
+// });
+// 可以写成
+numbers.forEach(n => console.log(n));
 ```
 
 ## 注释
