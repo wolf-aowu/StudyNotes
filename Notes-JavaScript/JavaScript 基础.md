@@ -957,7 +957,7 @@ const subtract = (a, b) => a - b;
 // 当只有一个入参时，可以写成
 const double = a => a * 2;
 
-// 当想要返回一个对象时，需要用 () 括起来
+// 当想要返回一个对象时，需要用 () 括起来（指 {name: 'Brad'} 的括号）
 const createObj = () => ({
     name: 'Brad',
 });
@@ -974,6 +974,55 @@ const numbers = [1, 2, 3]
 // });
 // 可以写成
 numbers.forEach(n => console.log(n));
+```
+
+### 立即调用方法表达式（Immediately Invoked Function Expression）
+
+Immediately Invoked Function Expression 的简称为 IIFE。<font color=skyblue>应该尽量避免这种写法，因为这种写法会污染全局变量。</font>这种写法在声明方法时，会立即调用该方法。
+
+假设有两个 javascript 脚本，文件名分别为 script.js 和 otherscript.js。
+
+先执行 script.js 后执行 otherscript.js
+
+script.js 内容：
+
+``` javascript
+const user = 'Brad';
+console.log(user);  //Brad
+```
+
+otherscript.js 内容：
+
+``` javascript
+const user = 'John';  //会报错，SyntaxError: Identifier 'user' has already been declared
+// 只是将 function 用 () 括起来了，结尾的括号表调用
+(function(){
+    const user = 'John';
+    console.log(user);  //John，这里 user 的作用域其实也只在当前的 IIFE 中
+    const hello = () => console.log('Hello from the IIFE');
+    hello();  //Hello from the IIFE
+})();
+
+hello();  //会报错，Uncaught ReferenceError: hello is not defined，因为作用域只在申明的 IIFE 中
+
+//有入参的方法
+(function (name) {
+    console.log('Hello ' + name);  //Hello Shawn
+})('Shawn');
+
+//也可以给方法取名，用于递归等
+(function hello(count) {
+    console.log('Hello ' + count);
+    if (count === 0) {
+        return
+    }
+    count -= 1;
+    hello(count);
+})(3);
+//Hello 3
+//Hello 2
+//Hello 1
+//Hello 0
 ```
 
 ## 注释
