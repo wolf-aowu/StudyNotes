@@ -174,7 +174,7 @@ console.log(typeof sayHello);  //function
 
 ### 数字
 
-虽然数字是原始类型，但 JavaScript 会为数字创建临时的包装器，所以数字会有属性和方法。可以通过 `new Number(5)` 将数字变成 object 类型。
+虽然数字是原始类型，但 JavaScript 会为数字创建临时的包装器，所以数字会有属性和函数。可以通过 `new Number(5)` 将数字变成 object 类型。
 
 #### 属性
 
@@ -190,7 +190,7 @@ console.log(Number.MAX_VALUE);  //1.7976931348623157e+308
 console.log(Number.MIN_VALUE);  //5e-324
 ```
 
-#### 方法
+#### 函数
 
 ##### 数字转换成字符串（num.toString）
 
@@ -260,7 +260,7 @@ const jhonSay = `I'm ${firstName}`
 
 #### 属性
 
-虽然字符串是原始类型，但 JavaScript 会为字符串创建临时的包装器，所以字符串会有属性和方法。当我们调用 `s.length` 时，JavaScript 会 `const s = new String('Hello World');`。此时类型会变成 object。
+虽然字符串是原始类型，但 JavaScript 会为字符串创建临时的包装器，所以字符串会有属性和函数。当我们调用 `s.length` 时，JavaScript 会 `const s = new String('Hello World');`。此时类型会变成 object。
 
 ##### 字符串长度（`s.length`）
 
@@ -278,7 +278,7 @@ const s = 'Hello World';
 console.log(s[0]);  //H
 ```
 
-##### 获取字符串内置属性和方法（s.proto）
+##### 获取字符串内置属性和函数（s.proto）
 
 与 `console.log(new String('Hello World'));` 中的 [[Prototype]] 是一样的。
 
@@ -287,7 +287,7 @@ const s = 'Hello World';
 console.log(s.__proto__);
 ```
 
-#### 方法
+#### 函数
 
 ##### 字符串全部大写（s.toUpperCase）
 
@@ -454,7 +454,7 @@ numbers.length = 2
 console.log(numbers);  //[12, 45]
 ```
 
-##### 方法
+##### 函数
 
 ###### 添加元素（索引 或 push 或 unshift）
 
@@ -657,7 +657,7 @@ const customer = {
 console.log(customer.age);
 ```
 
-##### 方法
+##### 函数
 
 ###### 对象连接（... 或 Object.assign）
 
@@ -883,14 +883,14 @@ if(true) {
 }
 ```
 
-## 方法
+## 函数
 
-如果入参没有设置默认值，且调用方法时没有传入参数时参数会被赋值为 `undefined`。
+如果入参没有设置默认值，且调用函数时没有传入参数时参数会被赋值为 `undefined`。
 
 `...` 可以接收无数个入参，以数组形式传入。
 
 ``` javascript
-// Function Declaration 方法声明
+// Function Declaration 函数声明
 function subtract(num1 = 2, num2 = 1) {  //设置了默认值
     return num1 - num2;
 }
@@ -916,11 +916,11 @@ function sum(...numbers) {
 console.log(sum(1, 2, 3, 4, 5));  //15
 ```
 
-### 方法声明和方法表达式
+### 函数声明和函数表达式
 
-声明和调用方法有两种写法：方法声明和方法表达式。
+声明和调用函数有两种写法：函数声明和函数表达式。
 
-调用方法可以在方法声明之前，而调用不能在方法表达式之前。
+调用函数可以在函数声明之前，而调用不能在函数表达式之前。
 
 ``` javascript
 // Function Declaration
@@ -937,7 +937,7 @@ const addPlusSign = function (value) {
 console.log(addPlusSign(200));  //+200
 ```
 
-### 箭头方法（Arrow Function）
+### 箭头函数（Arrow Function）
 
 ``` javascript
 // function add(a, b) {
@@ -945,13 +945,13 @@ console.log(addPlusSign(200));  //+200
 // }
 
 // Arrow function syntax
-// 可以把上面的方法写成
+// 可以把上面的函数写成
 const add = (a, b) => {
     return a + b;
 };
 
 // Implicit Return
-// 当方法体只有一行时，可以写成
+// 当函数体只有一行时，可以写成
 const subtract = (a, b) => a - b;
 
 // 当只有一个入参时，可以写成
@@ -976,9 +976,9 @@ const numbers = [1, 2, 3]
 numbers.forEach(n => console.log(n));
 ```
 
-### 立即调用方法表达式（Immediately Invoked Function Expression）
+### 立即调用函数表达式（Immediately Invoked Function Expression）
 
-Immediately Invoked Function Expression 的简称为 IIFE。<font color=skyblue>应该尽量避免这种写法，因为这种写法会污染全局变量。</font>这种写法在声明方法时，会立即调用该方法。
+Immediately Invoked Function Expression 的简称为 IIFE。<font color=skyblue>应该尽量避免这种写法，因为这种写法会污染全局变量。</font>这种写法在声明函数时，会立即调用该函数。
 
 假设有两个 javascript 脚本，文件名分别为 script.js 和 otherscript.js。
 
@@ -1005,12 +1005,12 @@ const user = 'John';  //会报错，SyntaxError: Identifier 'user' has already b
 
 hello();  //会报错，Uncaught ReferenceError: hello is not defined，因为作用域只在申明的 IIFE 中
 
-//有入参的方法
+//有入参的函数
 (function (name) {
     console.log('Hello ' + name);  //Hello Shawn
 })('Shawn');
 
-//也可以给方法取名，用于递归等
+//也可以给函数取名，用于递归等
 (function hello(count) {
     console.log('Hello ' + count);
     if (count === 0) {
@@ -1024,6 +1024,69 @@ hello();  //会报错，Uncaught ReferenceError: hello is not defined，因为�
 //Hello 1
 //Hello 0
 ```
+
+## 执行上下文（Execution Context）
+
+运行任何 JavaScript 代码时，都会创建一个特殊环境来处理代码的转换和执行，这就叫执行上下文（execution context）。该环境包含了当前正在执行的代码以及所有支持其运行的资源。加载 JavaScript 时创建的执行上下文是全局执行上下文。每个被调用的函数都会有一个自己的函数执行上下文。当函数完成时，自己的函数执行上下文也就完成了。<font color=skyblue>JavaScript 是同步的，一行接着一行执行的。</font>
+
+执行上下文分为两个阶段，内存创建阶段和执行阶段。
+
+内存创建阶段：
+
+1. 创建全局对象（浏览器：window，Node.js：global）。
+2. 创建 `this` 对象并将它与全局对象绑在一起。
+3. 设置用于存储变量和函数引用的内存堆。
+4. 在全局执行上下文中存储变量和函数，并将变量设置为 `undefined`，存储函数所有的代码。
+
+执行阶段：
+
+1. 一行一行执行代码。
+2. 每一个函数执行时，创建一个新的执行上下文。
+
+例如：
+
+``` javascript
+let x = 100
+let y = 50
+function getSum(n1, n2) {
+    let sum = n1 + n2
+    return sum
+}
+let sum1 = getSum(x, y)
+let sum2 = getSum(10, 5)
+```
+
+创建阶段：
+
+1. line1：为变量 `x` 分配（allocated）内存并将它存储为 `undefined`。
+2. line2：为变量 `y` 分配内存并将它存储为 `undefined`。
+3. line3：为 `getSum` 函数分配内存并存储它的所有代码。
+4. line7：为变量 `sum1` 分配内存并将它存储为 `undefined`。
+5. line8：为变量 `sum2` 分配内存并将它存储为 `undefined`。
+
+执行阶段：
+
+1. line1：将 100 放入变量 `x`。
+2. line2：将 50 放入变量 `y`。
+3. line3：跳过 `getSum` 函数，因为它没有执行。
+4. line7：调用 `getSum` 函数并创建一个新的函数执行上下文。
+
+函数执行上下文创建阶段：
+
+1. 为变量 `n1` 和 `n2` 分配内存并存储为 `undefined`。
+2. 为变量 `sum` 分配内存并存储为 `undefined`。
+
+函数执行上下文执行阶段：
+
+1. 变量 `n1` 和 `n2` 分别赋值（assigned）为 100 和 50。
+2. 计算得到 150 并将它放入变量 `sum` 中。
+3. `return` 告诉函数执行上下文将 `sum` 的值返回给全局执行上下文。
+4. 将返回的 `sum` 的值放入变量 `sum1` 中。
+5. 开启另一个函数执行上下文，并且使用不同的参数执行相同的操作。
+
+### 调用堆栈（Call Stack）
+
+执行上下文会被放入调用堆栈中进行管理。堆栈（stacks）具有后进先出的特点（LIFO，last in first out）。堆栈的底部是全局执行上下文。函数执行上下文会被压入堆栈中，执行完成后弹出。
 
 ## 注释
 
@@ -1099,7 +1162,7 @@ console.log(century)
 
 ### Math
 
-`console.log(Math);` 可以打印出 `Math` 对象，查看它的属性和方法。
+`console.log(Math);` 可以打印出 `Math` 对象，查看它的属性和函数。
 
 #### 平方根（sqrt）
 
