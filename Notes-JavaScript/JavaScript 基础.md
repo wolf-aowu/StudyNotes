@@ -1140,7 +1140,7 @@ if (birthYear <= 2000) {
 } else {
     let century = 21;
 }
-console.log(century)
+console.log(century);
 ```
 
 正确写法：
@@ -1155,7 +1155,19 @@ if (birthYear <= 2000) {
 } else {
     century = 21;
 }
-console.log(century)
+console.log(century);
+```
+
+代码块可以省略大括号，当有多条语句时使用逗号分割
+
+``` javascript
+let century;
+const birthYear = 1991;
+if (birthYear)
+    century = 20,
+        console.log(century);
+else century = 21;
+console.log(century);
 ```
 
 ## 内置对象
