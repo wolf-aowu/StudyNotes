@@ -172,6 +172,16 @@ function sayHello() {
 console.log(typeof sayHello);  //function
 ```
 
+### typeof
+
+用来查看值的类型。
+
+``` javascript
+console.log(typeof true);  //boolean
+console.log(typeof 23);  //number
+console.log(typeof 'Jonas')  //string
+```
+
 ### 数字
 
 虽然数字是原始类型，但 JavaScript 会为数字创建临时的包装器，所以数字会有属性和函数。可以通过 `new Number(5)` 将数字变成 object 类型。
@@ -403,7 +413,55 @@ lines`);
 
 只有 5 种值会被转换成 false，其他的值都会被转换成 true。这 5 种会被转换成 false 的值：
 
-`0`、`''`、`undefined`、`null`、`NaN`
+`0`、`''`、`undefined`、`null`、`NaN`。
+
+由于 0 会被判断为 false，所以当需要判断一个变量是否有值，可以通过下面两种方式判断：
+
+``` javascript
+const children = 3;
+
+// 方法一
+if (children !== undefined) {
+    console.log(`You have ${children} children`);
+} else {
+   console.log('Please enter number of children'); 
+}
+
+// 方法二
+if (children) {
+    console.log(`You have ${children} children`);
+} else {
+   console.log('Please enter number of children'); 
+}
+```
+
+由于空数组和空对象都被认为是 true，所以需要通过以下方法分别区分是否为空数组和对象。
+
+检查空数组：
+
+``` javascript
+const posts = ['Post One', 'Post Two'];
+
+if (posts.length > 0) {
+    consle.log('List Posts');
+} else {
+    console.log('No Posts To List');
+}
+```
+
+检查空对象：
+
+``` javascript
+const user = {
+    name: 'Brad'
+};
+
+if (Object.keys(user).length > 0) {
+    console.log('List User');
+} else {
+    console.log('No User');
+}
+```
 
 ### 引用类型
 
@@ -1094,17 +1152,7 @@ let sum2 = getSum(10, 5)
 
 ## 运算符
 
-支持的运算符：`+`、`-`、`*`、`/`、`%`、`++`、`--`、`**`（`2 ** 3`，2 的 3 次方）、`+=`、`-=`、`*=`、`/=`、`%=`、`%=`、`**=`、`==`（不会判断类型是否相等，只检查值）、`===`（类型和值都相等才为 true）、`!=`（不会判断类型是否相等，只检查值）、`!==`（类型和值都相等才为 false）、`>`、`<`、`>=`、`<=`
-
-### typeof
-
-用来查看值的类型。
-
-``` javascript
-console.log(typeof true);
-console.log(typeof 23);
-console.log(typeof 'Jonas')
-```
+支持的运算符：`+`、`-`、`*`、`/`、`%`、`++`、`--`、`**`（`2 ** 3`，2 的 3 次方）、`+=`、`-=`、`*=`、`/=`、`%=`、`%=`、`**=`、`==`（不会判断类型是否相等，只检查值）、`===`（类型和值都相等才为 true）、`!=`（不会判断类型是否相等，只检查值）、`!==`（类型和值都相等才为 false）、`>`、`<`、`>=`、`<=`。逻辑运算符：`&&`（与）、`||`（或）、`??`。
 
 ### 相等
 
@@ -1124,6 +1172,59 @@ console.log(favourite == '23');  // true
 let favourite = 23;
 console.log(favourite !== '23');  // true
 console.log(favourite != '23');  // false
+```
+
+### &&
+
+`&&` 会返回第一个为 false 的值或者最后一个为 true 的值。
+
+``` javascript
+let a;
+a = 10 && 20;
+console.log(a);  //20
+a = 10 && 20 && 30;
+console.log(a);  //30
+a = 10 && 0 && 30;
+console.log(a);  //0
+a = 10 && '' && 0 && 30;
+console.log(a);  //''
+// 一般用于不符合条件时不希望执行某些代码
+const posts = [];
+posts.length > 0 && console.log(posts[0]);  //不会有输出
+```
+
+### ||
+
+`||` 会返回第一个为 true 的值或者最后一个值
+
+``` javascript
+let b;
+b = 10 || 20;
+console.log(b);  //10
+b = 0 || 20;
+console.log(b);  //20
+b = 0 || null || '';
+console.log(b);  //''
+b = 0 || null || '' || undefined;
+console.log(b);  //undefined
+```
+
+### ??
+
+当左边是 `null` 或者 `undefined` 时，返回右边的操作数（operand）。
+
+``` javascript
+let c;
+c = 10 ?? 20;
+console.log(c);  //10
+c = null ?? 20;
+console.log(c);  //20
+c = undefined ?? 30;
+console.log(c);  //30
+c = 0 ?? 30;
+console.log(c);  //0
+c = '' ?? 30;
+console.log(c);  //''
 ```
 
 ## if
@@ -1168,6 +1269,66 @@ if (birthYear)
         console.log(century);
 else century = 21;
 console.log(century);
+```
+
+## switch
+
+``` javascript
+const d = new Date(2022, 1, 10, 19, 0, 0);
+const month = d.getMonth();
+const hour = d.getHours();
+
+switch (month) {
+    case 1:
+        console.log("It is January");  //输出
+        break;
+    case 2:
+        console.log("It is February");
+        break;
+    case 3:
+        console.log("Ite is March");
+        break;
+    default:
+        console.log("It is not Jan, Feb or March");
+}
+
+switch (true) {
+    case hour < 12:
+        console.log("Good Morning");
+        break;
+    case hour < 18:
+        console.log("Good Afternoon");
+        break;
+    default:
+        console.log("Good Night");  //输出
+}
+
+function calculator(num1, num2, operator) {
+    let result;
+
+    switch (operator) {
+        case "+":
+            result = num1 + num2;
+            break;
+        case "-":
+            result = num1 - num2;
+            break;
+        case "*":
+            result = num1 * num2;
+            break;
+        case "/":
+            result = num1 / num2;
+            break;
+        default:
+            result = "Invalid Operator";
+    }
+
+    console.log(result);
+    return result;
+}
+
+calculator(5, 2, "+");  //7
+calculator(5, 2, "&");  //Invalid Operator
 ```
 
 ## 内置对象
