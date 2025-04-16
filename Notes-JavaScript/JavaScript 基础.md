@@ -1152,7 +1152,7 @@ let sum2 = getSum(10, 5)
 
 ## 运算符
 
-支持的运算符：`+`、`-`、`*`、`/`、`%`、`++`、`--`、`**`（`2 ** 3`，2 的 3 次方）、`+=`、`-=`、`*=`、`/=`、`%=`、`%=`、`**=`、`==`（不会判断类型是否相等，只检查值）、`===`（类型和值都相等才为 true）、`!=`（不会判断类型是否相等，只检查值）、`!==`（类型和值都相等才为 false）、`>`、`<`、`>=`、`<=`。逻辑运算符：`&&`（与）、`||`（或）、`??`。赋值运算符：`&&=`、`||=`、`??=`，用法与 `+=` 同理。
+支持的运算符：`+`、`-`、`*`、`/`、`%`、`++`、`--`、`**`（`2 ** 3`，2 的 3 次方）、`+=`、`-=`、`*=`、`/=`、`%=`、`%=`、`**=`、`==`（不会判断类型是否相等，只检查值）、`===`（类型和值都相等才为 true）、`!=`（不会判断类型是否相等，只检查值）、`!==`（类型和值都相等才为 false）、`>`、`<`、`>=`、`<=`。逻辑运算符：`&&`（与）、`||`（或）、`??`。赋值运算符：`&&=`、`||=`、`??=`，用法与 `+=` 同理。三元运算符（ternary operator）：`判断条件?(语句,语句):(语句,语句)`。
 
 ### 相等
 
@@ -1225,6 +1225,28 @@ c = 0 ?? 30;
 console.log(c);  //0
 c = '' ?? 30;
 console.log(c);  //''
+```
+
+### 三元运算符
+
+可以理解为简写 `if-else`
+
+``` javascript
+let age = 14;
+age >= 18 ? console.log('You can vote!') : console.log('You can not vote');
+
+const auth = false;
+const redirect = auth ? (alert('Welcome to the dashboard'), '/dashboard') : (alert('Access Denied'), '/login');
+```
+
+当只有一个 `if` 没有 `else` 时，可以写成：
+
+```javascript
+// auth 为 true 时执行 console.log，为 false 时什么都不执行
+auth ? console.log('Welcome to the dashboard') : null;
+
+// 可以利用 && 两者都为 true 就返回最后一个的值的原理，简写成
+auth && console.log('Welcome to the dashboard');
 ```
 
 ## if
