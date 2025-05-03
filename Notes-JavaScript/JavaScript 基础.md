@@ -1353,6 +1353,208 @@ calculator(5, 2, "+");  //7
 calculator(5, 2, "&");  //Invalid Operator
 ```
 
+## 循环
+
+### for
+
+与 C 语言相似。
+
+公式：
+
+``` javascript
+for ([initialExpression]; [conditionExpression]; [incrementExpression])
+    statement;
+```
+
+initial expression：初始化一个变量或计数器
+
+condition expression：循环条件只要遇到或直到 false 结束循环
+
+increment expression：循环的每个迭代之后执行，通常用于对变量增量
+
+statement：循环的每轮都会执行，使用 `{}`，最好使用块级作用域的代码
+
+也支持 `break;` 和 `continume;`
+
+``` javascript
+for (let i = 5; i <= 11; i++) {
+    console.log('Number' + i);
+}
+
+// 无限循环，一个都打印不出来，直接给浏览器干崩溃了
+for (let i = 0; i < Infinity; i++) {
+    console.log('Number' + i)
+}
+```
+
+### while
+
+``` javascript
+while (conditionExpression) {
+    statement;
+}
+```
+
+### do ... while
+
+先执行 do 再执行判断条件
+
+``` javascript
+do {
+    statement;
+} while (conditionExpression)
+```
+
+### for ... of
+
+遍历值
+
+``` javascript
+const colors = ['red', 'blue', 'orange', 'green'];
+for (const color of colors) {
+    console.log(color);  //red, blue, orange, green
+}
+
+const users = [{ name: 'Brad'}, { name: 'Kate'}, { name: 'Steve'}];
+for (const user of users) {
+    console.log(user.name);
+}
+
+// Loop over Maps
+const map = new Map();
+map.set('name', 'John');
+map.set('age', 30);
+
+for (const [key, value] of map) {
+    console.log(key, value);
+}
+```
+
+### for ... in
+
+遍历索引或键
+
+``` javascript
+const colorObj = {
+    color1: 'red',
+    color2: 'blue',
+    color3: 'orange',
+    color4: 'green',
+};
+
+for (const key in colorObj) {
+    console.log(key, colorObj[key]);
+}
+
+// array 时
+const colorArr = ['red', 'green', 'blue', 'yellow'];
+
+for (const key in colorArr) {
+    console.log(key, colorArr[key]);  //0 red, 1 green, 2 blue, 3 yellow
+}
+```
+
+### Array.forEach
+
+``` javascript
+const socials = ['Twitter', 'LinkedIn', 'Facebook', 'Instagram'];
+
+// 查看数组的属性和函数
+console.log(socials.__proto__);
+
+socials.forEach(function(item) {
+    console.log(item);  //Twitter, LinkedIn, Facebook, Instagram
+});
+
+// 等价
+socials.forEach((item) => console.log(item));
+
+// 等价
+function logSocials(social) {
+    console.log(social);
+}
+socials.forEach(logSocials);
+
+// 元素，当前元素的索引，完整的数组
+socials.forEach((item, index, arr) => console.log(`${index} - ${item}`, arr));
+
+const socialObjs = [
+    { name: 'Twitter', url: 'https://twitter.com' },
+    { name: 'Facebook', url: 'https://facebook.com' },
+    { name: 'LinkedIn', url: 'https://linkedin.com'},
+    { name: 'Instagram', url: 'https://instagram.com'},
+];
+socialObjs.forEach((item) => console.log(item));  //{ name: 'Twitter', url: 'https://twitter.com' }, { name: 'Facebook', url: 'https://facebook.com' }, { name: 'LinkedIn', url: 'https://linkedin.com'}, { name: 'Instagram', url: 'https://instagram.com'}
+```
+
+### Array.filter
+
+筛选数组用
+
+``` javascript
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// 得到能被 2 整除的数组
+const evenNumbers = numbers.filter(function (number) {
+    return number % 2 === 0;
+});
+console.log(evenNumbers);  //2, 4, 6, 8, 10
+
+// Short version
+const evenNumbers = numbers.filter((number) => number % 2 === 0);
+
+// Same with forEach
+let evenNumbers = [];
+numbers.forEach(number => {
+    if (number % 2 === 0) {
+        evenNumbers.push(number);
+    }
+});
+console.log(evenNumbers);
+```
+
+### Array.map
+
+``` javascript
+const numbers = [1, 2, 3, 4, 5];
+
+const doubledNumbers = numbers.map((number) => number * 2);
+
+console.log(doubledNumbers);  //[2, 4, 6, 8, 10]
+
+// Same with forEach
+const doubledNumbers2 = [];
+
+numbers.forEach((number) => {
+    doubledNumbers2.push(number * 2)
+});
+
+console.log(doubledNumbers2);
+
+// 可以两个 map 连在一起使用
+const squareAndDouble = numbers
+	.map((number) => Math.sqrt(number))
+	.map((sqrt) => sqrt * 2);
+console.log(squareAndDouble);  //2, 2.8284271247461903, 3.4641016151377544, 4, 4.47213595499958
+```
+
+### Array.reduce
+
+reduce 的含义：将数组减少为 1 个值。
+
+reduce 有两个入参。第一个入参是函数，函数有两个入参，第一个入参是上一个迭代返回的值，第二个参数是当前遍历到的元素。reduce 的第二个入参是起始值，例如下面这个例子在遍历第一个元素时，起始值 0 会作为第一个参数传入函数，即 accumulator = 0。
+
+``` javascript
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const sum = numbers.reduce(function(accumulator, currentValue) {
+    return accumulator + currentValue;
+}, 0);
+console.log(sum);  //45
+
+// 简写版
+const sum2 = numbers.reduce((acc, cur) => acc + cur, 0);
+```
+
 ## 内置对象
 
 ### Math
