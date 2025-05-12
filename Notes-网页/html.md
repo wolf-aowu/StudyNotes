@@ -59,6 +59,10 @@ HTML 有两种重要的元素类别：块级元素和内联元素。
 
 内联元素：内联元素通常出现在块级元素中并环绕文档内容的一小部分，而不是一整个段落或者一组内容。内联元素不会导致文本换行。它通常与文本一起使用，例如，`<a>` 元素创建一个超链接，`<em>` 和 `<strong>` 等元素创建强调。
 
+<font color=skyblue>注意</font>：HTML5 重新定义了元素的类别：https://html.spec.whatwg.org/multipage/indices.html#element-content-categorie。这些新的定义更精确。
+
+<font color=skyblue>注意</font>：这里的 “块” 和 “内联” 不应该与 CSS 盒子的类型块级盒子（block_box）和内联盒子（inline_box）中的同名术语相混淆。尽管它们默认是相关的，但改变 CSS 显示类型并不会改变元素的分类，也不会影响它可以包含和被包含于哪些元素。防止这种混淆也是 HTML5 摒弃这些术语的原因之一。
+
 ### HTML 结构
 
 ``` html
@@ -88,7 +92,7 @@ HTML 有两种重要的元素类别：块级元素和内联元素。
 
 ### HTML 中的空白
 
-下面两个代码片段时等价的：
+下面两个代码片段是等价的：
 
 ```html
 <p>狗 狗 很 呆 萌。</p>
@@ -415,6 +419,46 @@ SEO 方法分为三大类：
 </p>
 ```
 
+#### 结构划分
+
+在 HTML 中，可以通过 `div` 划分结构，但 `div` 不表示任何含义的结构划分。所以 HTML5 提供了一些具有特殊含义的结构划分元素，它们在页面上展现的样式与 `div` 一致。
+
+参考网址：https://html.spec.whatwg.org/multipage/sections.html#the-article-element
+
+##### nav
+
+nav 元素表示页面的一部分，其目的是在当前文档或其他文档中提供导航链接。导航部分的常见示例是菜单，目录和索引。
+
+并不是所有的链接都必须使用 nav 元素。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/nav
+
+##### header
+
+header 元素表示介绍性内容，通常是一组介绍性或导航性辅助内容。它可能包含一些标题元素，也可能包含徽标、搜索表单、作者姓名和其他元素。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/header
+
+##### article
+
+article 元素表示文档、页面、应用或网站中的独立结构，其意在成为可独立分配的或可复用的结构，如在发布中，它可能是论坛帖子、杂志或新闻文章、博客、用户提交的评论、交互式组件，或者其他独立的内容项目。
+
+通常每个 article 包含至少 1 个标题（h1 ~ h6）。article 中内容应该是独立的，可独立传播的。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/article
+
+##### aside
+
+aside 元素表示一个和其余页面内容几乎无关的部分，被认为是独立于该内容的一部分并且可以被单独的拆分出来而不会使整体受影响。其通常表现为侧边栏或者标注框（call-out boxes）。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/aside
+
+##### footer
+
+footer 元素素表示其最近的祖先[分段内容](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Guides/Content_categories#分段内容)的页脚或[分段根](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/Heading_Elements#标注章节内容)元素。footer 通常包含有关该部分作者、版权数据或相关文档链接的信息。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/footer
+
 #### 斜体字、粗体字、下划线
 
 `<b>`、`<i>`、`<u>` 出现于人们要在文本中使用粗体、斜体、下划线但 CSS 仍然不被完全支持的时期。像这样仅仅影响表象而且没有语义的元素，被称为表象元素（presentational elements）并且不应该再被使用。
@@ -512,7 +556,7 @@ URL 使用路径查找文件。
 
 ##### 链接到文档片段
 
-超链接除了可以链接到文档外，也可以链接到 HTML 文档的特定部分（被称为文档片段）。要做到这一点，必须首先给药链接到的元素分配一个 id 属性。通常情况下，链接到一个特定的标题是有意义的。为了链接到那个特定的 id，要将它放在 URL 的末尾，并在前面包含井号（`#`）。
+超链接除了可以链接到文档外，也可以链接到 HTML 文档的特定部分（被称为文档片段）。要做到这一点，必须首先给要链接到的元素分配一个 id 属性。通常情况下，链接到一个特定的标题是有意义的。为了链接到那个特定的 id，要将它放在 URL 的末尾，并在前面包含井号（`#`）。
 
 ``` html
 <h2 id="Mailing_address">邮寄地址</h2>
@@ -530,6 +574,290 @@ URL 使用路径查找文件。
 <p>本页面底部可以找到<a href="#Mailing_address">公司邮寄地址</a>。</p>
 ```
 
+只有一个 "#" 时，会回到当前文档顶部
+
+``` html
+<a href="#">回到顶部</a>
+```
+
+##### 电子邮件链接
+
+当点击一个链接或按钮时，可能会开启新的邮件的发送而不是连接到一个资源或页面。这种场景可以使用 `<a>` 元素和 `mailto:` URL 协议实现。
+
+``` html
+<a href="mailto:nowhere@mozilla.org">向 nowhere 发邮件</a>
+```
+
+**实现效果：**
+
+<a href="mailto:nowhere@mozilla.org">向 nowhere 发邮件</a>
+
+实际上，电子邮件地址是可选的。如果 `href` 属性仅仅只是简单的 `mailto:` 发送新的电子邮件的窗口也会被用户的邮件客户端打开，只是没有收件人的地址信息，这通常在分享链接是很有用的，用户可以给他们选择的地址发送邮件。
+
+除了电子邮件地址，还可以提供其他信息。任何标准的邮件头字段可以被添加到提供的 `mailto` URL 中。其中最常用的是主题（subject）、抄送（cc）和主体（body）（这不是一个真正的标头字段，但允许为新邮件指定一个简短的内容消息）。每个字段及其值被指定为查询项。
+
+``` html
+<a
+  href="mailto:nowhere@mozilla.org?cc=name2@rapidtables.com&bcc=name3@rapidtables.com&subject=The%20subject%20of%20the%20email&body=The%20body%20of%20the%20email">
+  发送含有 cc、bcc、主题和主体的邮件
+</a>
+```
+
+<a
+  href="mailto:nowhere@mozilla.org?cc=name2@rapidtables.com&bcc=name3@rapidtables.com&subject=The%20subject%20of%20the%20email&body=The%20body%20of%20the%20email">发送含有 cc、bcc、主题和主体的邮件</a>
+
+<font color=skyblue>每个字段的值必须使用 URL 编码，即使用百分号转义的非打印字符（不可见字符如制表符、换行符、分页符）和空格。同时注意使用问号（?）来分隔主 URL 与参数值，以及使用 & 符来分隔 mailto: URL 中的各个参数。这是标准的 URL 查询标记方法。阅读 GET 方法以了解哪种 URL 查询标记方法是更常用的。</font>
+
 ##### title 属性
 
 title 属性为链接补充信息，如页面包含什么样的信息或需要注意的事情。当鼠标指针悬停在链接上时，标题将作为提示信息出现。链接的标题仅当鼠标悬停在其上时才会显示，这意味着使用键盘来导航网页的人很难获取到标题信息。如果标题信息对于页面非常重要，应该使用所有用户能都方便获取的方式来呈现，例如放在常规文本中。
+
+``` html
+<p>
+  我创建了一个指向<a
+    href="https://www.mozilla.org/zh-CN/"
+    title="了解 Mozilla 使命以及如何参与贡献的最佳站点。"
+    >Mozilla 主页</a
+  >的超链接。
+</p>
+```
+
+##### download 属性
+
+当要下载的资源而不是浏览器中打开时，为要下载的文件提供一个默认的保存文件名。
+
+``` html
+<a href="https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=zh-CN"
+  download="firefox-latest-64bit-installer.exe">
+  下载最新的 Firefox 中文版 - Windows（64 位）
+</a>
+```
+
+##### 最佳链接
+
+- 使用清晰的链接措辞。
+- 链接文本中包含关键词。
+- 不要在链接文本中说到“链接”或“链接到”。因为链接通常是用不同的颜色设计，并且存在下划线，很容易识别。
+- 链接标签尽可能短。
+- 减少相同文本地多个副本链接到不同地方。避免“单击此处”、“单击此处”、“单击此处”这样脱离上下文的链接文本。
+- 当链接需要下载资源或流媒体或打开一个弹出窗口时应该添加明确的措辞。例如下载资源时链接文本提示文件大小，观看视频时提示将在新标签页播放。
+
+例如：
+
+``` html
+<!-- 好的链接文本 -->
+<p>
+    <a href="https://www.mozilla.org/zh-CN/firefox/">下载 Firefox </a>
+</p>
+
+<!-- 不好的链接文本 -->
+<p>
+    <a href="https://www.mozilla.org/zh-CN/firefox/">点击这里</a>下载
+</p>
+```
+
+#### 图片
+
+使用 `img` 元素。这个元素是空元素（无法包含任何子内容和结束标签）。它需要两个属性才能起作用：`src` 和 `alt`。
+
+##### src 属性
+
+`src` 属性包含一个 URL，该 URL 指向要嵌入页面的图像。`src` 属性可以是相对 URL 或绝对 URL，这与 `href` 属性类似。如果没有 `src` 属性，`img` 元素就没有图像可加载。搜索引擎会读取图像文件名并将其计入 SEO，所以应该为图像起一个描述性的文件名。不建议使用绝对 URL，因为当网站迁移到不同域名时需要更新所有绝对 URL。未经许可绝不要将 `src` 属性指向其他网站上的图像，这被称为“热链接（hotlinking）”。大多数人认为这是不道德的，因为这会导致每当有人访问你的页面，都会有另一些不知情的人为图像交付带宽费用。这也导致你无法掌控图像，图像有可能在你不知情的情况下，被删除或替换为尴尬的内容。
+
+##### alt 属性
+
+`alt` 属性的值是图片的文本描述，用于在图片无法显示或者因为网速慢而加载缓慢的情况下使用。这些文字描述可以提供给搜索引擎使用，例如搜索引擎可能会将图片的文字描述和查询条件进行匹配。如果图片仅用于装饰，请添加空的 `alt=""`。如果你把图片嵌套在 `<a>` 标签里，来把图片变成链接，那你还必须提供无障碍的链接文本。在这种情况下，你可以写在同一个 `<a>` 元素里，或者写在图片的 `alt` 属性里，随你喜欢。你不应该将文本放到图像里。例如，如果你的主标题需要有阴影，你可以用 CSS 来达到这个目的，而不是把文本放到图片里。如果真的必须这么做，那就把文本也放到 `alt` 里。
+
+##### 宽度和高度
+
+可以使用 `width` 和 `height` 来指定图片的宽度和高度。它们的值是不带单位的整数，以像素为单位表示图像的宽度和高度。
+
+这样做有一个好处。页面的 HTML 和图片是分开的资源，由浏览器用相互独立的 HTTP(S) 请求来获取。一旦浏览器接收到 HTML，它就会开始将其显示给用户。如果图片尚未接收到（通常会是这种情况，因为图片文件的大小通常比 HTML 文件大得多），那么浏览器将只渲染 HTML，并在图片接收到后立即更新页面。当图片加载完成时，浏览器会将图片添加到页面中。由于图片占据空间，浏览器必须将文本向下移动，以适应图片的位置，这样移动文本对用户来说非常分散注意力，尤其是如果他们已经开始阅读文本的情况下。如果在 HTML 中使用 `width` 和 `height` 属性来指定图片的实际大小，那么在下载图片之前，浏览器就知道需要为其留出多少空间。这样的话，当图片下载完成时，浏览器不需要移动周围的内容。
+
+没有设置 `width` 和 `height` 属性：
+
+![](图片\img 元素没有 width 和 height.png)
+
+设置了 `width` 和 `height` 属性：
+
+![](图片\img 元素有 width 和 height.png)
+
+参考网址：[设置图像的高度和宽度再次变得重要](https://www.smashingmagazine.com/2020/03/setting-height-width-images-important-again/)
+
+使用 HTML 属性来指定图片的实际大小是一个好的实践，但不应该使用它们来调整图片的大小。如果设置的图片大小过大，图片将看起来粗糙、模糊或太小，不仅浪费带宽而且图片还不符合用户需求。如果长宽比不正确，图片也可能会变形。在将图片放到网页上之前，你应使用图像编辑器将其设置为正确的大小。如果确实需要更改图片的大小，应该使用 CSS 来实现。
+
+##### title 属性
+
+以通过给图片增加 `title` 属性来提供鼠标悬停提示。<font color=skyblue>不推荐使用。</font>
+
+参考网址：[title 属性的考验与磨难](https://www.24a11y.com/2017/the-trials-and-tribulations-of-the-title-attribute/)
+
+##### 为图片搭配说明文字
+
+使用 `figure` 和 `figcaption` 元素，为图片提供一个语义容器，在说明文字和图片之间建立清晰的关联。`figcaption` 元素告诉浏览器和辅助技术工具，这段说明文字描述了 `figure` 元素的内容。
+
+``` html
+<figure>
+  <img
+    src="images/dinosaur.jpg"
+    alt="The head and torso of a dinosaur skeleton;
+            it has a large head with long sharp teeth"
+    width="400"
+    height="341" />
+
+  <figcaption>
+    A T-Rex on display in the Manchester University Museum.
+  </figcaption>
+</figure>
+```
+
+从无障碍的角度来说，说明文字和 `alt` 文本扮演着不同的角色。看得见图片的人们同样可以受益于说明文字，而 `alt` 文字只有在图片无法显示时才会发挥作用。所以，说明文字和 `alt` 的内容不应该一样，因为当图片无法显示时，它们会同时出现。
+
+`figure` 里不一定要是图片，只要是这样的独立内容单元即可：
+
+- 用简洁、易懂的方式表达意图。
+- 可以置于页面线性流的某处。
+- 为主要内容提供重要的补充说明。
+
+`figure` 可以是几张图片、一段代码、音视频、方程、表格或类似的东西。
+
+##### css 背景图片
+
+<font color=skyblue>如果想为某段文字插入背景图片，而图片在语义上没有任何意义，那么使用 CSS 属性 `background-image` 和其他 `background-*` 属性实现更合理。</font>
+
+``` css
+p {
+  background-image: url("images/dinosaur.jpg");
+}
+```
+
+##### 其他生成图片的方法
+
+###### Canvas
+
+`canvas` 元素提供了使用 JavaScript 绘制 2D 图形的 API。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API
+
+###### SVG
+
+可以借助可缩放矢量图形（SVG）来使用线条、曲线和其他几何形状来渲染 2D 图形。借助矢量图形，你可以创建能够以任意尺寸清晰缩放的图像。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Web/SVG
+
+###### WebGL
+
+WebGL API 指南将帮助入门 WebGL，这是用于 Web 的 3D 图形 API，可让 Web 内容中使用标准的 OpenGL ES。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Web/API/WebGL_API
+
+###### 使用 HTML 音频和视频
+
+与 `<img>` 类似，可以使用 HTML 将 `video` 和 `audio` 嵌入到网页中，并控制其播放。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Structuring_content/HTML_video_and_audio
+
+###### WebRTC
+
+WebRTC 中的 RTC 代表实时通信（Real-Time Communications），这是一种可以在浏览器客户端（对等方）之间进行音频/视频流和数据共享的技术。
+
+参考网址：https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API
+
+### 媒体资源和许可
+
+#### 许可类型
+
+##### 版权所有
+
+原创作品（例如歌曲、书籍或软件），其所有者通常以封闭的版权保护方式发布他们的作品。默认情况下，他们（或他们的出版商）拥有独家使用（例如展示或分发）其作品的权利。如果想使用带有版权所有许可的受版权保护的图像，需要执行以下操作之一：
+
+- 从版权持有人获得明确的书面许可。
+- 支付许可费用以使用它们。这可以是一次性费用，用于无限制使用（“免版税”），或者可能是“按照时间段、地理区域、行业或媒体类型等特定费用”的“权利管理”方式。
+- 仅将使用限制在你所在司法辖区中被视为合理使用或合理交易的用途。
+
+作者不必在其作品中包含版权声明或许可条款。一旦原创作品在有形媒介上创建出来，版权就会自动存在。因此，如果在网上找到一张图像，没有版权声明或许可条款，最安全的做法是假定它受到版权保护，所有权保留。
+
+##### 自由许可
+
+如果图像是根据自由许可发布的，例如 [MIT](https://mit-license.org/)、[BSD](https://opensource.org/license/BSD-3-clause) 或适当的[知识共享（CC）许可](https://chooser-beta.creativecommons.org/)，无需支付许可费用或寻求许可即可使用它。但是，仍需履行各种许可条件，这些条件因许可而异。
+
+例如，可能需要：
+
+- 提供指向图像原始来源的链接，并标明创作者。
+- 指示是否对其进行了任何更改。
+- 使用相同许可证分享使用该图像创建的任何派生作品。
+- 不分享任何派生作品。
+- 不将该图像用于任何商业作品。
+- 在使用该图像的任何发布中包含许可证的副本。
+
+应该查阅适用的许可证以了解需要遵循的具体条款。
+
+Copyleft 许可（例如 [GNU 通用公共许可证（GPL）](https://www.gnu.org/licenses/gpl-3.0.en.html) 或“相同方式共享”创作共用许可证）规定派生作品需要按照原始许可证发布。Copyleft 许可在软件界中很常见。其基本思想是使用 copyleft 许可的代码构建的新项目（这被称为原始软件的“分支”）也需要根据相同的 copyleft 许可进行许可。这确保新项目的源代码也可供他人学习和修改。请注意，一般来说，为软件起草的许可证（例如 GPL）并不适合非软件作品，因为它们并不考虑非软件作品。
+
+###### MIT
+
+**原文：**
+
+Copyright © 2025 <copyright holders>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+**翻译：**
+
+版权所有 © 2025 <版权所有者>
+
+特此授予获得此软件和相关文档文件（“软件”）副本的任何人免费许可，以无限制方式处理软件，包括但不限于使用、复制、修改、合并、发布、分发、再授权和/或销售软件副本的权利，并允许向其提供软件的人员这样做，但须遵守以下条件：
+
+上述版权声明和本许可声明均应包含在软件的所有副本或实质性部分中。
+
+本软件按“原样”提供，不附带任何形式的明示或暗示保证，包括但不限于适销性、适用于特定用途和非侵权性的保证。在任何情况下，作者或版权所有者均不对因本软件或使用或以其他方式处理本软件而引起的或与之相关的任何索赔、损害或其他责任承担责任，无论是合同、侵权或其他诉讼。
+
+###### BSD
+
+**原文：**
+
+Note: This license has also been called the “New BSD License” or “Modified BSD License”. See also the [2-clause BSD License](https://opensource.org/license/bsd-2-clause/).
+
+Copyright <YEAR> <COPYRIGHT HOLDER>
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+**翻译：**
+
+注意：此许可证也称为“新 BSD 许可证”或“修改版 BSD 许可证”。另请参阅[2 条款 BSD 许可证](https://opensource.org/license/bsd-2-clause/)。
+
+版权所有 <年份> <版权所有者>
+
+只要满足以下条件，就可以以源代码和二进制形式重新分发和使用（无论是否经过修改）：
+
+1. 源代码的重新分发必须保留上述版权声明、本条件列表和以下免责声明。
+
+2. 以二进制形式重新分发时，必须在分发时提供的文档和/或其他材料中复制上述版权声明、本条件列表和以下免责声明。
+
+3. 未经事先书面许可，不得使用版权持有人的名称或其贡献者的名称来认可或推广源自该软件的产品。
+
+本软件由版权所有者和贡献者“按原样”提供，不提供任何明示或暗示的保证，包括但不限于适销性和针对特定用途的适用性的暗示保证。在任何情况下，版权所有者或贡献者均不对任何直接、间接、偶然、特殊、惩戒性或后果性损害（包括但不限于采购替代货物或服务；使用、数据或利润损失；或业务中断）负责，无论该损害是如何造成的，也不论是基于何种责任理论，无论是合同、严格责任还是侵权（包括疏忽或其他），即使已被告知有此类损害的可能性，该损害也是因使用本软件而引起的。
+
+###### 知识共享（CC）
+
+参考网址：https://chooser-beta.creativecommons.org/
+
+##### 公共领域/CC0
+
+进入公共领域的作品有时被称为“无版权保留”——它们不受版权保护，可以在未经许可且无需履行任何许可条件的情况下使用。作品可以因为版权到期或特定放弃权利等方式进入公共领域。
+
+将作品置于公共领域的最有效方法之一是将其许可为 [CC0](https://creativecommons.org/public-domain/cc0/)，这是一种特定的创作共用许可，为此目的提供了清晰明确的法律工具。
+
+在使用公共领域图像时，请获取证明该图像属于公共领域的证据，并将该证据保存记录。例如，使用截图记录原始来源（该来源需要清晰显示许可状态），并考虑在你的网站上添加一个页面，列出所获得的图像及其许可要求。
