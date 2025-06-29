@@ -15,6 +15,12 @@ h1 {
 /* 这一整块被称为 Declaration block */
 ```
 
+## 基础知识
+
+### User agent stylesheet
+
+用户代理样式表，默认样式，例如：`h1` 元素就有默认样式。
+
 ## Html 中添加 CSS
 
 有 3 种方式在 Html 种使用 CSS。
@@ -177,6 +183,8 @@ css：
 
 当由多个单词组成一个 class 名时，通常使用 `-` 分割单词。
 
+可以同时应用多个类选择器，以空格分割，例如： `<p class="say hello">hello world!</p>`。
+
 <font color=skyblue>通常使用 类选择器 而不是 ID选择器。</font>
 
 例如，有 html：
@@ -254,6 +262,84 @@ header p:first-child {
   </article>
 </header>
 ```
+
+### 通配选择器（universal selector）
+
+在 CSS 中，一个星号 (`*`) 就是一个通配选择器。它可以匹配任意类型的 HTML 元素。在配合其他简单选择器的时候，省略掉通配选择器会有同样的效果。比如，`*.warning` 和`.warning` 的效果完全相同。
+
+在 CSS3 中，星号 (`*`) 可以和命名空间组合使用：
+
+- `ns|*` - 会匹配`ns`命名空间下的所有元素
+- `*|*` - 会匹配所有命名空间下的所有元素
+- `|*` - 会匹配所有没有命名空间的元素
+
+``` css
+* {
+    margin: 0;
+    padding: 0;
+}
+```
+
+### !important
+
+当在一个样式声明中使用一个 `!important` 规则时，此声明将覆盖任何其他声明。虽然，从技术上讲，`!important` 与优先级无关，但它与最终的结果直接相关。使用 `!important` 是一个**坏习惯**，应该尽量避免，因为这破坏了样式表中的固有的级联规则 使得调试找 bug 变得更加困难了。当两条相互冲突的带有 `!important` 规则的声明被应用到相同的元素上时，拥有更大优先级的声明将会被采用。
+
+**一些经验法则：**
+
+- **一定**要优先考虑使用样式规则的优先级来解决问题而不是 `!important`
+- **不要**使用 `!important` 来覆盖外部 `CSS`，而是将第三方脚本直接导入到[级联层（cascade layers）](https://developer.mozilla.org/en-US/docs/Web/CSS/@layer)中。
+- **永远不要**在你的插件中使用 `!important`
+- **永远不要**在全站范围的 CSS 代码中使用 `!important`
+
+如果必须使用 `!important` 请为其添加上注释！
+
+``` css
+footer p{
+    color: green !important;
+}
+```
+
+#### 避免使用 !important 的方法
+
+1. 更好地利用 CSS 级联属性
+2. 使用更具体的规则。在你选择的元素之前，增加一个或多个其他元素，使选择器变得更加具体，并获得更高的优先级。
+
+#### 什么时候使用 !important
+
+存在很差的内联样式又需要将其覆盖时，可以使用 `!important` 覆盖。
+
+### 选择器优先级
+
+从高到低的优先级，当同时存在多个同类的选择器且属性存在冲突时，会生效最后一个：
+
+- 被 `!important` 标记的选择器
+- 内联样式（在 HTML 中 的样式）
+- ID 选择器
+- 类选择器和伪类选择器
+- 元素选择器
+- 通用选择器（Universal selector *）
+
+选择器优先级参考图
+
+![](图片\选择器优先级.jpg)
+
+## 继承（inheritance 或 inherity）
+
+当元素的一个继承属性（inherited property）没有被指定时，会自动继承它的父元素的同属性样式。一般都是文本属性能够被继承。
+
+常见具有继承属性的属性：
+
+`font-family`、`font-size`、`font-weight`、`font-style`、`color`、`line-height`、`letter-spacing`、`text-align`、`text-transform`、`text-shadow`、`list-style` 等。
+
+``` css
+body {
+    color: red;
+    font-size: 16px;
+    font-family: sans-serif;
+}
+```
+
+
 
 ## 属性
 
