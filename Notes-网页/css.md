@@ -339,8 +339,6 @@ body {
 }
 ```
 
-
-
 ## 属性
 
 ### 文本属性
@@ -365,7 +363,7 @@ p {
 
 ``` css
 ul {
-    list-style: none;  /* 列表左侧点状样式 */
+    list-style: none;  /* 列表左侧点状样式，square 方块 */
 }
 ```
 
@@ -412,6 +410,19 @@ a:link {
     	text-decoration: underline solid orangered;
         wavy 波浪线
     */
+}
+```
+
+### 按钮属性
+
+``` css
+button {
+    background-color: black;  /* 背景色 */
+    border: none;  /* 边框 */
+    color: #fff;  /* 按钮内容颜色 */
+    font-size: 20px;  /* 按钮内容字体大小 */
+    text-transform: uppercase;  /* 按钮内容文本转换 */
+    cursor: pointer;  /* 悬停时鼠标指针样式，pointer 一般会变成手指样式 */
 }
 ```
 
@@ -473,6 +484,17 @@ a:hover {
 a:active {
     background-color: black;
     font-style: italic;
+}
+```
+
+### button 标签
+
+`:hover`
+
+``` css
+button:hover {
+    color: #000;
+    background-color: #fff;
 }
 ```
 
