@@ -426,6 +426,56 @@ button {
 }
 ```
 
+### box 属性
+
+![](图片\css box 模型介绍.png)
+
+final element width = left border + left padding + width + right padding + right border
+
+final element height = top border + top padding + height + bottom padding + bottom border
+
+综上所述，margin 不是元素内的空间，padding 是元素内的空间。
+
+在 Google 浏览器的检查面板中（默认），当鼠标悬浮在某行元素上时，`padding` 是绿色的，`margin` 是橙色。
+
+``` css
+.main-header {
+    padding: 20px;  /* 将四边的 padding 都设置为 20px */
+    padding: 20px 30px; /* 20px 代表 top 和 bottom，30px 代表 left 和 right */
+    /* 单边 */
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+```
+
+`margin` 通常被用来调整元素之间的间距。`margin` 写法与 `padding` 相同。`margin` 不是与文本相关的属性，所以它不可以被继承。尽量不要 `margin-top` 和 `margin-bottom` 混合使用，而是选择任意一个一直使用。
+
+``` css
+li {
+    margin-bottom: 10px;
+}
+
+/* 去除最后一个 li 的下 margin，通常 0 不带单位 */
+li:last-child {
+    margin-bottom: 0;
+}
+```
+
+通常会使用通用选择器将各元素自带的空间去掉。
+
+``` css
+* {
+    margin: 0;
+    padding: 0;
+}
+```
+
+#### 边缘收缩
+
+当一块空间同时具有 `margin-top` 和 `margin-bottom` 的属性值时，会发生边缘收缩（collapsing margin），通常应用属性值大的那一个。
+
 ## 伪类（pseudo class）
 
 ### a 标签
