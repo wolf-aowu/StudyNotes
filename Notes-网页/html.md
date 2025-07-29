@@ -63,6 +63,20 @@ HTML 有两种重要的元素类别：块级元素和内联元素。
 
 <font color=skyblue>注意</font>：这里的 “块” 和 “内联” 不应该与 CSS 盒子的类型块级盒子（block_box）和内联盒子（inline_box）中的同名术语相混淆。尽管它们默认是相关的，但改变 CSS 显示类型并不会改变元素的分类，也不会影响它可以包含和被包含于哪些元素。防止这种混淆也是 HTML5 摒弃这些术语的原因之一。
 
+常见块级元素：
+
+`body`、`main`、`header`、`footer`、`section`、`nav`、`aside`、`div`、`h1-h6`、`p`、`ul`、`ol`、`li` 等。
+
+在 css 中，将内联元素转变为块级元素 `display: block;`。
+
+<font color=skyblue>块级元素的 `height` 和 `width` 对于内联元素是没有用的。同时 `padding` 和 `margin` 也仅在水平方向应用（准确点是不会在垂直方向上创造出新的空间，padding 会拓宽盒子的大小但是内容在垂直方向的位置是不变的，如果它是块级元素同样是用 padding，内容会往下移动一点）。</font>
+
+常见内联元素：
+
+`a`、`img`、`strong`、`em`、`button` 等。
+
+在 css 中，将块级元素转变为内联元素 `display: inline;`。
+
 ### HTML 结构
 
 ``` html
@@ -659,6 +673,8 @@ title 属性为链接补充信息，如页面包含什么样的信息或需要�
 #### 图片
 
 使用 `img` 元素。这个元素是空元素（无法包含任何子内容和结束标签）。它需要两个属性才能起作用：`src` 和 `alt`。
+
+`img` 是内联元素，但它同时具有块级元素的行为，如设置宽高，垂直方向设置 `margin` 等。
 
 ##### src 属性
 

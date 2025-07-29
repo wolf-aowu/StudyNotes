@@ -222,6 +222,7 @@ li:first-child {
 }
 
 /* 指定列表的最后一个 li 标签应用样式 */
+/* :last-child 代表一组兄弟元素的最后一个元素 */
 li:last-child {
     font-style: italic;
 }
@@ -426,7 +427,7 @@ button {
 }
 ```
 
-### box 属性
+### 块级元素属性
 
 ![](图片\css box 模型介绍.png)
 
@@ -437,6 +438,8 @@ final element height = top border + top padding + height + bottom padding + bott
 综上所述，margin 不是元素内的空间，padding 是元素内的空间。
 
 在 Google 浏览器的检查面板中（默认），当鼠标悬浮在某行元素上时，`padding` 是绿色的，`margin` 是橙色。
+
+#### padding
 
 ``` css
 .main-header {
@@ -449,6 +452,8 @@ final element height = top border + top padding + height + bottom padding + bott
     padding-bottom: 40px;
 }
 ```
+
+#### margin
 
 `margin` 通常被用来调整元素之间的间距。`margin` 写法与 `padding` 相同。`margin` 不是与文本相关的属性，所以它不可以被继承。尽量不要 `margin-top` 和 `margin-bottom` 混合使用，而是选择任意一个一直使用。
 
@@ -475,6 +480,68 @@ li:last-child {
 #### 边缘收缩
 
 当一块空间同时具有 `margin-top` 和 `margin-bottom` 的属性值时，会发生边缘收缩（collapsing margin），通常应用属性值大的那一个。
+
+#### 内容居中
+
+内容需要放在容器中，否则内容不会根据浏览器的变化自动居中，而是根据浏览器的变化一起变化。
+
+子元素永远不能比父元素宽。
+
+``` css
+div {
+    width: 700px;  /* 内部所有元素的宽度都会小于等于 700 px */
+    /* 左右两边外边距自动计算成相等 */
+    margin-left: auto;
+    margin-right: auto;
+    /* 与上面等价 */
+    margin: 0 auto;
+}
+```
+
+#### 块级内联互相转换
+
+块级元素的 `height` 和 `width` 对于内联元素是没有用的。同时 `padding` 和 `margin` 也仅在水平方向应用（准确点是不会在垂直方向上创造出新的空间，padding 会拓宽盒子的大小但是内容在垂直方向的位置是不变的，如果它是块级元素同样是用 padding，内容会往下移动一点）。
+
+互相转换的 box 被称为 inline-block boxes。
+
+##### 内联转块级
+
+``` css
+nav a:link {
+    margin: 20px; /* 可以发现垂直方向上的外边距没有增加 */
+    padding: 20px;
+    display: block;
+}
+```
+
+##### 块级转内联
+
+这样块级元素就可以并排了。
+
+``` css
+li {
+    display: inline;
+}
+```
+
+### img
+
+当 html 中为图片设置了 `width` 和 `height` 时，
+
+``` html
+<img src="皮卡丘.png" alt="皮卡丘" height="50" width="50" class="pkq"/>
+```
+
+``` css
+.pkq {
+    width: 100px;
+    height: auto;  /* 自动根据 width 按 html 中设置的 width 等比例缩放 height */
+}
+```
+
+如果没有在 html 中为图片指定宽度和高度，在 css 中使用 width 和 height 则会根据图片的原始纵横比来自适应。
+
+`width` 和 `height` 还可以以百分比为单位，它将以父容器的 `width` 和 `height` 为基数来计算最终大小。
 
 ## 伪类（pseudo class）
 
@@ -537,6 +604,16 @@ a:active {
 }
 ```
 
+#### `:last-child`
+
+可以多个伪类叠加，下面例子就可以用于导航
+
+``` css
+nav a:link:last-child {
+    margin-right: 0;
+}
+```
+
 ### button 标签
 
 `:hover`
@@ -547,4 +624,3 @@ button:hover {
     background-color: #fff;
 }
 ```
-
