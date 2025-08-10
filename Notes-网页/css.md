@@ -340,6 +340,44 @@ body {
 }
 ```
 
+## 定位
+
+### 常规流（Normal Flow）
+
+常规流中的任何一个盒子总是某个*格式区域*（*formatting context*）中的一部分。块级盒子是在*块格式区域*（*block formatting context*）中工作的盒子，而内联盒子是在*内联格式区域*（*inline formatting context*）中工作的盒子。任何一个盒子总是块级盒子或内联盒子中的一种。
+
+规范中还规定了块格式区域与内联格式区域中的元素行为。对于块级格式环境，规范内规定：
+
+在一个块格式区域中，盒子会从包含块的顶部开始，按序垂直排列。同级盒子间的垂直距离会由 `margin` 属性决定。相邻两个块级盒子之间的垂直间距会遵循外边距折叠原则被折叠（边缘收缩）。
+
+在一个块格式区域中，每个盒子的左外边缘会与包含块左边缘重合（如果是从右到左的排版顺序，则盒子的右外边缘与包含块右边缘重合）。
+
+对于内联格式区域中的元素：
+
+在内联格式区域中，盒子会从包含块的顶部开始，按序水平排列。只有水平外边距、边框和内边距会被保留。这些盒子可以以不同的方式在垂直方向上对齐：可以底部对齐或顶部对其，或者按文字底部进行对齐。我们把包含一串盒子的矩形区域称为一个线条框。
+
+需要注意的是，CSS 2.1 规范将文档的书写模式定义为从上到下横板排布，这从块级盒子的垂直间距这一属性就能看出来。在竖版书写模式工作时，块元素和内联元素的行为是相同的，关于这个我们将在未来的流布局与书写模式指南中进行探讨。
+
+常规流只是元素在页面上的默认定位，或者也可以通过 `position: relative` 实现常规流。称元素为 "in flow"。这意味着元素依赖在 HTML 代码中它们的顺序。
+
+<font color=grass>未完。</font>
+
+参考网址：
+
+https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_display/Block_and_inline_layout_in_normal_flow
+
+https://www.w3.org/TR/CSS2/visuren.html#normal-flow
+
+### 绝对定位（Absolute Position）
+
+元素会被从常规流中删除，称为 "out of flow"。元素将完全失去对周围元素的任何影响，甚至可能会重叠。通过 `top`、`bottom`、`left` 和 `right` 来偏移元素相对于一个 `position` 为 `relative` 的容器的位置。
+
+如果没有为父容器设置 `position: relative`，则 `top`、`bottom`、`left`、`right` 会按视口来设置，例如 `bottom: 0;` 不会展示在页面所有内容的最底部，如果页面内容足够长出现了滚动条，则元素会被展示在页面内容的中部。
+
+正确的绝对定位设置方式，粗体部分：
+
+![](图片\绝对定位.png)
+
 ## 属性
 
 ### 文本属性
@@ -480,6 +518,10 @@ li:last-child {
 #### 边缘收缩
 
 当一块空间同时具有 `margin-top` 和 `margin-bottom` 的属性值时，会发生边缘收缩（collapsing margin），通常应用属性值大的那一个。
+
+参考网址：
+
+https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_box_model/Mastering_margin_collapsing
 
 #### 内容居中
 
