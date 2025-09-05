@@ -264,6 +264,32 @@ header p:first-child {
 </header>
 ```
 
+### 伪元素（pseudo element）
+
+伪元素本质上是 Html 中不存在的元素，但我们仍然可以在 CSS 中选择和设置样式。
+
+伪元素是一个附加至选择器末的关键词，允许你对被选择元素的特定部分修改样式。
+
+与伪元素比较，伪类能够根据状态改变元素样式。
+
+``` css
+h1::first-letter {
+    font-style: normal;
+    margin-right: 5px;
+}
+```
+
+### 接续兄弟组合器（Next-sibling combinator）
+
+接续兄弟选择器（`+`）介于两个选择器之间，当第二个元素紧跟在第一个元素之后，并且两个元素都是属于同一个父元素的子元素，则第二个元素将被选中。
+
+``` css
+/* 选中 h3 之后的 p 的第一行的样式 */
+h3 + p::first-line {
+    color: red;
+}
+```
+
 ### 通配选择器（universal selector）
 
 在 CSS 中，一个星号 (`*`) 就是一个通配选择器。它可以匹配任意类型的 HTML 元素。在配合其他简单选择器的时候，省略掉通配选择器会有同样的效果。比如，`*.warning` 和`.warning` 的效果完全相同。
@@ -367,6 +393,14 @@ body {
 https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_display/Block_and_inline_layout_in_normal_flow
 
 https://www.w3.org/TR/CSS2/visuren.html#normal-flow
+
+#### 边缘收缩
+
+当一块空间同时具有 `margin-top` 和 `margin-bottom` 的属性值时，会发生边缘收缩（collapsing margin），通常应用属性值大的那一个。
+
+参考网址：
+
+https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_box_model/Mastering_margin_collapsing
 
 ### 绝对定位（Absolute Position）
 
@@ -515,14 +549,6 @@ li:last-child {
 }
 ```
 
-#### 边缘收缩
-
-当一块空间同时具有 `margin-top` 和 `margin-bottom` 的属性值时，会发生边缘收缩（collapsing margin），通常应用属性值大的那一个。
-
-参考网址：
-
-https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_box_model/Mastering_margin_collapsing
-
 #### 内容居中
 
 内容需要放在容器中，否则内容不会根据浏览器的变化自动居中，而是根据浏览器的变化一起变化。
@@ -658,7 +684,7 @@ nav a:link:last-child {
 
 ### button 标签
 
-`:hover`
+#### `:hover`
 
 ``` css
 button:hover {
@@ -666,3 +692,57 @@ button:hover {
     background-color: #fff;
 }
 ```
+
+## 伪元素（pseudo element）
+
+### 文本元素
+
+#### `::first_letter`
+
+选择元素的一个字。
+
+``` css
+h1::first-letter {
+    font-style: normal;
+    margin-right: 5px;
+}
+```
+
+#### `::first-line`
+
+选择元素的第一行。
+
+``` css
+p::first-line {
+    color: red;
+}
+```
+
+#### `::after`
+
+会创建一个伪元素，作为所选元素的最后一个子元素。它通常用于为具有 content 属性的元素添加修饰内容。它的 content 属性是必须的，如果不希望有内容就使用空字符串 `""`。默认情况下，它是内联布局的。
+
+``` css
+h2 {
+    background-color: orange;
+    position: relative;
+}
+h2::after {
+    content: "TOP";
+    background-color: #ffe70c;
+    color: #444;
+    font-size: 16px;
+    font-weight: bold;
+    display: inline-block;
+    padding: 5px 10px;
+    position: absolute;
+    top: -10px;
+    /* 值可以为负，向反方向移动 */
+    right: -25px;
+}
+```
+
+#### ::before
+
+会创建一个伪元素，作为所选元素的第一个子元素。它的用法同 `::after`。如果将 `::after` 替换为 `::before` 在外观上并不会有不同，但是在浏览器的 `dev` 工具的 html中，`::before` 会在元素前面，`::after` 则会出现在元素后面。
+
