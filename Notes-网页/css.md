@@ -412,6 +412,144 @@ https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_box_model/Mastering_margin_
 
 ![](图片\绝对定位.png)
 
+## 布局
+
+布局主要分为两大类：页面布局和组件布局。
+
+页面布局将页面分为多个大块，组件布局再将每个页面布局分为多个内容。
+
+### 浮动布局（float Layout）
+
+`float` CSS 属性指定一个元素应沿其容器的左侧或右侧放置，允许文本和内联元素环绕它。该元素从网页的正常流动（文档流）中移除，但是仍然保持部分的流动性（与绝对定位）相反）。
+
+``` css
+p {
+    float: right;
+}
+```
+
+如果父容器中没有其他元素撑起高度时，父容器的高度会消失。解决方案如下：
+
+**方案一：**
+
+在父容器中再创建一个空元素，如 `div`，使用 `clear` 属性清除 `float` 布局。(不推荐)
+
+``` css
+div {
+    /* 
+    	left: 清除左浮动
+    	right: 清除右浮动
+    	both: 同时存在左浮动和有浮动，两个同时清除
+    */
+    clear: both;
+}
+```
+
+**方案二：**
+
+在父容器中添加 `clearfix` 类，选择 `clearfix` 类选择器添加伪类。这种方法也被称为 `clearfix hack`。
+
+``` css
+.clearfix::after {
+    clear: both;
+    content: "";
+    display: block;
+}
+```
+
+如果同时存在 `float: left` 和 `float: right` 它们中间是没有缝隙的，此时需要缩小左右两边盒子的宽。
+
+如果右两个 `float: left` 和 `float: left` 那么空隙会出现在最右侧。
+
+### 弹性盒子布局（flexbox）
+
+适合组件布局，是一维布局。它给 flexbox 的子元素之间提供了强大的空间分布和对齐能力。
+
+我们说 flexbox 是一种一维的布局，是因为一个 flexbox 一次只能处理一个维度上的元素布局，一行或者一列。
+
+html：
+
+``` html
+<body>
+    <div class="container">
+        <!-- 这些被称为 flex item -->
+        <div class="el el--1">HTML</div>
+        <div class="el el--2">and</div>
+        <div class="el el--3">CSS</div>
+        <div class="el el--4">are</div>
+        <div class="el el--5">amazing</div>
+        <div class="el el--6">languages</div>
+        <div class="el el--7">to</div>
+        <div class="el el--8">learn</div>
+    </div>
+</body>
+```
+
+css：
+
+``` css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    font-family: sans-serif;
+    background-color: #ddd;
+    font-size: 34px;
+    margin: 40px;
+    display: flex;
+    /* 
+    	stretch: 自动拉伸（以最高的高度来），是默认值
+    	center: 垂直居中（除了设置了高度的绿色，其他元素的 height 都会采用内容的高度）
+    	flex-start: 上对齐
+    	flex-end: 下对齐
+    */
+    align-items: center;
+    /*
+    	center: 水平居中
+    	space-between: 水平剩余空间均分作为空隙
+    */
+    justify-content: center;
+}
+
+.el--2 {
+    background-color: blueviolet;
+}
+
+.el--3 {
+    background-color: orangered;
+}
+
+.el--4 {
+    background-color: green;
+    height: 150px;
+}
+
+.el--5 {
+    background-color: goldenrod;
+}
+
+.el--6 {
+    background-color: palevioletred;
+}
+
+.el--7 {
+    background-color: steelblue;
+}
+
+.el--8 {
+    background-color: crimson;
+}
+```
+
+默认情况下，`flex item` 都和最高的元素一样高。如行main例子所有元素的 `height` 都是 150px。
+
+### css 网格布局（css grid）
+
+适合大页面布局，是二维布局。
+
 ## 属性
 
 ### 文本属性
@@ -516,7 +654,7 @@ final element height = top border + top padding + height + bottom padding + bott
 ``` css
 .main-header {
     padding: 20px;  /* 将四边的 padding 都设置为 20px */
-    padding: 20px 30px; /* 20px 代表 top 和 bottom，30px 代表 left 和 right */
+    padding: 20px 30px; /* 20px 代表 top 和 bottom，30px 代表 left 和 right，一般水平是垂直方向上的两倍 */
     /* 单边 */
     padding-left: 40px;
     padding-right: 40px;
@@ -548,6 +686,34 @@ li:last-child {
     padding: 0;
 }
 ```
+
+#### box-sizing
+
+`box-sizing` 的默认值为 `content-box`，元素的 `width` 和 `height` 的计算方法如下所示：
+
+element width = right border + right padding + width + left padding + left border
+
+element height = top border + top padding + height + bottom padding + bottom border
+
+![](图片\元素默认 width 和 height 计算方法.png)
+
+当 `box-sizing` 设置为 `border-box` 时，元素的 `width` 和 `height` 的计算方式变为：
+
+element width = width
+
+element height = height
+
+![](图片\元素设置为 border-box 的计算方法.png)
+
+通常使用通用选择器配置。
+
+``` css
+* {
+    box-sizing: border-box;
+}
+```
+
+因为这个属性不是可继承的属性。
 
 #### 内容居中
 
