@@ -463,7 +463,11 @@ div {
 
 ### 弹性盒子布局（flexbox）
 
-适合组件布局，是一维布局。它给 flexbox 的子元素之间提供了强大的空间分布和对齐能力。
+适合组件布局，是一维布局。它给 flexbox 的子元素之间提供了强大的空间分布和对齐能力。flexbox 在最初开发时的目的是为了能够自动划分父容器的空白空间。
+
+flexbox 的定义：
+
+![](图片\flexbox 的定义.png)
 
 我们说 flexbox 是一种一维的布局，是因为一个 flexbox 一次只能处理一个维度上的元素布局，一行或者一列。
 
@@ -776,6 +780,97 @@ li {
 如果没有在 html 中为图片指定宽度和高度，在 css 中使用 width 和 height 则会根据图片的原始纵横比来自适应。
 
 `width` 和 `height` 还可以以百分比为单位，它将以父容器的 `width` 和 `height` 为基数来计算最终大小。
+
+### flexbox
+
+#### flex container 中
+
+##### gap
+
+默认值为 0。为两个 flex items 的中间创建空白，不使用 margin。
+
+##### justify-content
+
+默认值为 flex-start。沿主轴（默认为水平方向）对齐 flex items。
+
+可选值：
+
+- flex-start：元素紧密地排列在弹性容器的主轴起始侧。仅应用于弹性布局的项目。对于不是弹性容器里的元素，此值将被视为 `start`。
+- flex-end：元素紧密地排列在弹性容器的主轴结束侧。仅应用于弹性布局的元素。对于不是弹性容器里的元素，此值将被视为 `end`。
+- center：伸缩元素向每行中点排列。每行第一个元素到行首的距离将与每行最后一个元素到行尾的距离相同。
+- space-between：在每行上均匀分配弹性元素。相邻元素间距离相同。每行第一个元素与行首对齐，每行最后一个元素与行尾对齐。
+- space-around：在每行上均匀分配弹性元素。相邻元素间距离相同。每行第一个元素到行首的距离和每行最后一个元素到行尾的距离将会是相邻元素之间距离的一半。
+- space-evenly：flex items 都沿着主轴均匀分布在指定的对齐容器中。相邻 flex 项之间的间距，主轴起始位置到第一个 flex 项的间距，主轴结束位置到最后一个 flex items 的间距，都完全一样。
+
+##### align-items
+
+默认值为 stretch。沿交叉轴（默认为垂直方向）对齐 flex items。
+
+可选值：
+
+- stretch：如果（多个）元素的组合大小小于容器的大小，其中自动调整大小的元素将等量增大，以填满容器，同时这些元素仍然保持其宽高比例的约束。
+- flex-start：将元素与容器的主轴起点或交叉轴起点对齐，轴起点的方向对应于元素的起始方向。
+- flex-end：将元素与容器的主轴末端或交叉轴末端对齐，轴末端的方向对应于元素的结尾方向。
+- center：flex 元素的外边距框在交叉轴上居中对齐。如果元素的交叉轴尺寸大于 flex 容器，它将在两个方向上等距溢出。
+- baseline：所有 flex 元素都对齐，以使它们的 flex 容器基线对齐。距离其交叉轴起点和基线之间最远的元素与行的交叉轴起点对齐。
+
+##### flex-direction
+
+默认值为 row。定义主轴的方向。
+
+可选值：
+
+- row：flex 容器的主轴被定义为与文本方向相同。主轴起点和主轴终点与内容方向相同。
+- row-reverse：表现和 row 相同，但是置换了主轴起点和主轴终点。
+- column：flex 容器的主轴和块轴相同。主轴起点与主轴终点和书写模式的前后点相同。
+- column-reverse：表现和 column 相同，但是置换了主轴起点和主轴终点。
+
+##### flex-wrap
+
+默认值为 nowrap。指定 flex 元素单行显示还是多行显示。
+
+- nowrap：flex 的元素被摆放到到一行，这可能导致 flex 容器溢出。cross-start 会根据 flex-direction 的值等价于 start 或 before。
+
+- wrap：flex 元素 被打断到多个行中。cross-start 会根据 flex-direction 的值等价于 start 或 before。cross-end 为确定的 cross-start 的另一端。
+- wrap-reverse：和 wrap 的行为一样，但是 cross-start 和 cross-end 互换。
+
+##### align-content
+
+默认值为 stretch。只在有多行时生效。
+
+- flex-start：所有行从容器的起始边缘开始填充。
+- flex-end：所有行从容器的结束边缘开始填充。
+- center：所有行朝向容器的中心填充。每行互相紧挨，相对于容器居中对齐。容器的垂直轴起点边和第一行的距离相等于容器的垂直轴终点边和最后一行的距离。
+- space-between：所有行在容器中平均分布。相邻两行间距相等。容器的垂直轴起点边和终点边分别与第一行和最后一行的边对齐。
+- space-around：所有行在容器中平均分布，相邻两行间距相等。容器的垂直轴起点边和终点边分别与第一行和最后一行的距离是相邻两行间距的一半。
+
+#### flex items 中
+
+##### align-self
+
+默认值为 auto。为单个 flex items 覆盖 align-items 属性。
+
+可选值：auto、stretch、flex-start、flex-end、center、baseline。
+
+##### flex-grow
+
+默认值为 0。使元素放大。
+
+##### flex-strink
+
+默认值为 1。使元素缩小。
+
+##### flex-basis
+
+默认值为 auto。不使用 width 属性来定义一个 flex items 的宽度。
+
+##### flex
+
+默认值为 0 1 auto。flex-grow flex-strink flex-basis 的简写。
+
+##### order
+
+默认值为 0。控制 flex items 的顺序。-1 为第一，1 为最后一个。
 
 ## 伪类（pseudo class）
 
