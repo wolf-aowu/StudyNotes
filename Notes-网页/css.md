@@ -518,8 +518,13 @@ css：
     justify-content: center;
 }
 
+.el--1 {
+    align-self: flex-start;
+}
+
 .el--2 {
     background-color: blueviolet;
+    align-self: stretch;
 }
 
 .el--3 {
@@ -787,7 +792,7 @@ li {
 
 ##### gap
 
-默认值为 0。为两个 flex items 的中间创建空白，不使用 margin。
+默认值为 0。为两个 flex items 的中间创建空白，不使用 margin。它比 `margin` 少了一个间隔，例如 `margin-right` 最后一个元素的后面还会有一个间隔，而 `gap` 没有。
 
 ##### justify-content
 
@@ -854,15 +859,15 @@ li {
 
 ##### flex-grow
 
-默认值为 0。使元素放大。
+默认值为 0。使元素放大。如果为 1，当容器未被填满时，允许尽可能的放大元素。如果设置为2，意味着设置的元素将会得到比其他元素多一倍的平均剩余空间。
 
 ##### flex-strink
 
-默认值为 1。使元素缩小。
+默认值为 1。使元素缩小。当元素会超出容器大小时允许自动收缩元素以适应容器大小。如果为 0，则不会收缩元素。
 
 ##### flex-basis
 
-默认值为 auto。不使用 width 属性来定义一个 flex items 的宽度。
+默认值为 auto。不使用 width 属性来定义一个 flex items 的宽度。在为 flex items 设置 `flex-basis` 属性时需要将 `flex-strink` 设置为 0 才会生效。
 
 ##### flex
 
