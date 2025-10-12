@@ -453,6 +453,10 @@ header 元素表示介绍性内容，通常是一组介绍性或导航性辅助�
 
 参考网址：https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/header
 
+##### blackquote
+
+blackquote 元素代表其中的文字是引用的内容。通常在渲染时，这部分的内容会有一定的缩进。它是块级引用元素。
+
 ##### article
 
 article 元素表示文档、页面、应用或网站中的独立结构，其意在成为可独立分配的或可复用的结构，如在发布中，它可能是论坛帖子、杂志或新闻文章、博客、用户提交的评论、交互式组件，或者其他独立的内容项目。
@@ -778,6 +782,31 @@ WebGL API 指南将帮助入门 WebGL，这是用于 Web 的 3D 图形 API，可
 WebRTC 中的 RTC 代表实时通信（Real-Time Communications），这是一种可以在浏览器客户端（对等方）之间进行音频/视频流和数据共享的技术。
 
 参考网址：https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API
+
+#### 没有特殊含义的元素
+
+##### div
+
+`<div>` HTML 元素是流式内容的通用容器。它对内容或布局没有影响。除非以某种方式使用 CSS 对其进行样式设置（例如，直接应用样式，或者对其父元素应用某种布局模型，如弹性盒子），否则它对内容或布局没有影响。
+
+`<div>` 是块级元素。
+
+##### section
+
+表示 HTML 文档中一个通用独立章节，它没有更具体的语义元素来表示。一般来说会包含一个标题。
+
+举个例子，一个导航菜单应该被包裹在 `nav` 元素中，但搜索结果列表或地图显示及其控件并没有特定的元素，可以放在 `<section>` 里面。
+
+注意事项：
+
+- 当该元素的内容可以作为一个独立的作品在多个媒体上发表，使用 `article` 是一个更好的选择。
+- 当内容包含代表与主要内容一同展示的有用的切入信息，但不是直接的一部分（如相关链接，作者简历等），请使用 `aside`。
+- 当内容代表文档中的主要内容区域，请使用 `main`。
+- 将该元素作为一个样式包装时，请使用 `div`。一般来说，`<section>` 应该出现在文档大纲中。
+
+##### span
+
+**`<span>`** 元素是一个通用的行级容器，本身不具备特殊含义。它可被用于对元素进行编组，以便于添加样式（通过使用 [`class`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Global_attributes#class) 或 [`id`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Global_attributes#id) 属性），或共享属性值（例如 [`lang`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Global_attributes#lang) 属性）。该元素仅应在无其他合适语义元素时使用。`<span>` 是一个行级元素。
 
 ### 媒体资源和许可
 

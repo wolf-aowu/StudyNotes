@@ -348,7 +348,7 @@ footer p{
 
 选择器优先级参考图
 
-![](图片\选择器优先级.jpg)
+![](图片\css\选择器优先级.jpg)
 
 ## 继承（inheritance 或 inherity）
 
@@ -410,7 +410,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_box_model/Mastering_margin_
 
 正确的绝对定位设置方式，粗体部分：
 
-![](图片\绝对定位.png)
+![](图片\css\绝对定位.png)
 
 ## 布局
 
@@ -467,7 +467,7 @@ div {
 
 flexbox 的定义：
 
-![](图片\flexbox 的定义.png)
+![](图片\css\flexbox 的定义.png)
 
 我们说 flexbox 是一种一维的布局，是因为一个 flexbox 一次只能处理一个维度上的元素布局，一行或者一列。
 
@@ -557,7 +557,117 @@ css：
 
 ### css 网格布局（css grid）
 
-适合大页面布局，是二维布局。
+适合大页面布局，是二维布局。将一个容器元素分成行和列，由它的子元素来填充这些行和列。
+
+css 网格布局可以和弹性盒子布局（flexbox）很好地协同工作。不应该使用 css 网格布局替代弹性盒子布局（flexbox）！
+
+css grid 的定义：
+
+![](图片\css\css grid 的定义.png)
+
+css grid 的 row axis 和 column axis 是不可以改变方向的。
+
+![](图片\css\css grid 的定义2.png)
+
+html：
+
+``` html
+<body>
+    <div class="container--1">
+        <div class="el el--1">(1) HTML</div>
+        <div class="el el--2">(2) and</div>
+        <div class="el el--3">(3) CSS</div>
+        <div class="el el--4">(4) are</div>
+        <div class="el el--5">(5) amazing</div>
+        <div class="el el--6">(6) languages</div>
+        <div class="el el--7">(7) to</div>
+        <div class="el el--8">(8) learn</div>
+    </div>
+    
+    <div class="container--2">
+        <div class="el el--1">(1)</div>
+        <div class="el el--3">(3)</div>
+        <div class="el el--4">(4)</div>
+        <div class="el el--5">(5)</div>
+        <div class="el el--6">(6)</div>
+        <div class="el el--7">(7)</div>
+    </div>
+</body>
+```
+
+css：
+
+``` css
+.el--1 {
+    background-color: blueviolet;
+}
+.el--2 {
+    background-color: orangered;
+}
+.el--3 {
+    background-color: green;
+    height: 150px;
+}
+.el--4 {
+    background-color: goldenrod;
+}
+.el--5 {
+    background-color: palevioletred;
+}
+.el--6 {
+    background-color: steelblue;
+}
+.el--7 {
+    background-color: yellow;
+}
+.el--8 {
+    background-color: crimson;
+}
+
+.container--1 {
+    /* STARTER */
+    font-family: sans-serif;
+    background-color: #ddd;
+    font-size: 30px;
+    margin: 40px;
+    
+    /* CSS GRID */
+    display: grid;
+    /* 定义每一列的宽度，会自动创建对应宽度的一列 */
+    grid-template-columns: 200px 200px 100px 100px;
+    /* 行同列理 */
+    grid-template-rows: 300px 200px;
+    /* 同时设置行和列的间隙（但不可以单独设置） */
+    /* gap: 30px; */
+    /* 单独设置列的间隙 */
+    column-gap: 30px;
+    /* 单独设置行的间隙 */
+    row-gap: 60px;
+}
+
+.container--2 {
+    font-family: sans-serif;
+    background-color: black;
+    font-size: 40px;
+    margin: 100px;
+    
+    width: 1000px;
+    height: 600px;
+    
+    /* CSS GRID */
+    display: grid;
+    grid-template-columns: 125px 200px 125px;
+    grid-template-rows: 250px 100px;
+}
+```
+
+在网格布局中可以使用一种新单位 `fr`。使用像素为单位时，网格大小时固定的当缩小浏览器窗口时，像素宽度不变，使得子元素会超过父元素的宽度，这看起来会很奇怪，`fr` 就不会有这方面的问题。`fr` 可以自动分配剩余空间，直到父容器大小不足以容纳正常显示的所有子元素时，子元素才会超出父容器。
+
+``` css
+grid-template-columns: 200px 200px 1fr 1fr;
+```
+
+可能会出现隐形的行，例如一共有12个子元素，最初设置的列数有 4 列，行数只有 3 行设置了高度，此时删去了一列列宽，那么它就变成有 4 行了，但第 4 行没有为它设置行高，此时会自动添加多出来的行，但是它们的行高一般按内容来设置。
 
 ## 属性
 
@@ -648,7 +758,7 @@ button {
 
 ### 块级元素属性
 
-![](图片\css box 模型介绍.png)
+![](图片\css\css box 模型介绍.png)
 
 final element width = left border + left padding + width + right padding + right border
 
@@ -704,7 +814,7 @@ element width = right border + right padding + width + left padding + left borde
 
 element height = top border + top padding + height + bottom padding + bottom border
 
-![](图片\元素默认 width 和 height 计算方法.png)
+![](图片\css\元素默认 width 和 height 计算方法.png)
 
 当 `box-sizing` 设置为 `border-box` 时，元素的 `width` 和 `height` 的计算方式变为：
 
@@ -712,7 +822,7 @@ element width = width
 
 element height = height
 
-![](图片\元素设置为 border-box 的计算方法.png)
+![](图片\css\元素设置为 border-box 的计算方法.png)
 
 通常使用通用选择器配置。
 
@@ -859,7 +969,7 @@ li {
 
 ##### flex-grow
 
-默认值为 0。使元素放大。如果为 1，当容器未被填满时，允许尽可能的放大元素。如果设置为2，意味着设置的元素将会得到比其他元素多一倍的平均剩余空间。
+默认值为 0。使元素放大。如果为 1，当容器未被填满时，允许尽可能的放大元素。如果设置为2，意味着设置的元素将会得到比其他元素多一倍的平均剩余空间。当单独放大某个 `item` 时它会独自占据所有剩余空白空间。
 
 ##### flex-strink
 
@@ -867,7 +977,7 @@ li {
 
 ##### flex-basis
 
-默认值为 auto。不使用 width 属性来定义一个 flex items 的宽度。在为 flex items 设置 `flex-basis` 属性时需要将 `flex-strink` 设置为 0 才会生效。
+默认值为 auto。不使用 width 属性来定义一个 flex items 的宽度。在为 flex items 设置 `flex-basis` 属性时需要将 `flex-strink` 设置为 0 才会生效。当父容器不够容纳 items 且 `flex-strink` 部位 0 时会自动收缩元素以适应容器大小，所以此时设置的 `flex-basis` 不会生效。
 
 ##### flex
 
@@ -876,6 +986,149 @@ li {
 ##### order
 
 默认值为 0。控制 flex items 的顺序。-1 为第一，1 为最后一个。
+
+### css grid
+
+#### grid container 中
+
+##### grid-template-rows
+
+定义网格线的名称和网格轨道的尺寸大小。
+
+``` css
+/* 3行 */
+grid-template-rows: 40px 4px 40px;
+```
+
+单位可以是 px 或 fr 等。在使用 fr 时，需要为父容器设置高度，否则会根据子元素的最大高度设置行高。也可以使用 auto 来自动获取行高。
+
+##### grid-template-columns
+
+定义网格线的名称和网格轨道的尺寸大小。
+
+``` css
+/* 2列 */
+grid-template-columns: 60px 60px;
+```
+
+单位可以是 px 或 fr 等。也可以使用 auto 来自动获取列宽。
+
+当有多列连续相等的列宽是，可以使用 `repeat(列数, 列宽)` 来快速设置，例如 `repeat(4, 1fr)`。
+
+##### row-gap
+
+设置行元素之间的间隙（gutter）大小。
+
+规范的早期版本将此属性命名为 `grid-row-gap`，为了保持与旧网站的兼容性，浏览器仍然会将 `grid-row-gap` 视为 `row-gap` 的别名。
+
+``` css
+row-gap: 20px;
+```
+
+##### column-gap
+
+设置列元素之间的间隙（gutter）大小。
+
+规范的早期版本将此属性命名为 `grid-column-gap`，为了保持与旧网站的兼容性，浏览器仍然会将 `grid-column-gap` 视为 `column-gap` 的别名。
+
+``` css
+column-gap: 20px;
+```
+
+##### gap
+
+同时设置行和列的间隙大小。
+
+``` css
+gap: 30px;
+```
+
+##### justify-items
+
+默认值为 stretch。所有子元素在网格的水平方向上对齐。可以把这个认为是控制子元素在网格中的布局。
+
+可选值：
+
+stretch（拉伸）、start、center、end。
+
+##### align-items
+
+默认值为 stretch。所有子元素在网格的垂直方向上对齐上。可以把这个认为是控制子元素在网格中的布局。
+
+可选值：
+
+stretch（拉伸）、start、center、end。
+
+##### justify-content
+
+默认值为 start。每一行网格轨道在父容器中沿水平方向对齐。可以把这个认为是控制网格的布局。
+
+可选值：
+
+start、center、end、stretch、space-between（在每行上均匀分配弹性元素。相邻元素间距离相同。每行第一个元素与行首对齐，每行最后一个元素与行尾对齐。）。
+
+##### align-content
+
+默认值为 start。每一列网格轨道在父容器中沿垂直方向对齐。可以把这个认为是控制网格的布局。
+
+可选值：
+
+start、center、end、stretch、space-between。
+
+#### grid items 中
+
+##### grid-column
+
+`grid-column` CSS 属性是 [`grid-column-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-start) 和 [`grid-column-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-end) 的简写属性。
+
+将网格放置到特定单元格时，可通过行号定位。span 关键字可用于使项目跨越多列单元格。
+
+start line / end line | span number
+
+``` css
+/* 将单元格移至第 2 列，2 和 3 代表第 2 列的起始网格线和结束网格线。如果没有指定行则会在该列的最后一行加一行来显示这个格子。 */
+.el--8 {
+    grid-column: 2 / 3;
+}
+```
+
+如果要移动到的位置已经存在单元格，则存在的单元格顺序向后移动。
+
+当 end line - start line = 1 时，可以省略 end line，`grid-column: 2;`。
+
+如果 `grid-column: 1 / 3;` 时，则该单元格会跨列显示。
+
+也可以写成 `grid-column: 1 / span 2;`，`span 2` 代表需要跨 2 个网格线，也就是单元格跨 2 列。
+
+当不知道父容器被分成几列，但希望跨一整行时，可以写成 `grid-column: 1 / -1;`。也就是网格线既可以正着数也可以倒着数。
+
+##### grid-row
+
+**`grid-row`** 属性是一种 [`grid-row-start`](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row-start) 和 [`grid-row-end`](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row-end) 的缩写（shorthand）形式，它定义了网格单元与网格行（row）相关的尺寸和位置，可以通过在网格布局中的基线（line）、跨度（span），或者什么也不做（自动），从而指定网格区域)的行起始与行结束。
+
+start line / end line | span number
+
+``` css
+.el--8 {
+    grid-row: 1 / 2;
+}
+```
+
+##### justify-self
+
+默认值为 stretch。单独设置某一个子元素在网格中水平方向上的布局。
+
+可选值：
+
+stretch（拉伸）、start、center、end。
+
+##### align-self
+
+默认值为 stretch。单独设置某一个子元素在网格中垂直方向上的布局。
+
+可选值：
+
+stretch（拉伸）、start、center、end。
 
 ## 伪类（pseudo class）
 
