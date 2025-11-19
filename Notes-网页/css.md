@@ -681,7 +681,7 @@ h1 {
     font-family: sans-serif;  /* 字体。sans-serif 代表无衬线字体类型的字体集 */
     text-transform: uppercase;  /* 文本转换。uppercase 会将文本全部转换成大写字母 */
     font-style: italic;  /* 字体样式 */
-    text-align: center;  /* 文本对齐 */
+    text-align: center;  /* 文本对齐，仅对块级元素生效 */
 }
 
 p {
@@ -851,11 +851,11 @@ div {
 }
 ```
 
+可以使用 `text-align` 居中块级元素的内容，但这不会对内联元素生效，因为内联元素本身会尽可能地占用位置。
+
 #### 块级内联互相转换
 
-块级元素的 `height` 和 `width` 对于内联元素是没有用的。同时 `padding` 和 `margin` 也仅在水平方向应用（准确点是不会在垂直方向上创造出新的空间，padding 会拓宽盒子的大小但是内容在垂直方向的位置是不变的，如果它是块级元素同样是用 padding，内容会往下移动一点）。
-
-互相转换的 box 被称为 inline-block boxes。
+<font color=skyblue>块级元素的 `height` 和 `width` 对于内联元素是没有用的。同时 `padding` 和 `margin` 也仅在水平方向应用（准确点是不会在垂直方向上创造出新的空间，padding 会拓宽盒子的大小但是内容在垂直方向的位置是不变的，如果它和块级元素同样是用 padding，块级元素内容会往下移动一点）。</font>
 
 ##### 内联转块级
 
@@ -874,6 +874,16 @@ nav a:link {
 ``` css
 li {
     display: inline;
+}
+```
+
+##### 内联块
+
+继承了内联元素只会占用内容本身的大小的优点，同时也拥有块级元素的 `padding` 和 `margin`。
+
+``` css
+nav a:link {
+    display: inline-block;
 }
 ```
 
