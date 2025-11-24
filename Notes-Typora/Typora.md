@@ -131,6 +131,16 @@ b \geq a
 b \neq a
 $$
 
+##### 绝对值
+
+``` latex
+\left|x\right|
+```
+
+$$
+\left|x\right|
+$$
+
 ##### 集合相关
 
 ``` latex
