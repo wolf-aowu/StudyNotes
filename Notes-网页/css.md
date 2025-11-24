@@ -183,7 +183,7 @@ css：
 
 当由多个单词组成一个 class 名时，通常使用 `-` 分割单词。
 
-可以同时应用多个类选择器，以空格分割，例如： `<p class="say hello">hello world!</p>`。
+可以同时应用多个类选择器，以空格分割，例如： `<p class="say hello">hello world!</p>`。当定义多个类选择器时，生效顺序按 css 文件中定义的从上到下的顺序执行。
 
 <font color=skyblue>通常使用 类选择器 而不是 ID选择器。</font>
 
@@ -363,6 +363,27 @@ body {
     color: red;
     font-size: 16px;
     font-family: sans-serif;
+}
+```
+
+对于不会主动继承父元素的属性可以通过 `inherit` 来强制继承父元素的属性。
+
+html：
+
+``` html
+<body>
+    <button>继承</button>
+</body>
+```
+
+css：
+
+``` css
+body {
+    color: red;
+}
+button {
+    color: inherit;
 }
 ```
 
@@ -705,12 +726,28 @@ header, aside, body {
 }
 ```
 
+### background-image
+
+为元素设置背景图片，也可以填充渐变色
+
+``` css
+button {
+    /* 
+    	linear-gradient(渐变方向，渐变颜色1, 渐变颜色2, ...) 
+    渐变方向：to right、135deg
+    */
+    background-image: linear-gradient(to right, #3b82f6, #ef4444);
+}
+```
+
 ### border
 
 有 3 个值，分别是：边框粗细、边框样式、边框颜色。这种属性被称为简写属性（shortand property），是将多个属性合并为单一属性的高效写法。
 
 ``` css
 aside {
+    /* 没有边框 */
+    border: none;
     /* 
     	solid 实线
     	dotted 点状虚线
@@ -753,6 +790,17 @@ button {
     font-size: 20px;  /* 按钮内容字体大小 */
     text-transform: uppercase;  /* 按钮内容文本转换 */
     cursor: pointer;  /* 悬停时鼠标指针样式，pointer 一般会变成手指样式 */
+    border-radius: 100px;  /* 使按钮变得更圆滑 */
+    /* 设置动画时长，如鼠标悬浮时改变颜色、缩放、旋转等 */
+    transition: 0.3s;
+}
+
+button:hover {
+    /* 
+    	scale(110%) 放大到 110%
+    	rotate(-2deg) 绕按钮中心逆时针旋转 2 度
+    */
+    transform: scale(110%) rotate(2deg);
 }
 ```
 
@@ -1274,4 +1322,14 @@ h2::after {
 #### ::before
 
 会创建一个伪元素，作为所选元素的第一个子元素。它的用法同 `::after`。如果将 `::after` 替换为 `::before` 在外观上并不会有不同，但是在浏览器的 `dev` 工具的 html中，`::before` 会在元素前面，`::after` 则会出现在元素后面。
+
+#### ::placeholder
+
+常见于 `input` 元素，用于设置 `input` 元素的占位符的样式。
+
+``` css
+input::placeholder {
+    color: #ffd700;
+}
+```
 
