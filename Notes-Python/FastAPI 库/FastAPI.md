@@ -553,3 +553,133 @@ async def update_item(item_id: int, item: Item):
     return results
 ```
 
+## 中间件
+
+中间件会在每个请求对应特殊处理之前执行和每个响应返回之前执行。
+
+![](图片\中间件工作原理.png)
+
+创建中间件需要在函数顶部使用装饰器 `@app.middleware("http")`，中间件接收两个参数：`request` 和 `call_next`。`call_next` 是一个方法将接收 `request` 作为参数。
+
+``` python
+import time
+from fastapi import FastAPI, Request
+
+app = FastAPI()
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.perf_counter()
+    response = await call_next(request)
+    process_time = time.perf_counter() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
+```
+
+当同时存在多个中间件时，按代码在文件中从下到上的顺序执行（也就是最后一个中间件最先执行）。
+
+中间件的另一种写法（不推荐）
+
+``` python
+class LogMiddleware:
+    def __init__(self, app):
+        self.app = app
+    
+    async def __call__(self, scope, receive, send):
+        print("中间件请求前")
+        await self.app(scope, receive, send)
+        print("中间件请求后")
+
+app.add_middleware(LogMiddleware)
+```
+
+## CORS（跨域资源共享）
+
+同源策略（SOP）是浏览器的一种安全机制，限制了一个源的网页如何与另一个源的资源进行交互。同源策略防止恶意网站通过脚本（如 JavaScript）未经授权访问其他网站的数据。
+
+CORS（跨域资源共享）指浏览器中运行的前端拥有与后端通信的 JavaScript 代码，而后端处于与前端不同的源的情况。是一种基于 HTTP 的机制，它允许服务器指示哪些其他源可以访问其资源，从而绕过浏览器的同源策略限制。
+
+官方参考网址：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/CORS
+
+源是协议（`http`，`https`）、域（`myapp.com`，`localhost`，`localhost.tiangolo.com`）以及端口（`80`、`443`、`8080`）的组合。
+
+所以，以下时不同的源：
+
+- `http://localhost`
+- `https://localhost`
+- `http://localhost:8080`
+
+所以当来自不同源的前端和后端通信时，需要有一个允许的源列表。
+
+可以使用 `*` 来声明这个列表，表示允许来自所有的源的通信请求。但这仅允许某些类型的通信，不包括所有涉及凭据的内容：像 Cookies 以及那些使用 Bearer 令牌的授权 headers 等。
+
+因此，为了一切都能正常工作，最好显式地指定允许的源。
+
+可以使用 `CORSMiddleware` 来配置允许的源列表。默认情况下，这个 `CORSMiddleware` 实现所使用的默认参数较为保守，所以需要显式地启用特定的源、方法或者 headers，以便浏览器能够在跨域上下文中使用它们。`CORSMiddleware` 是中间件中的一种。
+
+``` python
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+async def main():
+    return {"message": "Hello World"}
+```
+
+另一种方法（不推荐）
+
+``` python
+@app.middleware("http")
+async def add_cors_headers(request, call_next):
+    if request.method == "OPTIONS":
+        headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type,Authorization"
+        }
+        return Response(status_code=200, headers=headers)
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+```
+
+`allow_origins` 一个允许跨域请求的源列表。`["*"]` 表示允许所有的源。
+
+`allow_origin_regex` 一个正则表达式字符串，匹配的源允许跨域请求。
+
+`allow_methods` 一个允许跨域请求的 `HTTP` 方法列表，默认为 `["GET"]`。可以使用 `["*"]` 来允许所有标准方法。
+
+`allow_headers` 一个允许跨域请求的 `HTTP` 请求头列表。默认为 `[]`。可以使用 `["*"]` 来允许所有的请求头。`Accdpt`、`Accept-Language`、`Content-Language` 以及 `Content-Type` 请求头总是允许 CORS 请求。
+
+`allow_credentials` 跨域请求支持 cookies。默认是 `False`。允许凭证时 `allow_origins` 不能设定为 `["*"]`，必须指定源。
+
+`expose_headers` 指示可以被浏览器访问的响应头。默认为 `[]`。
+
+`max_age` 设定为浏览器缓存 CORS 响应的最长时间，单位为秒。默认为 600。
+
+**CORS 预检请求**
+
+这是些带有 `Origin` 和 `Access-Control-Request-Method` 请求头的 `OPTIONS` 请求。
+
+在这种情况下，中间件将拦截传入的请求并进行响应，出于提供信息的目的返回一个使用了适当的 CORS headers 的 `200` 或 `400` 响应。
+
+**简单请求**
+
+任何带有 `Origin` 请求头的请求。在这种情况下，中间件将像平常一样传递请求，但是在响应中包含适当的 CORS headers。
