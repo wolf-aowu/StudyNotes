@@ -501,6 +501,40 @@ const [first, second, ...rest] = numbers;
 console.log(first, second, rest);  //12 45 [33, 29, 39]
 ```
 
+##### 类数组对象
+
+一些 JavaScript 对象，如 `document.getElementsByTagName()` 返回的 `NodeList` 或 `arguments` 等 JavaScript 对象，有与数组相似的行为，但它们并不共享数组的所有方法。`arguments` 对象提供了 `length` 属性，但没有实现如 `forEach()` 等数组方法。
+
+不能直接在类数组对象上调用数组方法。
+
+``` javascript
+function printArguments() {
+  arguments.forEach((item) => {
+    console.log(item);
+  }); // TypeError: arguments.forEach is not a function
+}
+```
+
+但可以通过 [`Function.prototype.call()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/call) 间接调用它们。
+
+``` javascript
+function printArguments() {
+  Array.prototype.forEach.call(arguments, (item) => {
+    console.log(item);
+  });
+}
+```
+
+数组原型方法也可以用于字符串，因为它们以类似于数组的方式提供对其中字符的顺序访问：
+
+``` javascript
+Array.prototype.forEach.call("a string", (chr) => {
+  console.log(chr);
+});
+```
+
+`{ length: 5 }` 是类数组对象，但是其元素未初始化，需通过 `Array.from` 等类似方法显示填充元素。
+
 ##### 属性
 
 ###### 数组长度
@@ -628,6 +662,8 @@ console.log(Array.isArray('Hello'));  //false
 ```
 
 ###### 可迭代对象转换成数组（Array.from）
+
+**`Array.from()`** 静态方法从可迭代或类数组对象创建一个新的浅拷贝的数组实例。
 
 ``` javascript
 console.log(Array.from('Hello'));  //['H', 'e', 'l', 'l', 'o']
