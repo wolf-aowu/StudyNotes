@@ -633,6 +633,23 @@ console.log(Array.isArray('Hello'));  //false
 console.log(Array.from('Hello'));  //['H', 'e', 'l', 'l', 'o']
 ```
 
+有三个参数：
+
+arrayLike：想要转换成数组的类数组或可迭代对象
+
+mapFn：可选参数。调用数组每个元素的函数。如果提供，每个将要添加到数组中的值会首先传递给该函数，然后将 `mapFn` 的返回值增加到数组中。使用以下参数调用该函数：
+
+- element：数组当前正在处理的元素
+- index：数组当前正在处理的元素的索引
+
+thisArg：可选参数。执行 `mapFn` 时用作 `this` 的值
+
+``` javascript
+// 生成一个数字序列。因为数组在每个位置都使用 `undefined` 初始化，下面的 `v` 值将是 `undefined`
+Array.from({ length: 5 }, (v, i) => i);
+// [0, 1, 2, 3, 4]
+```
+
 ###### 创建一个新的数组实例（Array.of）
 
 ``` javascript
